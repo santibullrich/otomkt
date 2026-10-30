@@ -220,6 +220,22 @@ label.lab{font-size:13px;font-weight:600;display:block;margin-bottom:6px}
 .add-grid .field{min-height:40px;padding:8px 12px;font-size:14px;background:var(--surface)}
 .add-grid .field.num{font-variant-numeric:tabular-nums}
 
+/* Executive deck */
+.deck{position:relative}
+.deck-pop{position:absolute;right:0;top:calc(100% + 8px);z-index:40;width:320px;max-width:calc(100vw - 32px);background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-pop);padding:8px;display:flex;flex-direction:column;gap:2px}
+.deck-head{padding:8px 10px 10px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.deck-head b{display:block;font-size:13.5px}
+.deck-head span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.deck-pop button{display:flex;gap:12px;align-items:center;padding:10px;border:0;border-radius:10px;background:transparent;color:var(--ink);text-align:left;cursor:pointer;font-family:var(--font-body)}
+.deck-pop button:hover{background:var(--sunken)}
+.deck-pop button b{display:block;font-size:13.5px;font-weight:600}
+.deck-pop button span span{display:block;font-size:12px;color:var(--muted)}
+.deck-ico{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px;flex:none}
+.deck-note{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 14px;border-radius:12px;background:var(--series-soft);color:var(--ink);font-size:13.5px}
+.deck-note a{color:var(--link);font-weight:600}
+.deck-note svg{color:var(--good-ink)}
+@media (max-width: 860px){.deck-pop{right:auto;left:0}}
+
 /* Invoices */
 .sel-sm{width:auto;min-height:32px;padding:4px 8px;font-size:13px}
 tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 55%, transparent)}
@@ -339,8 +355,17 @@ tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 5
           <button type="button" id="p-ytd" aria-pressed="true">Año a la fecha</button>
           <button type="button" id="p-month" aria-pressed="false">Octubre</button>
         </div>
+        <div class="deck">
+          <button type="button" class="btn small" id="deck-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="deck-pop"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8"/></svg>Generar presentación</button>
+          <div class="deck-pop" id="deck-pop" role="menu" hidden>
+            <div class="deck-head"><b>Presentación para dirección</b><span>7 diapositivas con los resultados a octubre, con el diseño de OTOMKT</span></div>
+            <button type="button" role="menuitem" data-deck="slides"><span class="deck-ico" style="background:var(--s3)">S</span><span><b>Crear en Google Slides</b><span>Se guarda en tu Google Drive</span></span></button>
+            <button type="button" role="menuitem" data-deck="pptx"><span class="deck-ico" style="background:var(--s2)">P</span><span><b>Descargar PowerPoint</b><span>Archivo .pptx</span></span></button>
+          </div>
+        </div>
       </div>
     </div>
+    <div class="deck-note" id="deck-note" aria-live="polite" hidden></div>
 
     <div class="panel kpis" style="--n:3" aria-live="polite">
       <div class="kpi"><div class="k">Nuevos clientes</div><div class="v num" id="k-clients"></div><div class="d" id="k-clients-d"></div><svg class="spark" id="k-clients-s" viewBox="0 0 200 36" preserveAspectRatio="none" aria-hidden="true"></svg></div>
@@ -632,6 +657,7 @@ tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 5
 <div class="tip" id="tip" hidden></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <script>
 // =====================================================================
 // Example data — Empresa demo, 2026. Amounts in US$ thousands (K) unless noted.
@@ -1657,6 +1683,187 @@ $('cx-form').addEventListener('submit', e => {
   if (EMAILS.some(x => x.addr === v)){ note.textContent = 'Ese correo ya está en la lista.'; return; }
   EMAILS.push({addr: v, week: 0}); saveEmails(); renderConnections();
   $('cx-email').value = ''; note.textContent = 'Listo: Oto va a leer las facturas que lleguen a ' + v + '.';
+});
+
+// =====================================================================
+// EXECUTIVE DECK — built with the OTOMKT design system, to Google Slides or PowerPoint
+// =====================================================================
+const DK = {ink:'0F1419', canvas:'F5F6F8', surface:'FFFFFF', line:'E4E7EC', muted:'5B6472', faint:'67717F', brand:'C8F04A', blue:'2A78D6', blueSoft:'B9D3F3', good:'08783A', goodSoft:'E7F6EE', crit:'B42318', critSoft:'FDECEA', font:'Geist'};
+const usd = n => 'US$ ' + fmtInt(n);
+function buildDeck(){
+  const pptx = new PptxGenJS();
+  pptx.layout = 'LAYOUT_WIDE'; pptx.title = 'Resultados de marketing · octubre 2026'; pptx.company = 'OTOMKT';
+  const W = 13.333, M = 0.6;
+  pptx.defineSlideMaster({ title:'OTO', background:{color:DK.canvas},
+    objects:[
+      {rect:{x:M, y:0.62, w:0.32, h:0.32, fill:{color:DK.brand}}},
+      {text:{text:'OTOMKT', options:{x:M + 0.42, y:0.58, w:3, h:0.4, fontFace:DK.font, fontSize:12, bold:true, color:DK.ink}}},
+      {text:{text:'Marketing · resultados a octubre 2026', options:{x:W - M - 5, y:0.58, w:5, h:0.4, fontFace:DK.font, fontSize:10, color:DK.faint, align:'right'}}},
+    ],
+    slideNumber:{x:W - M - 0.6, y:7.0, w:0.6, h:0.3, fontFace:DK.font, fontSize:9, color:DK.faint, align:'right'} });
+  const title = (s, eyebrow, head) => {
+    s.addText(eyebrow.toUpperCase(), {x:M, y:1.15, w:W - 2*M, h:0.3, fontFace:DK.font, fontSize:10, bold:true, color:DK.faint, charSpacing:1.5});
+    s.addText(head, {x:M, y:1.45, w:W - 2*M, h:0.9, fontFace:DK.font, fontSize:24, bold:true, color:DK.ink, valign:'top'});
+  };
+  const card = (s, x, y, w, h) => s.addShape(pptx.ShapeType.roundRect, {x, y, w, h, fill:{color:DK.surface}, line:{color:DK.line, width:0.75}, rectRadius:0.12});
+  const chip = (s, x, y, txt, good) => s.addText(txt, {x, y, w:Math.max(0.9, txt.length*0.085 + 0.3), h:0.3, fontFace:DK.font, fontSize:10, bold:true, color: good == null ? DK.muted : good ? DK.good : DK.crit, fill:{color: good == null ? 'F0F2F5' : good ? DK.goodSoft : DK.critSoft}, align:'center', valign:'middle', shape:pptx.ShapeType.roundRect, rectRadius:0.15});
+
+  // Numbers
+  const projTD = goalToDate(), gYear = goalYear(), bTD = sum(MONTHS.slice(0, ELAPSED).map((_,m) => budgetMonth(m)));
+  const cac = YTD_SPEND*1000/YTD_CLIENTS, cacOct = SPEND[LAST]*1000/CLIENTS[LAST], cacSep = SPEND[LAST-1]*1000/CLIENTS[LAST-1];
+  const clPct = YTD_CLIENTS/projTD, spPct = YTD_SPEND/bTD;
+
+  // 1 · Cover
+  let s = pptx.addSlide();
+  s.background = {color:DK.ink};
+  s.addShape(pptx.ShapeType.rect, {x:M, y:0.7, w:0.36, h:0.36, fill:{color:DK.brand}, line:{color:DK.brand}});
+  s.addText('OTOMKT', {x:M + 0.5, y:0.66, w:3, h:0.45, fontFace:DK.font, fontSize:14, bold:true, color:'FFFFFF'});
+  s.addText('Resultados de marketing', {x:M, y:2.6, w:7.2, h:1.1, fontFace:DK.font, fontSize:44, bold:true, color:'FFFFFF'});
+  s.addText('Enero a octubre 2026 · Presentación para dirección', {x:M, y:3.7, w:7.2, h:0.5, fontFace:DK.font, fontSize:16, color:'A3ACB9'});
+  s.addText('30 de octubre de 2026', {x:M, y:6.6, w:5, h:0.4, fontFace:DK.font, fontSize:11, color:'808A99'});
+  // Bars against a target line: the product's own shape, in lime
+  const bars = [1.1, 1.6, 1.4, 2.1, 1.9, 2.6, 3.0], bx = 8.4, base = 6.2;
+  bars.forEach((h, i) => s.addShape(pptx.ShapeType.roundRect, {x:bx + i*0.62, y:base - h, w:0.4, h, fill:{color:DK.brand}, line:{color:DK.brand}, rectRadius:0.06}));
+  s.addShape(pptx.ShapeType.line, {x:bx - 0.2, y:base - 2.3, w:4.6, h:0, line:{color:'A3ACB9', width:1.5, dashType:'dash'}});
+
+  // 2 · Executive summary
+  s = pptx.addSlide({masterName:'OTO'});
+  title(s, 'Resumen ejecutivo', `${fmtInt(YTD_CLIENTS)} nuevos clientes a un CAC de ${usd(cac)}: ${pct(clPct)} de lo proyectado, con ${pct(spPct)} del budget ejecutado.`);
+  const kpis = [
+    ['Nuevos clientes YTD', fmtInt(YTD_CLIENTS), `${pct(clPct)} de lo proyectado (${fmtInt(projTD)})`, clPct >= 1],
+    ['Gasto YTD', usd(YTD_SPEND*1000), `${pct(spPct)} del budget a la fecha`, spPct <= 1],
+    ['CAC YTD', usd(cac), `Octubre: ${usd(cacOct)}`, null],
+    ['Nuevos clientes octubre', fmtInt(CLIENTS[LAST]), `Proyectado: ${fmtInt(goalMonth(LAST))}`, CLIENTS[LAST] >= goalMonth(LAST)],
+  ];
+  const cw = (W - 2*M - 3*0.3) / 4;
+  kpis.forEach(([lab, val, sub, good], i) => {
+    const x = M + i*(cw + 0.3), y = 2.75;
+    card(s, x, y, cw, 2.2);
+    s.addText(lab, {x:x + 0.25, y:y + 0.25, w:cw - 0.5, h:0.35, fontFace:DK.font, fontSize:12, color:DK.muted});
+    s.addText(val, {x:x + 0.25, y:y + 0.7, w:cw - 0.5, h:0.75, fontFace:DK.font, fontSize:30, bold:true, color:DK.ink});
+    s.addText(sub, {x:x + 0.25, y:y + 1.55, w:cw - 0.5, h:0.45, fontFace:DK.font, fontSize:11, color: good == null ? DK.muted : good ? DK.good : DK.crit, bold: good != null});
+  });
+  s.addText([
+    {text:'Lo que hay que saber', options:{bold:true, color:DK.ink, breakLine:true}},
+    {text:`Faltan ${fmtInt(gYear - YTD_CLIENTS)} clientes para cerrar el año: ${fmtInt((gYear - YTD_CLIENTS)/(12 - ELAPSED))} por mes en noviembre y diciembre.`, options:{bullet:true, breakLine:true}},
+    {text:`Quedan ${usd((budgetYear() - YTD_SPEND)*1000)} de budget para esos dos meses.`, options:{bullet:true, breakLine:true}},
+    {text:`El CAC de octubre (${usd(cacOct)}) ${cacOct <= cacSep ? 'bajó' : 'subió'} contra septiembre (${usd(cacSep)}).`, options:{bullet:true}},
+  ], {x:M, y:5.25, w:W - 2*M, h:1.5, fontFace:DK.font, fontSize:13, color:DK.muted, valign:'top', paraSpaceAfter:4});
+
+  // 3 · New clients vs projection
+  s = pptx.addSlide({masterName:'OTO'});
+  title(s, 'Nuevos clientes', `Nuevos clientes por mes contra lo proyectado: ${CLIENTS[LAST] >= goalMonth(LAST) ? 'octubre cerró en línea con la proyección' : 'octubre quedó por debajo de la proyección'}.`);
+  const chartOpts = {x:M, y:2.5, w:W - 2*M, h:4.3, barDir:'col', barGrouping:'clustered', barGapWidthPct:60, chartColors:[DK.blueSoft, DK.blue],
+    catAxisLabelColor:DK.faint, catAxisLabelFontFace:DK.font, catAxisLabelFontSize:11, catAxisLineShow:false,
+    valAxisLabelColor:DK.faint, valAxisLabelFontFace:DK.font, valAxisLabelFontSize:10, valAxisLabelFormatCode:'#,##0', valAxisLineShow:false,
+    valGridLine:{color:'EDEFF2', size:0.75}, catGridLine:{style:'none'}, showLegend:true, legendPos:'t', legendFontFace:DK.font, legendFontSize:11, legendColor:DK.muted};
+  const mm = MONTHS.slice(0, ELAPSED);
+  s.addChart(pptx.ChartType.bar, [
+    {name:'Proyectado', labels:mm, values:mm.map((_,m) => goalMonth(m))},
+    {name:'Real', labels:mm, values:CLIENTS.slice(0, ELAPSED)},
+  ], chartOpts);
+
+  // 4 · Spend vs budget
+  s = pptx.addSlide({masterName:'OTO'});
+  title(s, 'Budget', `Gasto real contra budget por mes: ${usd(YTD_SPEND*1000)} ejecutados de ${usd(bTD*1000)} proyectados a octubre.`);
+  s.addChart(pptx.ChartType.bar, [
+    {name:'Budget', labels:mm, values:mm.map((_,m) => Math.round(budgetMonth(m)*1000))},
+    {name:'Gasto real', labels:mm, values:SPEND.slice(0, ELAPSED).map(v => v*1000)},
+  ], {...chartOpts, valAxisLabelFormatCode:'"US$ "#,##0'});
+
+  // 5 · Channels table
+  s = pptx.addSlide({masterName:'OTO'});
+  const best = CHANNELS.filter(c => c.clients).map(c => [c, c.ytd*1000/c.clients]).sort((a,b) => a[1]-b[1])[0];
+  title(s, 'Resultados por canal · YTD', `${best[0].name} es el canal más eficiente, con un CAC de ${usd(best[1])}.`);
+  const hd = t => ({text:t, options:{bold:true, color:DK.muted, fontSize:11, align: t === 'Canal' ? 'left' : 'right', fill:{color:'F0F2F5'}}});
+  const rows = [['Canal','Gasto','Budget','Ejecución','Nuevos clientes','CAC'].map(hd)];
+  CHANNELS.forEach(c => {
+    const b = budgetRange(c.key, 0, ELAPSED), ex = c.ytd / b;
+    rows.push([
+      {text:c.name, options:{align:'left', bold:true}}, {text:usd(c.ytd*1000), options:{align:'right'}}, {text:usd(b*1000), options:{align:'right', color:DK.muted}},
+      {text:pct(ex), options:{align:'right', color: ex > 1 ? DK.crit : DK.ink, bold: ex > 1}},
+      {text:c.clients ? fmtInt(c.clients) : 'Marca', options:{align:'right', color: c.clients ? DK.ink : DK.muted}},
+      {text:c.clients ? usd(c.ytd*1000/c.clients) : '—', options:{align:'right'}},
+    ]);
+  });
+  rows.push([{text:'Total', options:{bold:true}}, {text:usd(YTD_SPEND*1000), options:{align:'right', bold:true}}, {text:usd(bTD*1000), options:{align:'right', bold:true, color:DK.muted}}, {text:pct(spPct), options:{align:'right', bold:true}}, {text:fmtInt(YTD_CLIENTS), options:{align:'right', bold:true}}, {text:usd(cac), options:{align:'right', bold:true}}]);
+  s.addTable(rows, {x:M, y:2.5, w:W - 2*M, colW:[3.2, 1.8, 1.8, 1.4, 2.0, 1.93], fontFace:DK.font, fontSize:12, color:DK.ink, fill:{color:DK.surface}, border:{type:'solid', pt:0.5, color:DK.line}, rowH:0.38, valign:'middle', margin:[0, 8, 0, 8]});
+
+  // 6 · Paid media
+  s = pptx.addSlide({masterName:'OTO'});
+  const plats = ['google','meta','tiktok'].map(k => { const cs = CAMPAIGNS.filter(c => c.p === k), sp = sum(cs.map(c => c.spend)), cv = sum(cs.map(c => c.conv)); return {name:PLATFORMS.find(p => p.key === k).name, sp, cv, cac: sp*1000/cv}; });
+  const tsp = sum(plats.map(p => p.sp)), tcv = sum(plats.map(p => p.cv));
+  title(s, 'Paid media · octubre', `${usd(tsp*1000)} invertidos en paid media trajeron ${fmtInt(tcv)} nuevos clientes, a un CAC de ${usd(tsp*1000/tcv)}.`);
+  const pw = (W - 2*M - 3*0.3) / 4, colors = [DK.blue, 'EB6834', '1BAF7A'];
+  [{name:'Total paid media', sp:tsp, cv:tcv, cac:tsp*1000/tcv, total:true}, ...plats].forEach((p, i) => {
+    const x = M + i*(pw + 0.3), y = 2.75;
+    if (p.total) s.addShape(pptx.ShapeType.roundRect, {x, y, w:pw, h:3.2, fill:{color:DK.ink}, line:{color:DK.ink}, rectRadius:0.12}); else card(s, x, y, pw, 3.2);
+    if (!p.total) s.addShape(pptx.ShapeType.roundRect, {x:x + 0.25, y:y + 0.28, w:0.34, h:0.34, fill:{color:colors[i-1]}, line:{color:colors[i-1]}, rectRadius:0.06});
+    const tc = p.total ? 'FFFFFF' : DK.ink, mc = p.total ? 'A3ACB9' : DK.muted, tx = p.total ? 0.25 : 0.72;
+    s.addText(p.name, {x:x + tx, y:y + 0.25, w:pw - tx - 0.2, h:0.4, fontFace:DK.font, fontSize:13, bold:true, color:tc});
+    s.addText('Gasto', {x:x + 0.25, y:y + 0.9, w:pw - 0.5, h:0.3, fontFace:DK.font, fontSize:11, color:mc});
+    s.addText(usd(p.sp*1000), {x:x + 0.25, y:y + 1.2, w:pw - 0.5, h:0.6, fontFace:DK.font, fontSize:24, bold:true, color:tc});
+    s.addText([{text:'Nuevos clientes', options:{color:mc, fontSize:11, breakLine:true}}, {text:fmtInt(p.cv), options:{color:tc, fontSize:16, bold:true}}], {x:x + 0.25, y:y + 2.1, w:(pw - 0.5)/2, h:0.8, fontFace:DK.font, valign:'top'});
+    s.addText([{text:'CAC', options:{color:mc, fontSize:11, breakLine:true}}, {text:usd(p.cac), options:{color:tc, fontSize:16, bold:true}}], {x:x + 0.25 + (pw - 0.5)/2, y:y + 2.1, w:(pw - 0.5)/2, h:0.8, fontFace:DK.font, valign:'top'});
+  });
+
+  // 7 · Next steps
+  s = pptx.addSlide({masterName:'OTO'});
+  title(s, 'Próximos pasos', 'Tres cambios en paid media para bajar el CAC antes de fin de año.');
+  RECS.slice(0, 3).forEach((r, i) => {
+    const y = 2.6 + i*1.35, c = CAMP[r.camp];
+    card(s, M, y, W - 2*M, 1.15);
+    s.addText(String(i + 1), {x:M + 0.25, y:y + 0.3, w:0.55, h:0.55, fontFace:DK.font, fontSize:16, bold:true, color:DK.ink, fill:{color:DK.brand}, align:'center', valign:'middle', shape:pptx.ShapeType.roundRect, rectRadius:0.1});
+    s.addText([{text:r.title, options:{bold:true, color:DK.ink, fontSize:14, breakLine:true}}, {text:PLATFORMS.find(p => p.key === c.p).name + ' · ' + r.why, options:{color:DK.muted, fontSize:11}}], {x:M + 1.0, y:y + 0.15, w:7.6, h:0.85, fontFace:DK.font, valign:'middle'});
+    s.addText(r.impact, {x:M + 8.8, y:y + 0.15, w:W - 2*M - 9.0, h:0.85, fontFace:DK.font, fontSize:12, bold:true, color:DK.good, align:'right', valign:'middle'});
+  });
+  return pptx;
+}
+const DECK_TITLE = 'OTOMKT · Resultados de marketing · octubre 2026';
+function deckMsg(html){ $('deck-note').innerHTML = html; $('deck-note').hidden = !html; }
+function toggleDeckPop(open){ const pop = $('deck-pop'), btn = $('deck-btn'); pop.hidden = !open; btn.setAttribute('aria-expanded', String(open)); }
+$('deck-btn').addEventListener('click', e => { e.stopPropagation(); toggleDeckPop($('deck-pop').hidden); });
+document.addEventListener('click', e => { if (!e.target.closest('.deck')) toggleDeckPop(false); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('deck-pop').hidden){ toggleDeckPop(false); $('deck-btn').focus(); } });
+$('deck-pop').addEventListener('click', async e => {
+  const b = e.target.closest('button[data-deck]'); if (!b) return;
+  toggleDeckPop(false);
+  if (!window.PptxGenJS){ deckMsg('No se pudo cargar el generador de presentaciones. Revisá la conexión y probá de nuevo.'); return; }
+  $('deck-btn').disabled = true;
+  try {
+    const pptx = buildDeck();
+    if (b.dataset.deck === 'slides'){
+      const mcp = await getMcp();
+      if (!mcp){ deckMsg('Google Slides solo está disponible abriendo OTOMKT dentro de Claude con Google Drive conectado. Podés descargar el PowerPoint y subirlo a Drive.'); return; }
+      deckMsg('Armando la presentación en tu Google Drive…');
+      const b64 = await pptx.write({outputType:'base64'});
+      try {
+        const res = await mcp.callTool('Google Drive', 'create_file', {title: DECK_TITLE, base64Content: b64, contentMimeType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'});
+        const f = res && res.payload && typeof res.payload === 'object' ? res.payload : {};
+        const link = f.webViewLink || f.alternateLink || f.url || (f.id ? 'https://docs.google.com/presentation/d/' + f.id : null);
+        deckMsg(`${ICON_OK} Listo: la presentación quedó en tu Google Drive.` + (link ? ` <a href="${esc(link)}" target="_blank" rel="noopener">Abrir en Google Slides</a>` : ''));
+      } catch (err) {
+        const c = err && err.code;
+        deckMsg(c === 'server_not_connected' || c === 'server_not_found' ? 'Conectá Google Drive en Claude (Configuración › Conectores) y probá de nuevo.'
+          : c === 'needs_reauth' ? 'Tu conexión con Google Drive venció. Volvé a conectarla y probá de nuevo.'
+          : c === 'not_granted' || c === 'consent_required' ? 'No se dio permiso para usar Google Drive desde OTOMKT.'
+          : 'No se pudo crear la presentación en Google Drive. Probá de nuevo o descargá el PowerPoint.');
+      }
+    } else {
+      const buf = await pptx.write({outputType:'arraybuffer'});
+      const name = 'otomkt-resultados-octubre-2026.pptx', dl = await getDownloads();
+      if (dl){
+        try { await dl.save({filename:name, data:new Uint8Array(buf)}); deckMsg(`${ICON_OK} Listo: se descargó <b>${name}</b>.`); }
+        catch (err) { deckMsg(err && err.code === 'declined' ? 'Descarga cancelada.' : 'No se pudo descargar la presentación. Probá de nuevo.'); }
+      } else {
+        const url = URL.createObjectURL(new Blob([buf], {type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'})), a = document.createElement('a');
+        a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
+        deckMsg(`${ICON_OK} Listo: se descargó <b>${name}</b>.`);
+      }
+    }
+  } catch (err) {
+    deckMsg('No se pudo generar la presentación. Probá de nuevo.');
+  } finally { $('deck-btn').disabled = false; }
 });
 
 // =====================================================================
