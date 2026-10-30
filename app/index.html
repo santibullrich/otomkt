@@ -212,6 +212,14 @@ label.lab{font-size:13px;font-weight:600;display:block;margin-bottom:6px}
 @media (max-width: 860px){.rng-pop{right:auto;left:0}}
 @media (max-width: 560px){.rng-pop{grid-template-columns:minmax(0,1fr);width:min(calc(100vw - 32px),340px)}.rng-presets{border-right:0;border-bottom:1px solid var(--line)}}
 
+/* Add profile + export */
+.exp{display:inline-flex;gap:6px;flex-wrap:wrap}
+.add-form{border:1px solid var(--line);background:var(--sunken);border-radius:14px;padding:16px;margin-bottom:16px;display:flex;flex-direction:column;gap:14px}
+.add-title{font-size:14px;font-weight:600}
+.add-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.add-grid .field{min-height:40px;padding:8px 12px;font-size:14px;background:var(--surface)}
+.add-grid .field.num{font-variant-numeric:tabular-nums}
+
 /* Invoices */
 .sel-sm{width:auto;min-height:32px;padding:4px 8px;font-size:13px}
 tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 55%, transparent)}
@@ -415,7 +423,7 @@ tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 5
   <div class="wrap">
     <div class="topbar">
       <div><div class="eyebrow" id="in-eyebrow"></div><h1>Influencers y streaming</h1></div>
-      <div class="tools"><span class="demo">Perfiles de ejemplo</span><div data-rng-mount="in"></div><a class="btn small" href="#contrato" id="go-contract">Nuevo contrato con AI</a></div>
+      <div class="tools"><div data-rng-mount="in"></div><a class="btn small" href="#contrato" id="go-contract">Nuevo contrato con AI</a></div>
     </div>
 
     <div class="panel kpis" style="--n:4">
@@ -426,10 +434,38 @@ tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 5
     </div>
 
     <div class="panel">
-      <div class="ph"><div><h2>Todos los perfiles</h2><div class="sub">Tocá un nombre para ver el contrato o preguntarle a Oto</div></div></div>
+      <div class="ph"><div><h2>Todos los perfiles</h2><div class="sub">Perfiles de ejemplo · tocá un nombre para ver el contrato o preguntarle a Oto</div></div>
+        <div class="tools">
+          <div class="exp" id="in-export" role="group" aria-label="Exportar perfiles">
+            <button type="button" class="btn ghost small" data-exp="csv">CSV</button>
+            <button type="button" class="btn ghost small" data-exp="xlsx">Excel</button>
+            <button type="button" class="btn ghost small" data-exp="drive"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Google Drive</button>
+          </div>
+          <button type="button" class="btn small" id="in-add-open" aria-expanded="false" aria-controls="in-add">Agregar perfil</button>
+        </div></div>
+      <div class="note" id="in-note" aria-live="polite" style="margin:-4px 0 12px"></div>
+      <form class="add-form" id="in-add" hidden novalidate>
+        <div class="add-title">Nuevo perfil</div>
+        <div class="add-grid">
+          <div><label class="lab" for="na-name">Nombre</label><input class="field" id="na-name" autocomplete="off" placeholder="Ej.: Lu Viajera"></div>
+          <div><label class="lab" for="na-handle">Usuario</label><input class="field" id="na-handle" autocomplete="off" placeholder="@usuario"></div>
+          <div><label class="lab" for="na-type">Tipo</label><select class="field" id="na-type"><option>Influencer</option><option>Streaming</option></select></div>
+          <div><label class="lab" for="na-nets">Redes</label><input class="field" id="na-nets" placeholder="Instagram · TikTok"></div>
+          <div><label class="lab" for="na-followers">Seguidores</label><input class="field num" id="na-followers" inputmode="numeric" placeholder="150,000"></div>
+          <div><label class="lab" for="na-email">Mail</label><input class="field" id="na-email" type="email" autocomplete="off" placeholder="nombre@dominio.com"></div>
+          <div><label class="lab" for="na-phone">Teléfono</label><input class="field" id="na-phone" type="tel" autocomplete="off" placeholder="+54 11 5555-0000"></div>
+          <div><label class="lab" for="na-fixed">Fijo mensual (US$)</label><input class="field num" id="na-fixed" inputmode="decimal" placeholder="1,000"></div>
+          <div><label class="lab" for="na-variable">Variable (opcional)</label><input class="field" id="na-variable" placeholder="0.001% del volumen operado"></div>
+          <div><label class="lab" for="na-start">Inicio del contrato</label><input class="field num" id="na-start" type="date"></div>
+          <div><label class="lab" for="na-end">Fin del contrato</label><input class="field num" id="na-end" type="date"></div>
+          <div><label class="lab" for="na-deliv">Entregables</label><input class="field" id="na-deliv" placeholder="4 publicaciones por mes"></div>
+        </div>
+        <div class="tools" style="justify-content:space-between"><span class="rng-err" id="na-err" aria-live="polite"></span>
+          <span class="tools"><button type="button" class="btn ghost small" id="na-cancel">Cancelar</button><button type="submit" class="btn small">Guardar perfil</button></span></div>
+      </form>
       <div class="tbl-wrap">
-        <table style="min-width:1040px">
-          <thead><tr><th scope="col">Perfil</th><th scope="col" class="left">Redes</th><th scope="col">Seguidores</th><th scope="col">Vistas</th><th scope="col">Menciones</th><th scope="col" class="left">Contacto</th><th scope="col">Costo</th><th scope="col">Clientes</th><th scope="col">CAC</th><th scope="col" class="left">Acciones</th></tr></thead>
+        <table style="min-width:940px">
+          <thead><tr><th scope="col">Perfil</th><th scope="col">Seguidores</th><th scope="col">Vistas</th><th scope="col">Menciones</th><th scope="col" class="left">Contacto</th><th scope="col">Costo</th><th scope="col">Clientes</th><th scope="col">CAC</th><th scope="col" class="left">Acciones</th></tr></thead>
           <tbody id="in-body"></tbody>
         </table>
       </div>
@@ -595,6 +631,7 @@ tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 5
 </div>
 <div class="tip" id="tip" hidden></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 // =====================================================================
 // Example data — Empresa demo, 2026. Amounts in US$ thousands (K) unless noted.
@@ -1220,13 +1257,14 @@ Entre EMPRESA DEMO S.A. ("la Marca") y ${p.name} (${p.handle}) ("el Creador").
 }
 const dmyToIso = s => s.slice(6,10) + '-' + s.slice(3,5) + '-' + s.slice(0,2);
 // Daily history per profile from the contract start: fee spread evenly, clients/views following the company's curve.
-PEOPLE.forEach(p => {
+function attachPersonSeries(p){
   const from = dmyToIso(p.start);
   p.costD = spread('p-' + p.id + '-cost', () => p.cost, {from, flat:true});
   p.clD = spread('p-' + p.id + '-cl', m => (CLIENTS[m] || 0) / CLIENTS[LAST] * p.clients, {from});
   p.viewsD = spread('p-' + p.id + '-v', m => p.views * (0.8 + 0.2 * (CLIENTS[m] || 0) / CLIENTS[LAST]), {from});
   p.menD = spread('p-' + p.id + '-mn', () => p.mentions, {from});
-});
+}
+PEOPLE.forEach(attachPersonSeries);
 const personR = p => ({cost: rsum(p.costD), cl: rsum(p.clD), views: rsum(p.viewsD), men: rsum(p.menD), active: dmyToIso(p.start) <= RANGE.to});
 function renderPeople(){
   const rs = PEOPLE.map(p => [p, personR(p)]);
@@ -1242,14 +1280,13 @@ function renderPeople(){
   let group = null, h = '';
   rs.forEach(([p, r]) => {
     const g = p.type === 'Influencer' ? 'Influencers' : 'Canales de streaming';
-    if (g !== group){ group = g; h += `<tr class="group"><td colspan="10">${g}</td></tr>`; }
+    if (g !== group){ group = g; h += `<tr class="group"><td colspan="9">${g}</td></tr>`; }
     const ending = p.end === '31/10/2026';
     const none = '<span class="muted">—</span>';
     h += `<tr${p.id===selected?' style="background:var(--series-soft)"':''}>
-      <th scope="row"><button type="button" class="link" style="text-decoration:none;color:var(--ink);font-weight:600;padding:0" data-pick="${p.id}">${p.name}</button><div class="note">${p.handle}${r.active ? '' : ' · empieza el ' + p.start}</div>${ending?'<span class="pill warn" style="margin-top:4px">'+ICON_WARN+'Contrato vence mañana</span>':''}</th>
-      <td class="left">${p.nets}</td>
+      <th scope="row"><button type="button" class="link" style="text-decoration:none;color:var(--ink);font-weight:600;padding:0" data-pick="${p.id}">${esc(p.name)}</button><div class="note">${esc(p.handle)} · ${esc(p.nets)}${r.active ? '' : ' · empieza el ' + p.start}</div>${ending?'<span class="pill warn" style="margin-top:4px">'+ICON_WARN+'Contrato vence mañana</span>':''}</th>
       <td class="num">${fmtInt(p.followers)}</td><td class="num">${r.views >= 1 ? fmtInt(r.views) : none}</td><td class="num">${r.men >= 0.5 ? fmtInt(r.men) : none}</td>
-      <td class="left" style="font-size:13px">${p.email}<div class="note">${p.phone}</div></td>
+      <td class="left" style="font-size:13px">${esc(p.email)}<div class="note">${esc(p.phone)}</div></td>
       <td class="num">${r.cost >= 1 ? fmtUSD(r.cost) : none}</td><td class="num">${r.cl >= 0.5 ? fmtInt(r.cl) : none}</td><td class="num">${r.cl >= 0.5 ? fmtUSD(r.cost/r.cl) : none}</td>
       <td class="left"><span style="display:inline-flex;gap:8px;align-items:center"><button type="button" class="btn small ghost" data-contract="${p.id}">Contrato</button><button type="button" class="btn small ghost" data-ask="${p.id}">Preguntar</button></span></td></tr>`;
   });
@@ -1341,6 +1378,101 @@ $('c-save').addEventListener('click', () => {
   $('c-note').textContent = 'Guardado en la ficha de ' + PERSON[id].name + ' (solo en esta sesión).'; $('c-save').hidden = true;
 });
 $('go-contract').addEventListener('click', e => { e.preventDefault(); $('contrato').scrollIntoView({behavior:'smooth',block:'start'}); $('c-prompt').focus({preventScroll:true}); });
+
+// ---------- Add a profile (kept in this browser) ----------
+const isoToDmy = s => s.slice(8,10) + '/' + s.slice(5,7) + '/' + s.slice(0,4);
+function addPersonToModel(p){
+  attachPersonSeries(p); PEOPLE.push(p); PERSON[p.id] = p;
+}
+try { const extra = JSON.parse(localStorage.getItem('otomkt-people') || '[]');
+  if (Array.isArray(extra)) extra.forEach(p => { if (p && p.id && p.name && !PERSON[p.id]) addPersonToModel(p); });
+} catch (e) {}
+function saveExtraPeople(){ try { localStorage.setItem('otomkt-people', JSON.stringify(PEOPLE.filter(p => p.added).map(({costD, clD, viewsD, menD, ...rest}) => rest))); } catch (e) {} }
+$('in-add-open').addEventListener('click', () => {
+  const box = $('in-add'); box.hidden = !box.hidden;
+  $('in-add-open').setAttribute('aria-expanded', String(!box.hidden));
+  if (!box.hidden){ $('na-start').value = TODAY; box.scrollIntoView({behavior:'smooth', block:'nearest'}); $('na-name').focus({preventScroll:true}); }
+});
+$('na-cancel').addEventListener('click', () => { $('in-add').hidden = true; $('in-add-open').setAttribute('aria-expanded','false'); $('in-add-open').focus(); });
+$('in-add').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = id => $(id).value.trim(), err = $('na-err');
+  const name = v('na-name'), handleRaw = v('na-handle'), email = v('na-email').toLowerCase();
+  const followers = Number(v('na-followers').replace(/,/g,'')), fixed = Number(v('na-fixed').replace(/,/g,''));
+  const start = v('na-start'), end = v('na-end');
+  if (!name){ err.textContent = 'Escribí el nombre del perfil.'; $('na-name').focus(); return; }
+  if (!handleRaw){ err.textContent = 'Escribí el usuario en redes, por ejemplo @nombre.'; $('na-handle').focus(); return; }
+  if (!EMAIL_RE.test(email)){ err.textContent = 'Escribí un mail válido.'; $('na-email').focus(); return; }
+  if (!isFinite(followers) || followers < 0){ err.textContent = 'Los seguidores tienen que ser un número.'; $('na-followers').focus(); return; }
+  if (!isFinite(fixed) || fixed < 0){ err.textContent = 'El fijo mensual tiene que ser un monto en dólares.'; $('na-fixed').focus(); return; }
+  if (!start || !end || end < start){ err.textContent = 'Revisá las fechas: el fin tiene que ser posterior al inicio.'; $('na-end').focus(); return; }
+  const handle = handleRaw.startsWith('@') ? handleRaw : '@' + handleRaw;
+  const p = {id: 'n' + Date.now().toString(36), added: true, name, handle, type: $('na-type').value, nets: v('na-nets') || '—',
+    followers, views: 0, mentions: 0, email, phone: v('na-phone') || '—', cost: fixed, clients: 0, fixed,
+    variable: v('na-variable') || null, start: isoToDmy(start), end: isoToDmy(end), deliverables: v('na-deliv') || 'A definir'};
+  addPersonToModel(p); saveExtraPeople();
+  $('in-add').reset(); $('in-add').hidden = true; $('in-add-open').setAttribute('aria-expanded','false'); err.textContent = '';
+  selected = p.id; detailTab = 'contrato'; renderPeople();
+  $('in-note').textContent = `Agregaste a ${name}. Vistas, menciones y clientes se van a completar cuando se conecten sus redes y su código.`;
+});
+
+// ---------- Export: CSV, Excel and Google Drive ----------
+function peopleRows(){
+  const head = ['Nombre','Usuario','Tipo','Redes','Seguidores','Vistas del período','Menciones del período','Mail','Teléfono','Costo del período (US$)','Clientes del período','CAC (US$)','Fijo mensual (US$)','Variable','Inicio','Fin','Entregables'];
+  const rows = PEOPLE.map(p => { const r = personR(p); return [p.name, p.handle, p.type, p.nets, p.followers, Math.round(r.views), Math.round(r.men), p.email, p.phone,
+    Math.round(r.cost), Math.round(r.cl), r.cl >= 0.5 ? Math.round(r.cost / r.cl) : '', p.fixed, p.variable || '', p.start, p.end, p.deliverables]; });
+  return [head, ...rows];
+}
+const csvOf = rows => rows.map(r => r.map(c => { const s = String(c); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(',')).join('\r\n');
+const exportName = ext => `otomkt-influencers-${RANGE.from}_${RANGE.to}.${ext}`;
+let dlPromise = null;
+const getDownloads = () => dlPromise || (dlPromise = (window.claude && window.claude.use) ? window.claude.use('downloads').catch(() => null) : Promise.resolve(null));
+let mcpPromise = null;
+const getMcp = () => mcpPromise || (mcpPromise = (window.claude && window.claude.use) ? window.claude.use('mcp').catch(() => null) : Promise.resolve(null));
+function exportMsg(txt){ $('in-note').innerHTML = txt; }
+async function saveFile(filename, data){
+  const dl = await getDownloads();
+  if (!dl){
+    // Outside Claude (for example on the Vercel site) a regular browser download works.
+    try {
+      const type = filename.endsWith('.csv') ? 'text/csv;charset=utf-8' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      const url = URL.createObjectURL(new Blob([data], {type})), a = document.createElement('a');
+      a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
+      exportMsg('Listo: se descargó <b>' + esc(filename) + '</b>.');
+    } catch (e) { exportMsg('No se pudo descargar el archivo en esta vista.'); }
+    return;
+  }
+  try { await dl.save({filename, data}); exportMsg('Listo: se descargó <b>' + esc(filename) + '</b>.'); }
+  catch (e) { exportMsg(e && e.code === 'declined' ? 'Descarga cancelada.' : e && e.code === 'rate_limited' ? 'Ya hay una descarga esperando confirmación.' : 'No se pudo descargar el archivo. Probá de nuevo.'); }
+}
+$('in-export').addEventListener('click', async e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const rows = peopleRows();
+  if (b.dataset.exp === 'csv') return saveFile(exportName('csv'), '﻿' + csvOf(rows));
+  if (b.dataset.exp === 'xlsx'){
+    if (!window.XLSX){ exportMsg('No se pudo cargar el generador de Excel. Probá con CSV.'); return; }
+    const ws = XLSX.utils.aoa_to_sheet(rows); ws['!cols'] = rows[0].map(h => ({wch: Math.max(12, h.length + 2)}));
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Influencers');
+    return saveFile(exportName('xlsx'), new Uint8Array(XLSX.write(wb, {type:'array', bookType:'xlsx'})));
+  }
+  if (b.dataset.exp === 'drive'){
+    const mcp = await getMcp();
+    if (!mcp){ exportMsg('Google Drive no está disponible en esta vista. Abrí OTOMKT dentro de Claude con Google Drive conectado.'); return; }
+    b.disabled = true; exportMsg('Creando la planilla en tu Google Drive…');
+    try {
+      const res = await mcp.callTool('Google Drive', 'create_file', {title: `OTOMKT · Influencers y streaming · ${rangeText()}`, textContent: csvOf(rows), contentMimeType: 'text/csv'});
+      const f = res && res.payload && typeof res.payload === 'object' ? res.payload : {};
+      const link = f.webViewLink || f.alternateLink || f.url || (f.id ? 'https://docs.google.com/spreadsheets/d/' + f.id : null);
+      exportMsg('Listo: la planilla quedó en tu Google Drive.' + (link ? ` <a href="${esc(link)}" target="_blank" rel="noopener" style="color:var(--link)">Abrir en Google Sheets</a>` : ''));
+    } catch (err) {
+      const c = err && err.code;
+      exportMsg(c === 'server_not_connected' || c === 'server_not_found' ? 'Conectá Google Drive en Claude (Configuración › Conectores) y probá de nuevo.'
+        : c === 'needs_reauth' ? 'Tu conexión con Google Drive venció. Volvé a conectarla y probá de nuevo.'
+        : c === 'not_granted' || c === 'consent_required' ? 'No se dio permiso para usar Google Drive desde OTOMKT.'
+        : 'No se pudo crear la planilla en Google Drive. Probá de nuevo.');
+    } finally { b.disabled = false; }
+  }
+});
 
 // =====================================================================
 // OFFLINE
