@@ -322,7 +322,7 @@ tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 5
       <div class="addr" id="side-addr">marketing@test.com</div>
       <div class="new"><span class="dot"></span><span id="side-count">6 facturas esta semana</span></div>
     </a>
-    <button type="button" class="theme-btn" id="theme-btn" aria-label="Cambiar entre modo claro y oscuro"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span id="theme-lbl">Modo oscuro</span></button>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="Cambiar entre modo claro y oscuro"><span id="theme-ico" style="display:inline-flex"></span><span id="theme-lbl">Modo claro</span></button>
   </aside>
 
   <main class="main">
@@ -1674,7 +1674,10 @@ window.addEventListener('hashchange', () => { route(); window.scrollTo(0,0); });
 
 // ---------- Theme toggle (light / dark), remembered per browser ----------
 function isDark(){ const t = document.documentElement.getAttribute('data-theme'); return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; }
-function syncThemeLabel(){ $('theme-lbl').textContent = isDark() ? 'Modo claro' : 'Modo oscuro'; }
+const ICON_SUN = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+const ICON_MOON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+// The button shows the current mode: sun in light mode, moon in dark mode. Clicking switches.
+function syncThemeLabel(){ const d = isDark(); $('theme-ico').innerHTML = d ? ICON_MOON : ICON_SUN; $('theme-lbl').textContent = d ? 'Modo oscuro' : 'Modo claro'; $('theme-btn').setAttribute('aria-label', d ? 'Modo oscuro activado. Cambiar a modo claro' : 'Modo claro activado. Cambiar a modo oscuro'); }
 try { const t = localStorage.getItem('otomkt-theme'); if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
 $('theme-btn').addEventListener('click', () => {
   const next = isDark() ? 'light' : 'dark';
