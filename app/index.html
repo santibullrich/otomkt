@@ -1145,14 +1145,10 @@ function renderPaid(){
     <div class="lbl">${act} campañas activas${coCac ? ' · CAC total de la empresa ' + fmtUSD(coCac) : ''}</div></div>`;
   connected.forEach(p => {
     const rs = CAMPAIGNS.filter(c => c.p === p.key).map(campR), s = sum(rs.map(r => r.spend)), cv = sum(rs.map(r => r.conv)), cac = cv ? s*1000/cv : null;
-    const rel = cac && t.cac ? cac / t.cac - 1 : 0;
-    const cmp = Math.abs(rel) < 0.03 ? '<span class="cmp muted">En el promedio</span>'
-      : rel < 0 ? `<span class="cmp" style="color:var(--good-ink)">${Math.round(-rel*100)}% más barato que el promedio</span>`
-      : `<span class="cmp" style="color:var(--crit-ink)">${Math.round(rel*100)}% más caro que el promedio</span>`;
     cards += `<div class="pcard"><div class="head"><span class="mono" style="background:${PLAT_COLORS[p.key]}">${p.letter}</span><b>${p.name}<span class="sync">${p.sub}</span></b></div>
       <div><div class="lbl">Gasto</div><div class="big num">${moneyK(s)}</div></div>
       <div class="stats"><div class="stat"><span>Clientes</span><b>${fmtInt(cv)}</b></div><div class="stat"><span>CAC</span><b>${cac ? money(cac) : '—'}</b></div></div>
-      <div class="lbl">${cmp}</div></div>`;
+</div>`;
   });
   $('pm-cards').innerHTML = cards;
   $('pm-camp-sub').textContent = `${rangeText()} · ordenadas por gasto · ${act} activas, ${CAMPAIGNS.length - act} pausadas`;
