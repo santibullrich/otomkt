@@ -186,6 +186,32 @@ label.lab{font-size:13px;font-weight:600;display:block;margin-bottom:6px}
 .row .who span{font-size:12.5px;color:var(--muted)}
 .row .amt{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 
+/* Date range picker */
+.pcard .stat b{display:block;white-space:nowrap}
+.rng{position:relative;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.rng-btn{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 10px 0 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--ink);font:500 13px/1 var(--font-body);cursor:pointer;white-space:nowrap}
+.rng-btn svg{color:var(--muted);flex:none}
+.rng-btn:hover,.rng-btn[aria-expanded="true"]{border-color:var(--faint)}
+.rng-btn.is-custom{border-color:var(--series);background:var(--series-soft)}
+.rng-btn.is-custom svg{color:var(--series)}
+.rng-pop{position:absolute;right:0;top:calc(100% + 8px);z-index:40;display:grid;grid-template-columns:220px 300px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-pop);overflow:hidden;text-align:left}
+.rng-presets{display:flex;flex-direction:column;gap:2px;padding:8px;background:var(--sunken);border-right:1px solid var(--line)}
+.rng-presets button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:8px 10px;border:0;border-radius:8px;background:transparent;color:var(--ink);cursor:pointer;text-align:left;font-family:var(--font-body)}
+.rng-presets button b{font-size:13px;font-weight:500}
+.rng-presets button span{font-size:11.5px;color:var(--faint)}
+.rng-presets button:hover{background:var(--surface)}
+.rng-presets button[aria-pressed="true"]{background:var(--surface);box-shadow:var(--shadow-card)}
+.rng-presets button[aria-pressed="true"] b{font-weight:600}
+.rng-custom{display:flex;flex-direction:column;gap:12px;padding:16px}
+.rng-title{font-size:13px;font-weight:600}
+.rng-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rng-fields label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:var(--muted)}
+.rng-fields input{width:100%;height:38px;padding:0 8px;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface);color:var(--ink);font:400 13px var(--font-body);font-variant-numeric:tabular-nums;min-width:0}
+.rng-err{font-size:12px;color:var(--crit-ink);min-height:16px}
+.rng-acts{display:flex;justify-content:flex-end;gap:8px;margin-top:auto}
+@media (max-width: 860px){.rng-pop{right:auto;left:0}}
+@media (max-width: 560px){.rng-pop{grid-template-columns:minmax(0,1fr);width:min(calc(100vw - 32px),340px)}.rng-presets{border-right:0;border-bottom:1px solid var(--line)}}
+
 /* Invoices */
 .sel-sm{width:auto;min-height:32px;padding:4px 8px;font-size:13px}
 tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 55%, transparent)}
@@ -209,7 +235,7 @@ tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 5
 .pcards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
 .pcard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:14px;min-width:0}
 .pcard.total{background:var(--nav-bg);border-color:var(--line);color:#fff}
-.pcard.total .lbl,.pcard.total .stat span{color:#a3acb9}
+.pcard.total .lbl,.pcard.total .stat > span{color:#a3acb9}
 .pcard .head{display:flex;align-items:center;gap:10px}
 .pcard .head b{font-size:15px;font-weight:600}
 .pcard .head .sync{font-size:12px;color:var(--muted);display:block;font-weight:400}
@@ -217,7 +243,7 @@ tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 5
 .pcard .big{font-size:clamp(22px,2vw,26px);font-weight:600;letter-spacing:-.02em;line-height:1.25;font-variant-numeric:tabular-nums;white-space:nowrap}
 .pcard .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;border-top:1px solid var(--line);padding-top:12px}
 .pcard.total .stats{border-top-color:#2a323d}
-.pcard .stat span{display:block;font-size:12px;color:var(--muted)}
+.pcard .stat > span{display:block;font-size:12px;color:var(--muted)}
 .pcard .stat b{font-variant-numeric:tabular-nums;font-size:17px;line-height:24px;font-weight:600;white-space:nowrap}
 .pcard .share{height:6px;border-radius:99px;background:var(--track);position:relative}
 .pcard .share i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--series)}
@@ -358,8 +384,8 @@ tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 5
 <section id="view-paid-media" hidden>
   <div class="wrap">
     <div class="topbar">
-      <div><div class="eyebrow">Octubre 2026</div><h1>Paid Media</h1></div>
-      <div class="tools"><span class="demo">Datos de ejemplo · los cambios se simulan</span></div>
+      <div><div class="eyebrow" id="pm-eyebrow"></div><h1>Paid Media</h1></div>
+      <div class="tools"><span class="demo">Datos de ejemplo</span><div data-rng-mount="pm"></div></div>
     </div>
 
     <div class="pcards" id="pm-cards" aria-live="polite"></div>
@@ -376,7 +402,7 @@ tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 5
     </div>
 
     <div class="panel">
-      <div class="ph"><div><h2>Qué hacer ahora</h2><div class="sub">Recomendaciones de Oto según el CAC de cada campaña contra el promedio de paid media</div></div></div>
+      <div class="ph"><div><h2>Qué hacer ahora</h2><div class="sub">Recomendaciones de Oto según el CAC de los últimos 30 días contra el promedio de paid media</div></div></div>
       <div class="recs" id="pm-recs"></div>
     </div>
 
@@ -388,13 +414,13 @@ tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 5
 <section id="view-influencers" hidden>
   <div class="wrap">
     <div class="topbar">
-      <div><div class="eyebrow">Octubre 2026</div><h1>Influencers y streaming</h1></div>
-      <div class="tools"><span class="demo">Perfiles de ejemplo</span><a class="btn small" href="#contrato" id="go-contract">Nuevo contrato con AI</a></div>
+      <div><div class="eyebrow" id="in-eyebrow"></div><h1>Influencers y streaming</h1></div>
+      <div class="tools"><span class="demo">Perfiles de ejemplo</span><div data-rng-mount="in"></div><a class="btn small" href="#contrato" id="go-contract">Nuevo contrato con AI</a></div>
     </div>
 
     <div class="panel kpis" style="--n:4">
-      <div class="kpi"><div class="k">Perfiles activos</div><div class="v num" id="in-count"></div><div class="d" id="in-count-d"></div></div>
-      <div class="kpi"><div class="k">Costo del mes</div><div class="v num" id="in-cost"></div><div class="d">Fijos + variables</div></div>
+      <div class="kpi"><div class="k">Perfiles con actividad</div><div class="v num" id="in-count"></div><div class="d" id="in-count-d"></div></div>
+      <div class="kpi"><div class="k">Costo del período</div><div class="v num" id="in-cost"></div><div class="d">Fijos + variables</div></div>
       <div class="kpi"><div class="k">Clientes con código</div><div class="v num" id="in-clients"></div><div class="d">Links y cupones propios</div></div>
       <div class="kpi"><div class="k">CAC</div><div class="v num" id="in-cac"></div><div class="d" id="in-cac-d"></div></div>
     </div>
@@ -403,7 +429,7 @@ tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 5
       <div class="ph"><div><h2>Todos los perfiles</h2><div class="sub">Tocá un nombre para ver el contrato o preguntarle a Oto</div></div></div>
       <div class="tbl-wrap">
         <table style="min-width:1040px">
-          <thead><tr><th scope="col">Perfil</th><th scope="col" class="left">Redes</th><th scope="col">Seguidores</th><th scope="col">Vistas del mes</th><th scope="col">Menciones</th><th scope="col" class="left">Contacto</th><th scope="col">Costo</th><th scope="col">Clientes</th><th scope="col">CAC</th><th scope="col" class="left">Acciones</th></tr></thead>
+          <thead><tr><th scope="col">Perfil</th><th scope="col" class="left">Redes</th><th scope="col">Seguidores</th><th scope="col">Vistas</th><th scope="col">Menciones</th><th scope="col" class="left">Contacto</th><th scope="col">Costo</th><th scope="col">Clientes</th><th scope="col">CAC</th><th scope="col" class="left">Acciones</th></tr></thead>
           <tbody id="in-body"></tbody>
         </table>
       </div>
@@ -429,15 +455,15 @@ tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 5
 <section id="view-offline" hidden>
   <div class="wrap">
     <div class="topbar">
-      <div><div class="eyebrow">Octubre 2026</div><h1>Medios offline</h1></div>
-      <div class="tools"><span class="demo">Datos de ejemplo</span>
-        <div class="seg" role="group" aria-label="Filtrar medio" id="off-filter"></div></div>
+      <div><div class="eyebrow" id="off-eyebrow"></div><h1>Medios offline</h1></div>
+      <div class="tools"><span class="demo">Datos de ejemplo</span><div data-rng-mount="off"></div></div>
     </div>
 
     <div class="panel kpis" style="--n:4" id="off-kpis"></div>
 
     <div class="panel">
-      <div class="ph"><div><h2>Inversión por campaña</h2><div class="sub">Qué se contrató en cada medio, cuánto costó y cuántos impactos generó</div></div></div>
+      <div class="ph"><div><h2>Inversión por campaña</h2><div class="sub" id="off-sub"></div></div>
+        <div class="seg" role="group" aria-label="Filtrar medio" id="off-filter"></div></div>
       <div class="tbl-wrap">
         <table style="min-width:900px">
           <thead><tr><th scope="col" class="left">Medio</th><th scope="col" class="left">Campaña y proveedor</th><th scope="col" class="left">Lo contratado</th><th scope="col" class="left">Período</th><th scope="col">Costo</th><th scope="col">Impactos</th><th scope="col">CPM</th></tr></thead>
@@ -644,6 +670,118 @@ const ICON_OK = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" str
 const ICON_WARN = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v6M12 17h.01"/></svg>';
 const ICON_UP = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
 const $ = id => document.getElementById(id);
+
+
+// ---------- Daily time model (1 Jan → today) behind the date-range filters ----------
+const TODAY = '2026-10-30', DAY = 864e5, YEAR_START = '2026-01-01';
+const MON_ABBR = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const isoAdd = (iso, n) => new Date(Date.parse(iso) + n*DAY).toISOString().slice(0,10);
+const dayIndex = iso => Math.round((Date.parse(iso) - Date.parse(YEAR_START)) / DAY);
+const NDAYS = dayIndex(TODAY) + 1;
+const DAYS = Array.from({length: NDAYS}, (_, i) => { const iso = isoAdd(YEAR_START, i); return {iso, m: +iso.slice(5,7) - 1, dow: new Date(Date.parse(iso)).getUTCDay()}; });
+function rng(seed){ let h = 2166136261; for (const ch of seed){ h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+  return () => { h += 0x6D2B79F5; let t = h; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+// Spread monthly totals over days (weekday-weighted, deterministic noise); each month's days add up to its total.
+function spread(seed, monthTotal, opts = {}){
+  const r = rng(seed), out = new Float64Array(NDAYS);
+  const from = opts.from ? Math.max(0, dayIndex(opts.from)) : 0;
+  const w = DAYS.map((d, i) => i < from ? 0 : opts.flat ? 1 : (d.dow === 0 || d.dow === 6 ? 0.8 : 1.08) * (0.75 + r()*0.5));
+  for (let m = 0; m < 12; m++){
+    const idx = []; DAYS.forEach((d, i) => { if (d.m === m) idx.push(i); });
+    const tw = sum(idx.map(i => w[i])), tot = monthTotal(m);
+    if (!idx.length || !tw || !tot) continue;
+    idx.forEach(i => { out[i] = tot * w[i] / tw; });
+  }
+  return out;
+}
+// A fixed buy (offline flight): its total spread evenly over its own dates.
+function spreadFlight(total, from, to){
+  const out = new Float64Array(NDAYS), a = dayIndex(from), b = dayIndex(to), per = total / (b - a + 1);
+  for (let i = Math.max(0, a); i <= Math.min(NDAYS - 1, b); i++) out[i] = per;
+  return out;
+}
+const CO_SPEND = spread('co-spend', m => SPEND[m] || 0);
+const CO_CLIENTS = spread('co-clients', m => CLIENTS[m] || 0);
+
+// ---------- Selected period, shared by Paid Media, Influencers and Medios offline ----------
+const PRESETS = [
+  {key:'7d',        short:'7 días',   label:'Últimos 7 días',  get: () => [isoAdd(TODAY, -6), TODAY]},
+  {key:'30d',       short:'30 días',  label:'Últimos 30 días', get: () => [isoAdd(TODAY, -29), TODAY]},
+  {key:'month',     short:'Este mes', label:'Este mes',        get: () => [TODAY.slice(0,8) + '01', TODAY]},
+  {key:'ytd',       short:'YTD',      label:'Año a la fecha',  get: () => [YEAR_START, TODAY]},
+  {key:'lastmonth', label:'Mes pasado',       get: () => ['2026-09-01', '2026-09-30']},
+  {key:'90d',       label:'Últimos 90 días',  get: () => [isoAdd(TODAY, -89), TODAY]},
+  {key:'lastq',     label:'Trimestre pasado', get: () => ['2026-07-01', '2026-09-30']},
+];
+const PRESET = Object.fromEntries(PRESETS.map(p => [p.key, p]));
+let RANGE = {preset:'month', from:'2026-10-01', to:TODAY};
+try { const r = JSON.parse(localStorage.getItem('otomkt-range') || 'null');
+  if (r && r.preset && PRESET[r.preset]) { const [f, t] = PRESET[r.preset].get(); RANGE = {preset:r.preset, from:f, to:t}; }
+  else if (r && /^\d{4}-\d{2}-\d{2}$/.test(r.from) && /^\d{4}-\d{2}-\d{2}$/.test(r.to) && r.from <= r.to && r.from >= YEAR_START && r.to <= TODAY) RANGE = {preset:null, from:r.from, to:r.to};
+} catch (e) {}
+const rsum = arr => { let s = 0; for (let i = dayIndex(RANGE.from), b = dayIndex(RANGE.to); i <= b; i++) s += arr[i]; return s; };
+const rangeDays = () => dayIndex(RANGE.to) - dayIndex(RANGE.from) + 1;
+const dShort = iso => +iso.slice(8,10) + ' ' + MON_ABBR[+iso.slice(5,7) - 1];
+const rangeText = (f = RANGE.from, t = RANGE.to) => f === t ? dShort(f) + ' 2026' : dShort(f) + ' – ' + dShort(t) + ' 2026';
+const rangeLabel = () => RANGE.preset ? PRESET[RANGE.preset].label : 'Período personalizado';
+const rangeEyebrow = () => rangeLabel() + ' · ' + rangeDays() + (rangeDays() === 1 ? ' día' : ' días');
+const ICON_CAL = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+const ICON_CHEV = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+function renderRanges(){
+  document.querySelectorAll('[data-rng-mount]').forEach(mount => {
+    const k = mount.dataset.rngMount, open = mount.dataset.open === '1';
+    mount.innerHTML = `<div class="rng">
+      <div class="seg" role="group" aria-label="Período rápido">${PRESETS.filter(p => p.short).map(p => `<button type="button" data-preset="${p.key}" aria-pressed="${RANGE.preset === p.key}">${p.short}</button>`).join('')}</div>
+      <button type="button" class="rng-btn${RANGE.preset ? '' : ' is-custom'}" data-rng-toggle aria-haspopup="dialog" aria-expanded="${open}" aria-controls="rng-pop-${k}">${ICON_CAL}<span class="num">${rangeText()}</span>${ICON_CHEV}</button>
+      <div class="rng-pop" id="rng-pop-${k}" role="dialog" aria-label="Elegir período" ${open ? '' : 'hidden'}>
+        <div class="rng-presets">${PRESETS.map(p => { const [f, t] = p.get(); return `<button type="button" data-preset="${p.key}" aria-pressed="${RANGE.preset === p.key}"><b>${p.label}</b><span class="num">${rangeText(f, t)}</span></button>`; }).join('')}</div>
+        <form class="rng-custom" data-rng-form novalidate>
+          <div class="rng-title">Rango personalizado</div>
+          <div class="rng-fields">
+            <label for="rng-from-${k}">Desde<input type="date" id="rng-from-${k}" name="from" min="${YEAR_START}" max="${TODAY}" value="${RANGE.from}" required></label>
+            <label for="rng-to-${k}">Hasta<input type="date" id="rng-to-${k}" name="to" min="${YEAR_START}" max="${TODAY}" value="${RANGE.to}" required></label>
+          </div>
+          <div class="rng-err" data-rng-err aria-live="polite"></div>
+          <div class="rng-acts"><button type="button" class="btn ghost small" data-rng-close>Cancelar</button><button type="submit" class="btn small">Aplicar</button></div>
+        </form>
+      </div></div>`;
+  });
+  $('pm-eyebrow').textContent = rangeEyebrow(); $('in-eyebrow').textContent = rangeEyebrow(); $('off-eyebrow').textContent = rangeEyebrow();
+}
+function closeRanges(focusBack){
+  let had = null;
+  document.querySelectorAll('[data-rng-mount]').forEach(m => { if (m.dataset.open === '1'){ had = m; m.dataset.open = '0'; } });
+  if (had){ renderRanges(); if (focusBack) had.querySelector('[data-rng-toggle]').focus(); }
+}
+function setRange(next){
+  RANGE = next;
+  try { localStorage.setItem('otomkt-range', JSON.stringify(RANGE.preset ? {preset: RANGE.preset} : {from: RANGE.from, to: RANGE.to})); } catch (e) {}
+  document.querySelectorAll('[data-rng-mount]').forEach(m => { m.dataset.open = '0'; });
+  renderRanges(); renderPaid(); renderPeople(); renderOffline();
+}
+document.addEventListener('click', e => {
+  const pre = e.target.closest('[data-preset]');
+  if (pre){ const p = PRESET[pre.dataset.preset], [f, t] = p.get(); setRange({preset: p.key, from: f, to: t}); return; }
+  const tog = e.target.closest('[data-rng-toggle]');
+  if (tog){ const mount = tog.closest('[data-rng-mount]'), was = mount.dataset.open === '1';
+    document.querySelectorAll('[data-rng-mount]').forEach(m => { m.dataset.open = '0'; });
+    mount.dataset.open = was ? '0' : '1'; renderRanges();
+    if (!was){ const inp = mount.querySelector('input[name="from"]'); inp && inp.focus(); }
+    return; }
+  if (e.target.closest('[data-rng-close]')){ closeRanges(true); return; }
+  if (!e.target.closest('.rng-pop')) closeRanges(false);
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeRanges(true); });
+document.addEventListener('submit', e => {
+  const form = e.target.closest('[data-rng-form]'); if (!form) return;
+  e.preventDefault();
+  const f = form.elements.from.value, t = form.elements.to.value, err = form.querySelector('[data-rng-err]');
+  if (!f || !t){ err.textContent = 'Completá las dos fechas.'; return; }
+  if (f > t){ err.textContent = 'La fecha "Desde" tiene que ser anterior a "Hasta".'; return; }
+  if (f < YEAR_START || t > TODAY){ err.textContent = 'Hay datos del 1 de enero al 30 de octubre de 2026.'; return; }
+  const match = PRESETS.find(p => { const [a, b] = p.get(); return a === f && b === t; });
+  setRange({preset: match ? match.key : null, from: f, to: t});
+});
 
 // ---------- Claude (sample capability) ----------
 let samplePromise = null;
@@ -985,31 +1123,39 @@ const RECS = [
 ];
 const recState = {};           // id -> 'confirm' | 'done'
 let pmFilter = 'all';
+// Daily history per campaign: October figures scaled to each month by the company's spend and client curve.
+CAMPAIGNS.forEach(c => {
+  c.spendD = spread('c-' + c.id + '-s', m => (SPEND[m] || 0) / SPEND[LAST] * c.spend);
+  c.convD = spread('c-' + c.id + '-c', m => (CLIENTS[m] || 0) / CLIENTS[LAST] * c.conv);
+});
+const campR = c => ({spend: rsum(c.spendD), conv: rsum(c.convD)});
 function pmTotals(){
-  const live = CAMPAIGNS; const s = sum(live.map(c=>c.spend)), cv = sum(live.map(c=>c.conv));
-  return {s, cv, cac: s*1000/cv};
+  const rs = CAMPAIGNS.map(campR), s = sum(rs.map(r => r.spend)), cv = sum(rs.map(r => r.conv));
+  return {s, cv, cac: cv ? s*1000/cv : null};
 }
+const cacTxt = (spendK, conv) => conv >= 0.5 ? fmtUSD(spendK*1000/conv) : '—';
 function renderPaid(){
   const t = pmTotals();
   const act = CAMPAIGNS.filter(c=>c.on).length;
   const connected = PLATFORMS.filter(p => p.on && CAMPAIGNS.some(c => c.p === p.key));
-  let cards = `<div class="pcard total"><div class="head"><b>Total paid media<span class="sync" style="color:inherit;opacity:.65">Octubre 2026 · ${connected.length} plataformas</span></b></div>
+  const coCl = rsum(CO_CLIENTS), coCac = coCl ? rsum(CO_SPEND)*1000/coCl : null;
+  let cards = `<div class="pcard total"><div class="head"><b>Total paid media<span class="sync" style="color:inherit;opacity:.65">${rangeText()} · ${connected.length} plataformas</span></b></div>
     <div><div class="lbl">Gasto</div><div class="big num">${moneyK(t.s)}</div></div>
-    <div class="stats"><div class="stat"><span>Clientes</span><b>${fmtInt(t.cv)}</b></div><div class="stat"><span>CAC</span><b>${money(t.cac)}</b></div></div>
-    <div class="lbl">${act} campañas activas · CAC total de la empresa ${fmtUSD(SPEND[LAST]*1000/CLIENTS[LAST])}</div></div>`;
+    <div class="stats"><div class="stat"><span>Clientes</span><b>${fmtInt(t.cv)}</b></div><div class="stat"><span>CAC</span><b>${t.cac ? money(t.cac) : '—'}</b></div></div>
+    <div class="lbl">${act} campañas activas${coCac ? ' · CAC total de la empresa ' + fmtUSD(coCac) : ''}</div></div>`;
   connected.forEach(p => {
-    const cs = CAMPAIGNS.filter(c => c.p === p.key), s = sum(cs.map(c=>c.spend)), cv = sum(cs.map(c=>c.conv)), cac = s*1000/cv;
-    const rel = cac / t.cac - 1;
+    const rs = CAMPAIGNS.filter(c => c.p === p.key).map(campR), s = sum(rs.map(r => r.spend)), cv = sum(rs.map(r => r.conv)), cac = cv ? s*1000/cv : null;
+    const rel = cac && t.cac ? cac / t.cac - 1 : 0;
     const cmp = Math.abs(rel) < 0.03 ? '<span class="cmp muted">En el promedio</span>'
       : rel < 0 ? `<span class="cmp" style="color:var(--good-ink)">${Math.round(-rel*100)}% más barato que el promedio</span>`
       : `<span class="cmp" style="color:var(--crit-ink)">${Math.round(rel*100)}% más caro que el promedio</span>`;
     cards += `<div class="pcard"><div class="head"><span class="mono" style="background:${PLAT_COLORS[p.key]}">${p.letter}</span><b>${p.name}<span class="sync">${p.sub}</span></b></div>
       <div><div class="lbl">Gasto</div><div class="big num">${moneyK(s)}</div></div>
-      <div class="stats"><div class="stat"><span>Clientes</span><b>${fmtInt(cv)}</b></div><div class="stat"><span>CAC</span><b>${money(cac)}</b></div></div>
+      <div class="stats"><div class="stat"><span>Clientes</span><b>${fmtInt(cv)}</b></div><div class="stat"><span>CAC</span><b>${cac ? money(cac) : '—'}</b></div></div>
       <div class="lbl">${cmp}</div></div>`;
   });
   $('pm-cards').innerHTML = cards;
-  $('pm-camp-sub').textContent = `Ordenadas por gasto del mes · ${act} activas, ${CAMPAIGNS.length - act} pausadas`;
+  $('pm-camp-sub').textContent = `${rangeText()} · ordenadas por gasto · ${act} activas, ${CAMPAIGNS.length - act} pausadas`;
   $('pm-recs').innerHTML = RECS.map(r => {
     const c = CAMP[r.camp], st = recState[r.id];
     const plat = PLATFORMS.find(p=>p.key===c.p).name;
@@ -1022,13 +1168,13 @@ function renderPaid(){
   }).join('') || '<p class="note">No hay recomendaciones pendientes.</p>';
   const fl = [['all','Todas'],['google','Google'],['meta','Meta'],['tiktok','TikTok']];
   $('pm-filter').innerHTML = fl.map(([k,l]) => `<button type="button" data-pf="${k}" aria-pressed="${pmFilter===k}">${l}</button>`).join('');
-  const rows = CAMPAIGNS.filter(c => pmFilter==='all' || c.p===pmFilter).sort((a,b)=>b.spend-a.spend);
-  $('pm-body').innerHTML = rows.map(c => {
-    const cac = c.spend*1000/c.conv, rel = cac / t.cac;
+  const rows = CAMPAIGNS.filter(c => pmFilter==='all' || c.p===pmFilter).map(c => [c, campR(c)]).sort((a,b) => b[1].spend - a[1].spend);
+  $('pm-body').innerHTML = rows.map(([c, r]) => {
+    const cac = r.conv >= 0.5 ? r.spend*1000/r.conv : null, rel = cac && t.cac ? cac / t.cac : 1;
     const st = c.on ? '<span class="pill good">Activa</span>' : '<span class="pill neutral">Pausada</span>';
     return `<tr><th scope="row"><span style="display:inline-flex;align-items:center;gap:10px"><span class="mono" style="width:26px;height:26px;font-size:12px;border-radius:7px;background:${PLAT_COLORS[c.p]}">${PLATFORMS.find(p=>p.key===c.p).letter}</span>${c.name}</span></th>
-      <td class="left">${st}</td><td class="num">${fmtUSD(c.daily)}</td><td class="num">${fmtK(c.spend)}</td><td class="num">${fmtInt(c.conv)}</td>
-      <td class="num" style="color:${rel>1.3?'var(--crit-ink)':rel<0.75?'var(--good-ink)':'inherit'}">${fmtUSD(cac)}</td><td class="num">${c.ctr.toLocaleString('en-US')}%</td></tr>`;
+      <td class="left">${st}</td><td class="num">${fmtUSD(c.daily)}</td><td class="num">${fmtK(r.spend)}</td><td class="num">${fmtInt(r.conv)}</td>
+      <td class="num" style="color:${rel>1.3?'var(--crit-ink)':rel<0.75?'var(--good-ink)':'inherit'}">${cac ? fmtUSD(cac) : '—'}</td><td class="num">${c.ctr.toLocaleString('en-US')}%</td></tr>`;
   }).join('');
 }
 $('view-paid-media').addEventListener('click', e => {
@@ -1076,29 +1222,45 @@ Entre EMPRESA DEMO S.A. ("la Marca") y ${p.name} (${p.handle}) ("el Creador").
 
 [Borrador de ejemplo. Revisalo con un abogado antes de firmar.]`;
 }
+const dmyToIso = s => s.slice(6,10) + '-' + s.slice(3,5) + '-' + s.slice(0,2);
+// Daily history per profile from the contract start: fee spread evenly, clients/views following the company's curve.
+PEOPLE.forEach(p => {
+  const from = dmyToIso(p.start);
+  p.costD = spread('p-' + p.id + '-cost', () => p.cost, {from, flat:true});
+  p.clD = spread('p-' + p.id + '-cl', m => (CLIENTS[m] || 0) / CLIENTS[LAST] * p.clients, {from});
+  p.viewsD = spread('p-' + p.id + '-v', m => p.views * (0.8 + 0.2 * (CLIENTS[m] || 0) / CLIENTS[LAST]), {from});
+  p.menD = spread('p-' + p.id + '-mn', () => p.mentions, {from});
+});
+const personR = p => ({cost: rsum(p.costD), cl: rsum(p.clD), views: rsum(p.viewsD), men: rsum(p.menD), active: dmyToIso(p.start) <= RANGE.to});
 function renderPeople(){
-  const cost = sum(PEOPLE.map(p=>p.cost)), cl = sum(PEOPLE.map(p=>p.clients));
-  $('in-count').textContent = PEOPLE.length;
-  $('in-count-d').textContent = PEOPLE.filter(p=>p.type==='Influencer').length + ' influencers · ' + PEOPLE.filter(p=>p.type==='Streaming').length + ' canales de streaming';
+  const rs = PEOPLE.map(p => [p, personR(p)]);
+  const cost = sum(rs.map(([,r]) => r.cost)), cl = sum(rs.map(([,r]) => r.cl));
+  const activeN = rs.filter(([,r]) => r.active).length;
+  $('in-count').textContent = activeN;
+  $('in-count-d').textContent = rs.filter(([p,r]) => r.active && p.type==='Influencer').length + ' influencers · ' + rs.filter(([p,r]) => r.active && p.type==='Streaming').length + ' canales de streaming';
   $('in-cost').innerHTML = money(cost);
   $('in-clients').textContent = fmtInt(cl);
-  $('in-cac').innerHTML = money(cost/cl);
-  $('in-cac-d').textContent = 'Paid media: ' + fmtUSD(pmTotals().cac);
+  $('in-cac').innerHTML = cl >= 0.5 ? money(cost/cl) : '—';
+  const pm = pmTotals();
+  $('in-cac-d').textContent = pm.cac ? 'Paid media en el mismo período: ' + fmtUSD(pm.cac) : 'Sin datos de paid media';
   let group = null, h = '';
-  PEOPLE.forEach(p => {
+  rs.forEach(([p, r]) => {
     const g = p.type === 'Influencer' ? 'Influencers' : 'Canales de streaming';
     if (g !== group){ group = g; h += `<tr class="group"><td colspan="10">${g}</td></tr>`; }
     const ending = p.end === '31/10/2026';
+    const none = '<span class="muted">—</span>';
     h += `<tr${p.id===selected?' style="background:var(--series-soft)"':''}>
-      <th scope="row"><button type="button" class="link" style="text-decoration:none;color:var(--ink);font-weight:600;padding:0" data-pick="${p.id}">${p.name}</button><div class="note">${p.handle}</div>${ending?'<span class="pill warn" style="margin-top:4px">'+ICON_WARN+'Contrato vence mañana</span>':''}</th>
+      <th scope="row"><button type="button" class="link" style="text-decoration:none;color:var(--ink);font-weight:600;padding:0" data-pick="${p.id}">${p.name}</button><div class="note">${p.handle}${r.active ? '' : ' · empieza el ' + p.start}</div>${ending?'<span class="pill warn" style="margin-top:4px">'+ICON_WARN+'Contrato vence mañana</span>':''}</th>
       <td class="left">${p.nets}</td>
-      <td class="num">${fmtInt(p.followers)}</td><td class="num">${fmtInt(p.views)}</td><td class="num">${p.mentions}</td>
+      <td class="num">${fmtInt(p.followers)}</td><td class="num">${r.views >= 1 ? fmtInt(r.views) : none}</td><td class="num">${r.men >= 0.5 ? fmtInt(r.men) : none}</td>
       <td class="left" style="font-size:13px">${p.email}<div class="note">${p.phone}</div></td>
-      <td class="num">${fmtUSD(p.cost)}</td><td class="num">${p.clients}</td><td class="num">${fmtUSD(p.cost/p.clients)}</td>
+      <td class="num">${r.cost >= 1 ? fmtUSD(r.cost) : none}</td><td class="num">${r.cl >= 0.5 ? fmtInt(r.cl) : none}</td><td class="num">${r.cl >= 0.5 ? fmtUSD(r.cost/r.cl) : none}</td>
       <td class="left"><span style="display:inline-flex;gap:8px;align-items:center"><button type="button" class="btn small ghost" data-contract="${p.id}">Contrato</button><button type="button" class="btn small ghost" data-ask="${p.id}">Preguntar</button></span></td></tr>`;
   });
   $('in-body').innerHTML = h;
-  $('c-who').innerHTML = '<option value="">Nuevo perfil (sin cargar)</option>' + PEOPLE.map(p => `<option value="${p.id}"${p.id==='mati'?' selected':''}>${p.name} · ${p.handle}</option>`).join('');
+  const keep = $('c-who').value;
+  $('c-who').innerHTML = '<option value="">Nuevo perfil (sin cargar)</option>' + PEOPLE.map(p => `<option value="${p.id}">${p.name} · ${p.handle}</option>`).join('');
+  $('c-who').value = $('c-who').dataset.init ? keep : 'mati'; $('c-who').dataset.init = '1';
   renderDetail();
 }
 function renderDetail(){
@@ -1189,26 +1351,36 @@ $('go-contract').addEventListener('click', e => { e.preventDefault(); $('contrat
 // =====================================================================
 const MEDIA_COL = {'TV':'var(--s1)','Radio':'var(--s2)','Vía Pública':'var(--s3)'};
 const OFFLINE = [
-  {medio:'TV', camp:'Lanzamiento Q4', who:'Canal Uno Contenidos S.A.', what:'40 spots de 20" en prime time', when:'6 al 26 de oct.', cost:9500, imp:3800000},
-  {medio:'Radio', camp:'Lanzamiento Q4', who:'Radio Ciudad FM', what:'120 menciones en el programa de la mañana', when:'Octubre', cost:3200, imp:1100000},
-  {medio:'Vía Pública', camp:'Marca en la ciudad', who:'Pantallas Urbanas S.R.L.', what:'12 pantallas LED en avenidas', when:'4 semanas desde el 1 de oct.', cost:4800, imp:2400000},
-  {medio:'Vía Pública', camp:'Marca en la ciudad', who:'Carteles del Sur', what:'30 refugios de colectivo', when:'2 semanas desde el 13 de oct.', cost:2700, imp:1500000},
+  {medio:'TV', camp:'Lanzamiento Q4', who:'Canal Uno Contenidos S.A.', what:'40 spots de 20" en prime time', from:'2026-10-06', to:'2026-10-26', cost:9500, imp:3800000},
+  {medio:'Radio', camp:'Lanzamiento Q4', who:'Radio Ciudad FM', what:'120 menciones en el programa de la mañana', from:'2026-10-01', to:'2026-10-30', cost:3200, imp:1100000},
+  {medio:'Vía Pública', camp:'Marca en la ciudad', who:'Pantallas Urbanas S.R.L.', what:'12 pantallas LED en avenidas', from:'2026-10-01', to:'2026-10-28', cost:4800, imp:2400000},
+  {medio:'Vía Pública', camp:'Marca en la ciudad', who:'Carteles del Sur', what:'30 refugios de colectivo', from:'2026-10-13', to:'2026-10-26', cost:2700, imp:1500000},
+  {medio:'Vía Pública', camp:'Marca en la ciudad · 1ra ola', who:'Pantallas Urbanas S.R.L.', what:'10 pantallas LED en avenidas', from:'2026-07-01', to:'2026-08-31', cost:9800, imp:5100000},
+  {medio:'TV', camp:'Día del Padre', who:'Canal Uno Contenidos S.A.', what:'50 spots de 20" en prime time', from:'2026-06-01', to:'2026-06-21', cost:12000, imp:4600000},
+  {medio:'Radio', camp:'Día del Padre', who:'Radio Ciudad FM', what:'80 menciones en el programa de la tarde', from:'2026-06-01', to:'2026-06-21', cost:2100, imp:800000},
+  {medio:'Radio', camp:'Verano', who:'Radio Ciudad FM', what:'200 menciones en la costa atlántica', from:'2026-01-05', to:'2026-02-28', cost:6400, imp:2200000},
 ];
+OFFLINE.forEach(o => { o.costD = spreadFlight(o.cost, o.from, o.to); o.impD = spreadFlight(o.imp, o.from, o.to); });
 let offFilter = 'all';
 function renderOffline(){
   const media = ['TV','Radio','Vía Pública'];
-  const cost = sum(OFFLINE.map(o=>o.cost)), imp = sum(OFFLINE.map(o=>o.imp||0));
-  const byMedio = m => { const r = OFFLINE.filter(o=>o.medio===m); return {c:sum(r.map(o=>o.cost)), i:sum(r.map(o=>o.imp||0))}; };
-  $('off-kpis').innerHTML = `<div class="kpi"><div class="k">Inversión offline del mes</div><div class="v num">${money(cost)}</div><div class="d">${new Set(OFFLINE.map(o=>o.camp)).size} campañas · ${fmtInt(imp)} impactos</div></div>` +
-    media.map(m => { const b = byMedio(m); return `<div class="kpi"><div class="k">${m}</div><div class="v num">${money(b.c)}</div><div class="d">${fmtInt(b.i)} impactos · CPM ${b.i?fmtCPM(b.c/b.i*1000):'—'}</div></div>`; }).join('');
+  const live = OFFLINE.map(o => ({o, c: rsum(o.costD), i: rsum(o.impD)})).filter(x => x.c > 0);
+  const cost = sum(live.map(x => x.c)), imp = sum(live.map(x => x.i));
+  const byMedio = m => { const r = live.filter(x => x.o.medio === m); return {c: sum(r.map(x => x.c)), i: sum(r.map(x => x.i))}; };
+  $('off-kpis').innerHTML = `<div class="kpi"><div class="k">Inversión offline</div><div class="v num">${money(cost)}</div><div class="d">${new Set(live.map(x => x.o.camp)).size} campañas · ${fmtInt(imp)} impactos</div></div>` +
+    media.map(m => { const b = byMedio(m); return `<div class="kpi"><div class="k">${m}</div><div class="v num">${money(b.c)}</div><div class="d">${b.i ? fmtInt(b.i) + ' impactos · CPM ' + fmtCPM(b.c/b.i*1000) : 'Sin campañas en el período'}</div></div>`; }).join('');
   $('off-filter').innerHTML = [['all','Todos'],...media.map(m=>[m,m])].map(([k,l]) => `<button type="button" data-of="${k}" aria-pressed="${offFilter===k}">${l}</button>`).join('');
-  const rows = OFFLINE.filter(o => offFilter==='all' || o.medio===offFilter);
-  $('off-body').innerHTML = rows.map(o => `<tr>
+  $('off-sub').textContent = rangeText() + ' · si una campaña empezó o terminó fuera del período, se cuenta solo la parte de estos días';
+  const rows = live.filter(x => offFilter==='all' || x.o.medio===offFilter).sort((a,b) => b.o.from.localeCompare(a.o.from));
+  $('off-body').innerHTML = rows.map(({o, c, i}) => {
+    const partial = Math.abs(c - o.cost) > 1;
+    return `<tr>
     <td class="left"><span class="pill neutral"><i class="dot" style="background:${MEDIA_COL[o.medio]||'var(--faint)'}"></i>${esc(o.medio)}</span></td>
     <td class="left" style="white-space:normal;min-width:200px"><b style="font-weight:600">${esc(o.camp)}</b><div class="note">${esc(o.who)}</div></td>
-    <td class="left" style="white-space:normal;min-width:200px">${esc(o.what)}</td><td class="left muted" style="white-space:normal">${esc(o.when)}</td>
-    <td class="num">${fmtUSD(o.cost)}</td><td class="num">${fmtInt(o.imp)}</td>
-    <td class="num">${fmtCPM(o.cost/o.imp*1000)}</td></tr>`).join('') || '<tr><td colspan="7" class="left muted">No hay campañas en este medio.</td></tr>';
+    <td class="left" style="white-space:normal;min-width:200px">${esc(o.what)}</td>
+    <td class="left muted num">${rangeText(o.from, o.to)}</td>
+    <td class="num">${fmtUSD(c)}${partial ? `<div class="note">de ${fmtUSD(o.cost)}</div>` : ''}</td><td class="num">${fmtInt(i)}</td>
+    <td class="num">${fmtCPM(c/i*1000)}</td></tr>`; }).join('') || '<tr><td colspan="7" class="left muted">No hubo campañas offline en este período.</td></tr>';
 }
 $('off-filter').addEventListener('click', e => { const b = e.target.closest('button'); if (b && b.dataset.of){ offFilter = b.dataset.of; renderOffline(); } });
 
@@ -1216,8 +1388,6 @@ $('off-filter').addEventListener('click', e => { const b = e.target.closest('but
 // =====================================================================
 // FACTURAS — status, due dates and overdue follow-up with finance
 // =====================================================================
-const TODAY = '2026-10-30';
-const DAY = 864e5;
 const daysBetween = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / DAY);
 const fmtDate = iso => iso.slice(8,10) + '/' + iso.slice(5,7) + '/' + iso.slice(0,4);
 let FINANCE_EMAIL = 'finanzas@test.com';
@@ -1386,7 +1556,7 @@ $('theme-btn').addEventListener('click', () => {
 });
 syncThemeLabel();
 
-renderDashboard(); renderBudget(); renderPaid(); renderPeople(); renderOffline(); renderConnections(); renderFacturas(); route();
+renderRanges(); renderDashboard(); renderBudget(); renderPaid(); renderPeople(); renderOffline(); renderConnections(); renderFacturas(); route();
 </script>
 
 </body>
