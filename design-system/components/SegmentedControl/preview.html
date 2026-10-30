@@ -1,0 +1,23 @@
+<!-- @dsCard group="Acciones" height=72 subtitle="Período, filtro de plataforma o vista" -->
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Segmented control</title>
+<style>body{padding:20px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}</style></head>
+<body>
+<div class="oto-seg" role="group" aria-label="Período">
+  <button type="button" aria-pressed="false">Mes</button>
+  <button type="button" aria-pressed="false">Trimestre</button>
+  <button type="button" aria-pressed="true">Año a la fecha</button>
+</div>
+<div class="oto-seg" role="group" aria-label="Plataforma">
+  <button type="button" aria-pressed="true">Todas</button>
+  <button type="button" aria-pressed="false">Google</button>
+  <button type="button" aria-pressed="false">Meta</button>
+  <button type="button" aria-pressed="false">TikTok</button>
+</div>
+<script>
+document.querySelectorAll('.oto-seg').forEach(g => g.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  g.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+}));
+</script>
+</body></html>

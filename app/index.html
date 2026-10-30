@@ -1,0 +1,1393 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+</head>
+<body>
+<title>OTOMKT</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* OTOMKT Design System v1 — tokens mapped from the system (canvas, surface, text-*, border, chart-*, status, series).
+   Layout: dark nav rail + scrolling workspace; on phones the rail becomes a top strip. */
+:root{
+  --bg:#f5f6f8; --surface:#ffffff; --sunken:#f0f2f5; --ink:#0f1419; --muted:#5b6472; --faint:#67717f; --line:#e4e7ec; --line-strong:#d0d5dd; --track:#eceff3; --grid:#edeff2;
+  --nav-bg:#0f1419; --nav-fg:#a3acb9; --nav-active:#ffffff; --nav-hover:#1a2029;
+  --brand:#c8f04a; --brand-ink:#0f1419; --link:#1d63c2; --focus:#2a78d6;
+  --series:#2a78d6; --series-soft:#e8f1fc; --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --good:#0e9f4f; --good-ink:#08783a; --good-soft:#e7f6ee; --warn:#f79009; --warn-ink:#b54708; --warn-soft:#fef3e2; --crit:#d92d20; --crit-ink:#b42318; --crit-soft:#fdecea;
+  --shadow-card:0 1px 2px rgba(16,24,40,0.04); --shadow-pop:0 12px 32px -8px rgba(16,24,40,0.18);
+  --font-display:'Geist', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-body:'Geist', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono:'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0b0e12; --surface:#12161c; --sunken:#1a1f27; --ink:#edf0f4; --muted:#a3acb9; --faint:#808a99; --line:#242b35; --line-strong:#313a46; --track:#1e2530; --grid:#1f2630;
+  --nav-bg:#080a0d; --nav-fg:#a3acb9; --nav-hover:#141920; --link:#6aa6f0; --focus:#6aa6f0;
+  --series:#3987e5; --series-soft:#132840; --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --good:#3ccb7f; --good-ink:#3ccb7f; --good-soft:#10301f; --warn:#fdb022; --warn-ink:#fdb022; --warn-soft:#3a2a0c; --crit:#f97066; --crit-ink:#f97066; --crit-soft:#3a1716;
+  --shadow-card:0 1px 2px rgba(0,0,0,0.30); --shadow-pop:0 12px 32px -8px rgba(0,0,0,0.60); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0b0e12; --surface:#12161c; --sunken:#1a1f27; --ink:#edf0f4; --muted:#a3acb9; --faint:#808a99; --line:#242b35; --line-strong:#313a46; --track:#1e2530; --grid:#1f2630;
+  --nav-bg:#080a0d; --nav-fg:#a3acb9; --nav-hover:#141920; --link:#6aa6f0; --focus:#6aa6f0;
+  --series:#3987e5; --series-soft:#132840; --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --good:#3ccb7f; --good-ink:#3ccb7f; --good-soft:#10301f; --warn:#fdb022; --warn-ink:#fdb022; --warn-soft:#3a2a0c; --crit:#f97066; --crit-ink:#f97066; --crit-soft:#3a1716;
+  --shadow-card:0 1px 2px rgba(0,0,0,0.30); --shadow-pop:0 12px 32px -8px rgba(0,0,0,0.60); color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.app{display:flex;min-height:100%}
+.num{font-family:var(--font-body);font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum" 1}
+.theme-btn{display:flex;align-items:center;gap:8px;width:100%;margin-top:-14px;height:36px;padding:0 10px;border-radius:10px;border:1px solid #242b35;background:transparent;color:#c9d1db;font:500 13px/1 var(--font-body);cursor:pointer}
+.theme-btn:hover{background:var(--nav-hover);color:#fff}
+
+/* Sidebar */
+.side{width:236px;flex:none;background:var(--nav-bg);color:var(--nav-fg);display:flex;flex-direction:column;gap:24px;padding-block:24px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:16px;position:sticky;top:0;height:100vh}
+.logo{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;padding:0 8px}
+.logo-mark{width:32px;height:32px;border-radius:9px;background:var(--brand);display:grid;place-items:center}
+.logo b{font-family:var(--font-display);font-weight:700;font-size:19px;letter-spacing:-.01em}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;color:var(--nav-fg);text-decoration:none;font-size:14.5px;font-weight:500;min-height:44px}
+.nav a:hover{background:var(--nav-hover);color:var(--nav-active)}
+.nav a[aria-current="page"]{background:var(--nav-hover);color:var(--nav-active)}
+.nav a[aria-current="page"] svg{stroke:var(--brand)}
+.nav a[aria-current="page"]::after{content:"";margin-left:auto;width:6px;height:6px;border-radius:99px;background:var(--brand);flex:none}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.nav svg{flex:none}
+.inbox{margin-top:auto;display:block;text-decoration:none;color:inherit;border:1px solid #232D3A;border-radius:12px;padding:12px;font-size:12.5px;line-height:1.45}
+.inbox .lbl{color:#7D8999;text-transform:uppercase;letter-spacing:.08em;font-size:11px}
+.inbox .addr{color:#fff;font-family:var(--font-mono);font-size:12.5px;margin-top:4px;word-break:break-all}
+.inbox .new{display:flex;align-items:center;gap:6px;margin-top:8px;color:#C9D1DB}
+.dot{width:7px;height:7px;border-radius:99px;background:var(--brand);flex:none}
+
+/* Main */
+.main{flex:1;min-width:0;padding-block:28px 56px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+.wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.topbar{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
+.eyebrow{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+h1{font-family:var(--font-display);font-weight:600;font-size:28px;line-height:34px;margin:4px 0 0;letter-spacing:-.015em;text-wrap:balance}
+h2{font-size:15px;font-weight:600;margin:0}
+h3{font-size:14px;font-weight:600;margin:0}
+.sub{color:var(--muted);font-size:13px;margin-top:2px}
+.demo{font-size:12px;color:var(--muted);border:1px dashed var(--line);border-radius:99px;padding:4px 10px}
+.tools{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;background:var(--sunken);border-radius:99px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:13px;font-weight:500;border:0;background:transparent;color:var(--muted);padding:0 12px;border-radius:99px;cursor:pointer;height:30px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-card)}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;min-width:0;box-shadow:var(--shadow-card)}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+
+/* KPI strip: one panel, N cells */
+.kpis{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));padding:0}
+.kpi{padding:20px 22px;border-left:1px solid var(--line);min-width:0}
+.kpi:first-child{border-left:0}
+.kpi .k{font-size:13px;color:var(--muted)}
+.kpi .v{font-size:clamp(22px,2.1vw,28px);line-height:1.25;font-weight:600;margin-top:6px;letter-spacing:-.02em;white-space:nowrap}
+.cur{font-size:.6em;font-weight:500;color:var(--muted);margin-right:.25em;letter-spacing:0}
+.pcard.total .cur{color:#a3acb9}
+.kpi .d{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;line-height:16px;color:var(--faint);margin-top:6px}
+.delta{display:inline-flex;align-items:center;height:20px;padding:0 6px;border-radius:99px;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;background:var(--sunken);color:var(--muted)}
+.delta.good{background:var(--good-soft);color:var(--good-ink)}
+.delta.bad{background:var(--crit-soft);color:var(--crit-ink)}
+.spark{display:block;width:100%;height:36px;margin-top:14px;overflow:visible}
+
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.grid-wide{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start}
+.grid-even{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+
+/* Goal meters */
+.goal{display:flex;flex-direction:column;gap:10px}
+.goal-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.goal-big{font-size:clamp(22px,2.1vw,28px);line-height:1.25;font-weight:600;letter-spacing:-.02em}
+.goal-big small{font-size:15px;color:var(--muted);font-weight:400}
+.meter{position:relative;height:12px;background:var(--track);border-radius:99px}
+.meter .fill{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--series)}
+.meter .pace{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--ink);border-radius:2px}
+.goal-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.pill.good{color:var(--good-ink);background:var(--good-soft)}
+.pill.warn{color:var(--warn-ink);background:var(--warn-soft)}
+.pill.crit{color:var(--crit-ink);background:var(--crit-soft)}
+.pill.neutral{color:var(--muted);background:var(--sunken)}
+.pill.blue{color:var(--link);background:var(--series-soft)}
+.pill svg{flex:none}
+
+/* Charts */
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.chart text{font-family:var(--font-body);font-size:11px;fill:var(--faint);font-variant-numeric:tabular-nums}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;background:var(--series)}
+.sw.line{height:0;border-top:2px dashed var(--ink);border-radius:0;width:16px;background:none}
+.sw.solid{height:0;border-top:2px solid var(--series);border-radius:0;width:16px;background:none}
+.sw.proj{height:0;border-top:2px dashed var(--series);border-radius:0;width:16px;background:none}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--surface);font-variant-numeric:tabular-nums;font-size:12.5px;line-height:1.45;padding:8px 10px;border-radius:8px;z-index:20;white-space:nowrap;box-shadow:var(--shadow-pop)}
+.tip b{font-weight:600}
+
+/* Tables */
+.tbl-wrap{overflow-x:auto;margin:0 -20px;padding:0 20px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+.tbl-ch{min-width:720px}
+th{font-size:12px;font-weight:500;color:var(--muted);text-align:right;padding:0 10px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;padding-left:0}
+td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th,td{vertical-align:middle}
+tbody th{font-weight:500;color:var(--ink);font-size:14px;text-align:left;padding:11px 10px 11px 0;border-bottom:1px solid var(--line)}
+tr.group td{padding-top:16px;font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);border-bottom:0;text-align:left}
+tfoot td,tfoot th{font-weight:600;border-bottom:0;padding-top:14px;font-size:14px;color:var(--ink)}
+.left{text-align:left}
+.bar-cell{display:flex;align-items:center;gap:10px;justify-content:flex-end}
+.hbar{width:90px;height:8px;background:var(--track);border-radius:99px;position:relative;flex:none}
+.hbar i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--series)}
+.hbar i.over{background:var(--crit)}
+.muted{color:var(--muted)}
+.tag{font-family:var(--font-body);font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:2px 8px}
+
+/* Buttons & inputs */
+.btn{font:inherit;font-weight:600;font-size:14px;border:0;border-radius:10px;padding:0 16px;height:40px;background:var(--brand);color:var(--brand-ink);cursor:pointer;min-height:40px;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line-strong)}
+.btn.small{min-height:32px;height:32px;padding:0 12px;font-size:13px}
+.btn.dark{background:var(--ink);color:var(--surface)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.link{font:inherit;font-size:13.5px;font-weight:600;color:var(--series);background:none;border:0;padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+input[type="number"].cell{width:88px;font:inherit;font-family:var(--font-body);font-variant-numeric:tabular-nums;font-size:13px;text-align:right;padding:6px 8px;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface);color:var(--ink)}
+input[type="number"].cell:hover{border-color:var(--faint)}
+textarea,.field{width:100%;font:inherit;font-size:14.5px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);resize:vertical}
+select.field{padding:10px 12px;min-height:44px}
+label.lab{font-size:13px;font-weight:600;display:block;margin-bottom:6px}
+
+/* Budget grid */
+.bgrid{min-width:1440px}
+.bgrid td,.bgrid th{padding:8px 6px}
+.bgrid tbody th{padding-left:0}
+.bgrid td.real{font-variant-numeric:tabular-nums;font-size:13px;line-height:1.3;font-weight:500}
+.bgrid td.real small{display:block;font-size:11px;color:var(--muted)}
+.bgrid td.over{color:var(--crit-ink)}
+.bgrid td.over small{color:var(--crit-ink)}
+.bgrid td.proj{color:var(--faint);font-style:italic;font-variant-numeric:tabular-nums;font-size:13px}
+.bgrid th.cur-m,.bgrid td.cur-m{background:var(--series-soft)}
+.sw.soft{opacity:.35}
+.sel{width:auto;min-width:200px;min-height:36px;padding:6px 12px;font-size:13.5px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Lists */
+.rows{display:flex;flex-direction:column}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row .who{min-width:0}
+.row .who b{display:block;font-weight:500;font-size:14px}
+.row .who span{font-size:12.5px;color:var(--muted)}
+.row .amt{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+
+/* Invoices */
+.sel-sm{width:auto;min-height:32px;padding:4px 8px;font-size:13px}
+tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 55%, transparent)}
+.nav-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--crit);color:#fff;font-size:11.5px;font-weight:700;display:inline-grid;place-items:center;font-variant-numeric:tabular-nums}
+.nav a[aria-current="page"] .nav-badge+*{display:none}
+
+/* Connections */
+.cx-form{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:16px}
+.cx-mail{font-family:var(--font-mono);font-size:13.5px}
+
+/* Platform tiles */
+.plats{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.plat{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
+.plat.off{border-style:dashed}
+.mono{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-family:var(--font-body);font-weight:700;font-size:14px;color:#fff;flex:none}
+.plat .meta{flex:1;min-width:0}
+.plat .meta b{display:block;font-size:14px;font-weight:600}
+.plat .meta span{font-size:12px;color:var(--muted)}
+
+/* Paid media platform summary */
+.pcards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.pcard.total{background:var(--nav-bg);border-color:var(--line);color:#fff}
+.pcard.total .lbl,.pcard.total .stat span{color:#a3acb9}
+.pcard .head{display:flex;align-items:center;gap:10px}
+.pcard .head b{font-size:15px;font-weight:600}
+.pcard .head .sync{font-size:12px;color:var(--muted);display:block;font-weight:400}
+.pcard .lbl{font-size:12.5px;color:var(--muted)}
+.pcard .big{font-size:clamp(22px,2vw,26px);font-weight:600;letter-spacing:-.02em;line-height:1.25;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pcard .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;border-top:1px solid var(--line);padding-top:12px}
+.pcard.total .stats{border-top-color:#2a323d}
+.pcard .stat span{display:block;font-size:12px;color:var(--muted)}
+.pcard .stat b{font-variant-numeric:tabular-nums;font-size:17px;line-height:24px;font-weight:600;white-space:nowrap}
+.pcard .share{height:6px;border-radius:99px;background:var(--track);position:relative}
+.pcard .share i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--series)}
+.pcard .cmp{font-size:12px;font-weight:600}
+@media (max-width: 1080px){.pcards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width: 560px){.pcards{grid-template-columns:minmax(0,1fr)}}
+
+/* Recommendations */
+.recs{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.rec{border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.rec.done{background:var(--series-soft);border-color:transparent}
+.rec .why{font-size:13.5px;color:var(--muted);margin:0}
+.rec .impact{font-size:13px;font-weight:600}
+.rec .acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:auto}
+
+/* AI blocks */
+.ai{display:flex;flex-direction:column;gap:12px}
+.out{white-space:pre-wrap;font-size:14px;line-height:1.6;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--bg);max-height:520px;overflow:auto}
+.note{font-size:12.5px;color:var(--muted)}
+.drop{border:1.5px dashed var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.drop.hot{border-color:var(--series);background:var(--series-soft)}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 16px;font-size:14px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+.detail-head{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.avatar{width:44px;height:44px;border-radius:99px;display:grid;place-items:center;font-weight:700;background:var(--series-soft);color:var(--series);flex:none}
+
+@media (max-width: 1080px){.grid-wide{grid-template-columns:minmax(0,1fr)}}
+@media (max-width: 860px){
+  .app{flex-direction:column}
+  .side{width:auto;height:auto;position:static;flex-direction:row;flex-wrap:wrap;align-items:center;gap:12px;padding-block:12px;padding-right:max(16px, env(safe-area-inset-right, 0px))}
+  .nav{flex-direction:row;overflow-x:auto;flex:1 1 100%;order:3}
+  .nav a{white-space:nowrap}
+  .inbox{display:none}
+  .theme-btn{width:auto;margin:0 0 0 auto}
+  .grid2{grid-template-columns:minmax(0,1fr)}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kpi:nth-child(odd){border-left:0}
+  .kpi:nth-child(n+3){border-top:1px solid var(--line)}
+}
+@media (max-width: 560px){
+  .kpis{grid-template-columns:minmax(0,1fr)}
+  .kpi{border-left:0;border-top:1px solid var(--line)}
+  .kpi:first-child{border-top:0}
+  .row{grid-template-columns:minmax(0,1fr) auto}
+  .row .date{display:none}
+}
+@media (prefers-reduced-motion: no-preference){.meter .fill,.hbar i{transition:width .4s ease}}
+</style>
+
+<div class="app">
+  <aside class="side">
+    <a class="logo" href="#dashboard" aria-label="OTOMKT, ir al dashboard">
+      <span class="logo-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E1319" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16l5-5 4 4 7-8"/><path d="M15 7h5v5"/></svg></span>
+      <b>OTOMKT</b>
+    </a>
+    <nav class="nav" aria-label="Secciones">
+      <a href="#dashboard" data-view="dashboard"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+      <a href="#paid-media" data-view="paid-media"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/></svg>Paid Media</a>
+      <a href="#influencers" data-view="influencers"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M17 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></svg>Influencers y streaming</a>
+      <a href="#offline" data-view="offline"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Medios offline</a>
+      <a href="#budget" data-view="budget"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Budget</a>
+      <a href="#facturas" data-view="facturas"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/></svg>Facturas<span class="nav-badge" id="nav-fx-badge" aria-label="facturas vencidas" hidden></span></a>
+      <a href="#conexiones" data-view="conexiones"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7V3M15 7V3"/><path d="M6 7h12v4a6 6 0 0 1-12 0z"/><path d="M12 17v4"/></svg>Conexiones</a>
+    </nav>
+    <a class="inbox" href="#conexiones">
+      <div class="lbl">Correos de facturas</div>
+      <div class="addr" id="side-addr">marketing@test.com</div>
+      <div class="new"><span class="dot"></span><span id="side-count">6 facturas esta semana</span></div>
+    </a>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="Cambiar entre modo claro y oscuro"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span id="theme-lbl">Modo oscuro</span></button>
+  </aside>
+
+  <main class="main">
+    <div class="wrap">
+
+<!-- ================= DASHBOARD ================= -->
+<section id="view-dashboard" hidden>
+  <div class="wrap">
+    <div class="topbar">
+      <div><div class="eyebrow">Control de gestión · 2026</div><h1>Dashboard</h1></div>
+      <div class="tools">
+        <span class="demo">Empresa demo · datos de ejemplo</span>
+        <div class="seg" role="group" aria-label="Período">
+          <button type="button" id="p-ytd" aria-pressed="true">Año a la fecha</button>
+          <button type="button" id="p-month" aria-pressed="false">Octubre</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel kpis" style="--n:3" aria-live="polite">
+      <div class="kpi"><div class="k">Clientes conseguidos</div><div class="v num" id="k-clients"></div><div class="d" id="k-clients-d"></div><svg class="spark" id="k-clients-s" viewBox="0 0 200 36" preserveAspectRatio="none" aria-hidden="true"></svg></div>
+      <div class="kpi"><div class="k">Gasto total</div><div class="v num" id="k-spend"></div><div class="d" id="k-spend-d"></div><svg class="spark" id="k-spend-s" viewBox="0 0 200 36" preserveAspectRatio="none" aria-hidden="true"></svg></div>
+      <div class="kpi"><div class="k">CAC total</div><div class="v num" id="k-cac"></div><div class="d" id="k-cac-d"></div><svg class="spark" id="k-cac-s" viewBox="0 0 200 36" preserveAspectRatio="none" aria-hidden="true"></svg></div>
+    </div>
+
+    <div class="grid2">
+      <div class="panel goal">
+        <div class="goal-top"><h2>Clientes del año vs. proyectado</h2><span id="g-year-pill"></span></div>
+        <div class="goal-big num" id="g-year-v"></div>
+        <div class="meter" role="img" id="g-year-meter"><div class="fill" id="g-year-fill"></div><div class="pace" id="g-year-pace"></div></div>
+        <div class="goal-foot"><span id="g-year-l"></span><span id="g-year-r"></span></div>
+      </div>
+      <div class="panel goal">
+        <div class="goal-top"><h2>Clientes de octubre vs. proyectado</h2><span id="g-month-pill"></span></div>
+        <div class="goal-big num" id="g-month-v"></div>
+        <div class="meter" role="img" id="g-month-meter"><div class="fill" id="g-month-fill"></div></div>
+        <div class="goal-foot"><span id="g-month-l"></span><span id="g-month-r"></span></div>
+      </div>
+    </div>
+
+    <div class="grid-wide">
+      <div class="panel">
+        <div class="ph"><div><h2>Budget vs. gasto real</h2><div class="sub" id="bvr-sub"></div></div>
+          <div class="legend"><span><i class="sw"></i>Gasto real</span><span><i class="sw line"></i>Budget del mes</span></div></div>
+        <svg class="chart" id="chart-budget" role="img" aria-label="Gasto real mensual frente al budget de cada mes, enero a octubre"></svg>
+      </div>
+      <div class="panel">
+        <div class="ph"><div><h2>Clientes por mes</h2><div class="sub">Línea punteada: clientes proyectados de cada mes</div></div></div>
+        <svg class="chart" id="chart-clients" role="img" aria-label="Clientes nuevos por mes frente al objetivo mensual"></svg>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><div><h2>Resultados por canal</h2><div class="sub" id="ch-sub"></div></div></div>
+      <div class="tbl-wrap">
+        <table class="tbl-ch">
+          <thead><tr><th scope="col">Canal</th><th scope="col">Gasto</th><th scope="col">Budget</th><th scope="col">Ejecución</th><th scope="col">Clientes</th><th scope="col">CAC</th></tr></thead>
+          <tbody id="ch-body"></tbody>
+          <tfoot id="ch-foot"></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PAID MEDIA ================= -->
+<section id="view-paid-media" hidden>
+  <div class="wrap">
+    <div class="topbar">
+      <div><div class="eyebrow">Octubre 2026</div><h1>Paid Media</h1></div>
+      <div class="tools"><span class="demo">Datos de ejemplo · los cambios se simulan</span></div>
+    </div>
+
+    <div class="pcards" id="pm-cards" aria-live="polite"></div>
+
+    <div class="panel">
+      <div class="ph"><div><h2>Campañas</h2><div class="sub" id="pm-camp-sub"></div></div>
+        <div class="seg" role="group" aria-label="Filtrar plataforma" id="pm-filter"></div></div>
+      <div class="tbl-wrap">
+        <table style="min-width:860px">
+          <thead><tr><th scope="col">Campaña</th><th scope="col" class="left">Estado</th><th scope="col">Budget diario</th><th scope="col">Gasto</th><th scope="col">Clientes</th><th scope="col">CAC</th><th scope="col">CTR</th></tr></thead>
+          <tbody id="pm-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><div><h2>Qué hacer ahora</h2><div class="sub">Recomendaciones de Oto según el CAC de cada campaña contra el promedio de paid media</div></div></div>
+      <div class="recs" id="pm-recs"></div>
+    </div>
+
+    <p class="note">¿Falta una plataforma? Conectala desde <a href="#conexiones" style="color:var(--link)">Conexiones</a>.</p>
+  </div>
+</section>
+
+<!-- ================= INFLUENCERS ================= -->
+<section id="view-influencers" hidden>
+  <div class="wrap">
+    <div class="topbar">
+      <div><div class="eyebrow">Octubre 2026</div><h1>Influencers y streaming</h1></div>
+      <div class="tools"><span class="demo">Perfiles de ejemplo</span><a class="btn small" href="#contrato" id="go-contract">Nuevo contrato con AI</a></div>
+    </div>
+
+    <div class="panel kpis" style="--n:4">
+      <div class="kpi"><div class="k">Perfiles activos</div><div class="v num" id="in-count"></div><div class="d" id="in-count-d"></div></div>
+      <div class="kpi"><div class="k">Costo del mes</div><div class="v num" id="in-cost"></div><div class="d">Fijos + variables</div></div>
+      <div class="kpi"><div class="k">Clientes con código</div><div class="v num" id="in-clients"></div><div class="d">Links y cupones propios</div></div>
+      <div class="kpi"><div class="k">CAC</div><div class="v num" id="in-cac"></div><div class="d" id="in-cac-d"></div></div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><div><h2>Todos los perfiles</h2><div class="sub">Tocá un nombre para ver el contrato o preguntarle a Oto</div></div></div>
+      <div class="tbl-wrap">
+        <table style="min-width:1040px">
+          <thead><tr><th scope="col">Perfil</th><th scope="col" class="left">Redes</th><th scope="col">Seguidores</th><th scope="col">Vistas del mes</th><th scope="col">Menciones</th><th scope="col" class="left">Contacto</th><th scope="col">Costo</th><th scope="col">Clientes</th><th scope="col">CAC</th><th scope="col" class="left">Acciones</th></tr></thead>
+          <tbody id="in-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="panel" id="in-detail" aria-live="polite"></div>
+      <div class="panel ai" id="contrato">
+        <div><h2>Nuevo contrato con AI</h2><div class="sub">Escribí las condiciones como se las dirías a un abogado. Oto arma el borrador.</div></div>
+        <div><label class="lab" for="c-who">Para</label>
+          <select class="field" id="c-who"></select></div>
+        <div><label class="lab" for="c-prompt">Condiciones</label>
+          <textarea id="c-prompt" rows="4">Quiero armar un contrato con un influencer al que le voy a pagar 1,000 dólares fijos por mes más un variable del 0.001% del volumen operado en la plataforma por los usuarios que lleguen con su código. Duración 6 meses, 4 publicaciones y 8 historias por mes, exclusividad en la categoría fintech.</textarea></div>
+        <div class="tools"><button type="button" class="btn" id="c-go">Generar contrato</button><button type="button" class="btn ghost small" id="c-stop" hidden>Detener</button><button type="button" class="btn ghost small" id="c-save" hidden>Guardar en la ficha</button></div>
+        <div class="note" id="c-note"></div>
+        <div class="out" id="c-out" hidden></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= OFFLINE ================= -->
+<section id="view-offline" hidden>
+  <div class="wrap">
+    <div class="topbar">
+      <div><div class="eyebrow">Octubre 2026</div><h1>Medios offline</h1></div>
+      <div class="tools"><span class="demo">Datos de ejemplo</span>
+        <div class="seg" role="group" aria-label="Filtrar medio" id="off-filter"></div></div>
+    </div>
+
+    <div class="panel kpis" style="--n:4" id="off-kpis"></div>
+
+    <div class="panel">
+      <div class="ph"><div><h2>Inversión por campaña</h2><div class="sub">Qué se contrató en cada medio, cuánto costó y cuántos impactos generó</div></div></div>
+      <div class="tbl-wrap">
+        <table style="min-width:900px">
+          <thead><tr><th scope="col" class="left">Medio</th><th scope="col" class="left">Campaña y proveedor</th><th scope="col" class="left">Lo contratado</th><th scope="col" class="left">Período</th><th scope="col">Costo</th><th scope="col">Impactos</th><th scope="col">CPM</th></tr></thead>
+          <tbody id="off-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FACTURAS ================= -->
+<section id="view-facturas" hidden>
+  <div class="wrap">
+    <div class="topbar">
+      <div><div class="eyebrow">Hoy, 30 de octubre de 2026</div><h1>Facturas</h1></div>
+      <div class="tools"><span class="demo">Facturas de ejemplo · los mails se simulan</span>
+        <div class="seg" role="group" aria-label="Filtrar facturas" id="fx-filter"></div></div>
+    </div>
+
+    <div class="panel kpis" style="--n:4" id="fx-kpis"></div>
+
+    <div class="panel">
+      <div class="ph"><div><h2>Todas las facturas</h2><div class="sub" id="fx-sub"></div></div></div>
+      <div class="tbl-wrap">
+        <table style="min-width:960px">
+          <thead><tr><th scope="col">Proveedor y concepto</th><th scope="col" class="left">Canal</th><th scope="col">Vence</th><th scope="col">Monto</th><th scope="col" class="left">Estado</th><th scope="col" class="left">Acción</th></tr></thead>
+          <tbody id="fx-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel ai" id="fx-mail" hidden aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ================= CONEXIONES ================= -->
+<section id="view-conexiones" hidden>
+  <div class="wrap">
+    <div class="topbar">
+      <div><div class="eyebrow">Configuración</div><h1>Conexiones</h1></div>
+      <div class="tools"><span class="demo">Las conexiones se simulan en el prototipo</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><div><h2>Correos de facturas</h2><div class="sub">Oto lee cada factura que llega a estas direcciones, la clasifica por canal y la suma al gasto real</div></div></div>
+      <div class="rows" id="cx-emails"></div>
+      <form id="cx-form" class="cx-form" novalidate>
+        <div style="flex:1 1 280px;min-width:0"><label class="lab" for="cx-email">Agregar un correo</label>
+          <input class="field" type="email" id="cx-email" placeholder="facturas@tuempresa.com" autocomplete="email"></div>
+        <button type="submit" class="btn">Agregar correo</button>
+      </form>
+      <div class="note" id="cx-note" aria-live="polite"></div>
+      <p class="note" style="margin:12px 0 0">Tip: configurá en tu correo un reenvío automático de las facturas de proveedores a cualquiera de estas direcciones.</p>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><div><h2>Correo de finanzas</h2><div class="sub">A esta dirección van las consultas por facturas vencidas</div></div></div>
+      <form id="fin-form" class="cx-form" novalidate style="margin-top:0">
+        <div style="flex:1 1 280px;min-width:0"><label class="lab" for="fin-email">Correo de contabilidad o finanzas</label>
+          <input class="field" type="email" id="fin-email" autocomplete="email"></div>
+        <button type="submit" class="btn">Guardar</button>
+      </form>
+      <div class="note" id="fin-note" aria-live="polite"></div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><div><h2>Plataformas de paid media</h2><div class="sub" id="cx-plat-sub"></div></div></div>
+      <div class="plats" id="cx-plats"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BUDGET ================= -->
+<section id="view-budget" hidden>
+  <div class="wrap">
+    <div class="topbar">
+      <div><div class="eyebrow">Proyección 2026</div><h1>Budget</h1></div>
+      <div class="tools">
+        <span class="demo">Proyección de ejemplo · editable</span>
+        <label class="sr" for="b-ch">Canal</label>
+        <select class="field sel" id="b-ch"></select>
+      </div>
+    </div>
+
+    <div class="panel kpis" style="--n:4">
+      <div class="kpi"><div class="k">Gasto proyectado 2026</div><div class="v num" id="b-k1"></div><div class="d" id="b-k1-d"></div></div>
+      <div class="kpi"><div class="k">Gasto real a octubre</div><div class="v num" id="b-k2"></div><div class="d" id="b-k2-d"></div></div>
+      <div class="kpi"><div class="k">Clientes proyectados 2026</div><div class="v num" id="b-k3"></div><div class="d" id="b-k3-d"></div></div>
+      <div class="kpi"><div class="k">Clientes reales a octubre</div><div class="v num" id="b-k4"></div><div class="d" id="b-k4-d"></div></div>
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <div class="ph"><div><h2>Gasto por mes</h2><div class="sub" id="b-c1-sub"></div></div>
+          <div class="legend"><span><i class="sw soft"></i>Proyectado</span><span><i class="sw"></i>Real</span></div></div>
+        <svg class="chart" id="chart-pspend" role="img" aria-label="Gasto proyectado y real por mes"></svg>
+      </div>
+      <div class="panel">
+        <div class="ph"><div><h2>Clientes nuevos por mes</h2><div class="sub" id="b-c2-sub"></div></div>
+          <div class="legend"><span><i class="sw soft"></i>Proyectado</span><span><i class="sw"></i>Real</span></div></div>
+        <svg class="chart" id="chart-pclients" role="img" aria-label="Clientes nuevos proyectados y reales por mes"></svg>
+        <p class="note" id="b-c2-empty" hidden style="margin:8px 0 0">Los medios offline no tienen clientes atribuidos: suman al costo de marca.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="ph">
+        <div><h2 id="b-grid-title"></h2><div class="sub" id="b-grid-sub"></div></div>
+        <div class="tools">
+          <div class="seg" role="group" aria-label="Qué proyectar">
+            <button type="button" id="b-met-spend" aria-pressed="true">Gasto</button>
+            <button type="button" id="b-met-clients" aria-pressed="false">Clientes</button>
+          </div>
+          <div class="seg" role="group" aria-label="Vista">
+            <button type="button" id="b-mode-plan" aria-pressed="false">Proyección</button>
+            <button type="button" id="b-mode-real" aria-pressed="true">Real vs. proyectado</button>
+          </div>
+          <button type="button" class="btn ghost small" id="b-reset">Restablecer ejemplo</button>
+        </div>
+      </div>
+      <div class="tbl-wrap"><table class="bgrid" id="b-grid"></table></div>
+    </div>
+
+  </div>
+</section>
+
+    </div>
+  </main>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+// =====================================================================
+// Example data — Empresa demo, 2026. Amounts in US$ thousands (K) unless noted.
+// =====================================================================
+const MONTHS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const ELAPSED = 10;                                        // enero a octubre
+const SPEND  = [72,78,95,92,98,90,94,97,99,96];            // total real por mes
+const CLIENTS= [480,520,590,560,610,580,600,630,640,650];
+const UNATTRIBUTED = 400;
+const CHANNELS = [
+  {key:'google',   g:'Digital', name:'Google Ads',  ytd:260, annual:330, clients:2100, planClients:2700},
+  {key:'meta',     g:'Digital', name:'Meta Ads',    ytd:210, annual:260, clients:1650, planClients:2100},
+  {key:'tiktok',   g:'Digital', name:'TikTok Ads',  ytd:90,  annual:120, clients:600,  planClients:800},
+  {key:'influencers', g:'Influencers y streaming', name:'Influencers', ytd:120, annual:150, clients:900, planClients:1150},
+  {key:'streaming',g:'Influencers y streaming', name:'Streaming',   ytd:40,  annual:60,  clients:210,  planClients:280},
+  {key:'tv',       g:'Offline', name:'TV',          ytd:90,  annual:150, clients:null},
+  {key:'radio',    g:'Offline', name:'Radio',       ytd:30,  annual:40,  clients:null},
+  {key:'vp',       g:'Offline', name:'Vía Pública', ytd:71,  annual:90,  clients:null},
+];
+const CH = Object.fromEntries(CHANNELS.map(c => [c.key, c]));
+const sum = a => a.reduce((x,y)=>x+(y||0),0);
+const YTD_SPEND = sum(SPEND), YTD_CLIENTS = sum(CLIENTS);
+const LAST = ELAPSED - 1;
+// Real spend of a channel in month m: the channel's YTD share of that month's total.
+const realCh = (k,m) => m < ELAPSED ? CH[k].ytd * SPEND[m] / YTD_SPEND : null;
+const clientsCh = (k,m) => CH[k].clients == null ? null : CH[k].clients * CLIENTS[m] / YTD_CLIENTS;
+
+// Projection (editable): spend in US$ K and new clients, per channel and month, with a seasonal shape (not a flat average).
+const SPEND_SEASON  = [0.80,0.85,0.97,0.95,1.00,0.95,0.97,1.00,1.02,1.03,1.18,1.28];
+const CLIENT_SEASON = [0.80,0.86,0.96,0.92,1.00,0.95,0.98,1.02,1.03,1.04,1.18,1.26];
+const UNATTRIBUTED_PLAN = 470;
+const CL_ROWS = [...CHANNELS.filter(c => c.clients != null), {key:'unattr', g:'Sin canal', name:'Sin atribución directa', planClients: UNATTRIBUTED_PLAN}];
+// Monthly split of an annual total by season; December absorbs rounding so the year adds up exactly.
+function split(total, season, unit){
+  const r = season.map(f => Math.round(total/12*f/unit)*unit);
+  r[11] = Math.round((total - sum(r.slice(0,11)))/unit)*unit;
+  return r;
+}
+function defaultPlan(){
+  return {
+    spend: Object.fromEntries(CHANNELS.map(c => [c.key, split(c.annual, SPEND_SEASON, 0.1).map(v => Math.round(v*10)/10)])),
+    clients: Object.fromEntries(CL_ROWS.map(c => [c.key, split(c.planClients, CLIENT_SEASON, 1)])),
+  };
+}
+let PLAN = defaultPlan();
+try {
+  const s = JSON.parse(localStorage.getItem('otomkt-plan-v3') || 'null');
+  if (s && s.spend && s.clients && CHANNELS.every(c => Array.isArray(s.spend[c.key]) && s.spend[c.key].length === 12) && CL_ROWS.every(c => Array.isArray(s.clients[c.key]) && s.clients[c.key].length === 12)) PLAN = s;
+} catch (e) {}
+function savePlan(){ try { localStorage.setItem('otomkt-plan-v3', JSON.stringify(PLAN)); } catch (e) {} }
+const budgetMonth = m => sum(CHANNELS.map(c => PLAN.spend[c.key][m]));
+const budgetYear = () => sum(MONTHS.map((_,m) => budgetMonth(m)));
+const budgetRange = (k, from, to) => sum(PLAN.spend[k].slice(from, to));
+const goalMonth = m => sum(CL_ROWS.map(c => PLAN.clients[c.key][m]));
+const goalYear = () => sum(MONTHS.map((_,m) => goalMonth(m)));
+const goalToDate = () => sum(MONTHS.slice(0, ELAPSED).map((_,m) => goalMonth(m)));
+const realClientsRow = (k,m) => m >= ELAPSED ? null : (k === 'unattr' ? UNATTRIBUTED * CLIENTS[m] / YTD_CLIENTS : clientsCh(k,m));
+
+// ---------- Formatting ----------
+const nf = new Intl.NumberFormat('en-US');
+const fmtInt = n => nf.format(Math.round(n));
+// Amounts are stored in US$ thousands; always shown in full US dollars (US number format).
+function fmtK(k){ return 'US$ ' + fmtInt(k*1000); }
+const fmtUSD = n => 'US$ ' + fmtInt(n);
+// Big numbers: the currency is set smaller and muted so the figure leads.
+const money = n => '<span class="cur">US$</span>' + fmtInt(n);
+const moneyK = k => money(k*1000);
+const fmtCPM = n => 'US$ ' + n.toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtShort = n => n >= 1e6 ? (n/1e6).toLocaleString('en-US',{maximumFractionDigits:1}) + ' M' : n >= 1e3 ? Math.round(n/1e3).toLocaleString('en-US') + ' K' : fmtInt(n);
+const pct = n => Math.round(n*100) + '%';
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ICON_OK = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"/></svg>';
+const ICON_WARN = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v6M12 17h.01"/></svg>';
+const ICON_UP = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+const $ = id => document.getElementById(id);
+
+// ---------- Claude (sample capability) ----------
+let samplePromise = null;
+function getSample(){
+  if (!samplePromise) samplePromise = (window.claude && window.claude.use) ? window.claude.use('sample').catch(() => null) : Promise.resolve(null);
+  return samplePromise;
+}
+function aiError(e){
+  const c = e && e.code;
+  if (c === 'not_granted' || c === 'sampling_disabled' || c === 'not_declared' || c === 'capability_disabled' || c === 'capability_removed') return 'La AI no está habilitada en esta vista.';
+  if (c === 'rate_limited') return 'Demasiados pedidos seguidos. Probá de nuevo en un rato.';
+  if (c === 'session_expired') return 'Tu sesión venció. Volvé a iniciar sesión y probá de nuevo.';
+  if (c === 'image_rejected') return 'No se pudo leer esa imagen. Probá con otra foto o captura.';
+  if (c === 'images_unavailable') return 'Esta vista no puede enviar imágenes a la AI.';
+  if (c === 'invalid_json') return 'La respuesta no tuvo el formato esperado. Probá de nuevo.';
+  if (c === 'refused') return 'La AI no pudo responder ese pedido. Reformulalo y probá de nuevo.';
+  if (c === 'cancelled') return 'Detenido.';
+  return 'No se pudo completar. Probá de nuevo.';
+}
+
+// ---------- Tooltip ----------
+const tip = $('tip');
+function showTip(e, html){ tip.innerHTML = html; tip.hidden = false; moveTip(e); }
+function moveTip(e){
+  const pad = 14, w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = e.clientX + pad, y = e.clientY - h - pad;
+  if (x + w > window.innerWidth - 8) x = e.clientX - w - pad;
+  if (y < 8) y = e.clientY + pad;
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+}
+function hideTip(){ tip.hidden = true; }
+function bindTip(el, html){
+  el.addEventListener('pointerenter', e => showTip(e, typeof html === 'function' ? html() : html));
+  el.addEventListener('pointermove', moveTip);
+  el.addEventListener('pointerleave', hideTip);
+}
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent){ const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (parent) parent.appendChild(n); return n; }
+
+// =====================================================================
+// DASHBOARD
+// =====================================================================
+let period = 'ytd';
+function renderKPIs(){
+  const ytd = period === 'ytd';
+  const spend = ytd ? YTD_SPEND : SPEND[LAST], clients = ytd ? YTD_CLIENTS : CLIENTS[LAST];
+  $('k-clients').textContent = fmtInt(clients);
+  $('k-spend').innerHTML = moneyK(spend);
+  $('k-cac').innerHTML = money(spend*1000/clients);
+  const chip = (txt, cls) => `<span class="delta${cls ? ' ' + cls : ''}">${txt}</span>`;
+  const chg = (a, b) => { const r = (a - b) / b, p = Math.abs(r*100); return (r >= 0 ? '▲ ' : '▼ ') + p.toLocaleString('en-US', {maximumFractionDigits: p < 10 ? 1 : 0}) + '%'; };
+  const cac = m => SPEND[m]*1000/CLIENTS[m];
+  if (ytd){
+    $('k-clients-d').innerHTML = chip(pct(clients/goalYear())) + 'de los clientes proyectados del año';
+    $('k-spend-d').innerHTML = chip(pct(spend/budgetYear())) + 'del budget anual (' + fmtK(budgetYear()) + ')';
+    $('k-cac-d').innerHTML = chip(chg(cac(LAST), cac(0)), cac(LAST) <= cac(0) ? 'good' : 'bad') + 'octubre vs. enero';
+  } else {
+    $('k-clients-d').innerHTML = chip(chg(CLIENTS[LAST], CLIENTS[LAST-1]), CLIENTS[LAST] >= CLIENTS[LAST-1] ? 'good' : 'bad') + 'vs. septiembre';
+    const bm = budgetMonth(LAST);
+    $('k-spend-d').innerHTML = chip(pct(spend/bm), spend > bm ? 'bad' : '') + 'del budget del mes (' + fmtK(bm) + ')';
+    $('k-cac-d').innerHTML = chip(chg(cac(LAST), cac(LAST-1)), cac(LAST) <= cac(LAST-1) ? 'good' : 'bad') + 'vs. septiembre (' + fmtUSD(cac(LAST-1)) + ')';
+  }
+  spark('k-clients-s', CLIENTS);
+  spark('k-spend-s', SPEND);
+  spark('k-cac-s', SPEND.map((v,i) => v*1000/CLIENTS[i]));
+}
+function spark(id, arr){
+  const svg = $(id); svg.innerHTML = '';
+  const lo = Math.min(...arr), hi = Math.max(...arr), n = arr.length;
+  const x = i => i*200/(n-1), y = v => 32 - (v-lo)/((hi-lo)||1)*28;
+  const d = arr.map((v,i) => (i?'L':'M') + x(i).toFixed(1) + ',' + y(v).toFixed(1)).join('');
+  el('path', {d: d + 'L200,36L0,36Z', fill:'var(--series)', 'fill-opacity':0.12}, svg);
+  el('path', {d, fill:'none', stroke:'var(--series)', 'stroke-width':2, 'vector-effect':'non-scaling-stroke', 'stroke-linejoin':'round'}, svg);
+}
+function renderGoals(){
+  const GOAL_YEAR = goalYear(), expected = goalToDate(), share = YTD_CLIENTS / GOAL_YEAR, pace = expected / GOAL_YEAR;
+  $('g-year-v').innerHTML = fmtInt(YTD_CLIENTS) + ' <small>de ' + fmtInt(GOAL_YEAR) + '</small>';
+  $('g-year-fill').style.width = (share*100).toFixed(1) + '%';
+  $('g-year-pace').style.left = (pace*100).toFixed(1) + '%';
+  $('g-year-meter').setAttribute('aria-label', fmtInt(YTD_CLIENTS) + ' de ' + fmtInt(GOAL_YEAR) + ' clientes; ritmo esperado ' + fmtInt(expected));
+  $('g-year-pill').innerHTML = YTD_CLIENTS < expected
+    ? '<span class="pill warn">' + ICON_WARN + fmtInt(expected - YTD_CLIENTS) + ' debajo de lo proyectado</span>'
+    : '<span class="pill good">' + ICON_OK + 'Según lo proyectado</span>';
+  $('g-year-l').textContent = pct(share) + ' conseguido · la marca es lo proyectado a octubre (' + fmtInt(expected) + ')';
+  $('g-year-r').textContent = 'Faltan ' + fmtInt(GOAL_YEAR - YTD_CLIENTS) + ' · ' + fmtInt((GOAL_YEAR - YTD_CLIENTS)/(12-ELAPSED)) + ' por mes';
+  const GOAL_MONTH = goalMonth(LAST), m = CLIENTS[LAST], s = m/GOAL_MONTH;
+  $('g-month-v').innerHTML = fmtInt(m) + ' <small>de ' + fmtInt(GOAL_MONTH) + '</small>';
+  $('g-month-fill').style.width = Math.min(s,1)*100 + '%';
+  $('g-month-meter').setAttribute('aria-label', fmtInt(m) + ' de ' + fmtInt(GOAL_MONTH) + ' clientes en octubre');
+  $('g-month-pill').innerHTML = s >= 1 ? '<span class="pill good">' + ICON_OK + 'Proyección cumplida</span>' : '<span class="pill warn">' + ICON_WARN + 'Por debajo</span>';
+  $('g-month-l').textContent = pct(s) + ' de lo proyectado para octubre';
+  $('g-month-r').textContent = m === GOAL_MONTH ? 'Igual a lo proyectado' : m > GOAL_MONTH ? '+' + fmtInt(m - GOAL_MONTH) + ' sobre lo proyectado' : 'Faltan ' + fmtInt(GOAL_MONTH - m);
+}
+function drawBudgetChart(){
+  const svg = $('chart-budget'); svg.innerHTML = '';
+  const W = 640, H = 260, L = 60, R = 8, T = 12, B = 28;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const peak = Math.max(...SPEND, ...MONTHS.slice(0,ELAPSED).map((_,m)=>budgetMonth(m)));
+  const max = Math.ceil(peak/40)*40, iw = W-L-R, ih = H-T-B;
+  const y = v => T + ih - (v/max)*ih;
+  const band = iw/ELAPSED, bw = Math.min(30, band*0.55);
+  for (let v = 0; v <= max; v += 40){
+    el('line',{x1:L,x2:W-R,y1:y(v),y2:y(v),stroke:'var(--line)','stroke-width':1},svg);
+    el('text',{x:L-8,y:y(v)+4,'text-anchor':'end'},svg).textContent = fmtInt(v*1000);
+  }
+  for (let i = 0; i < ELAPSED; i++){
+    const cx = L + band*i + band/2, v = SPEND[i], top = y(v), bottom = y(0), r = 4, x0 = cx - bw/2, bm = budgetMonth(i);
+    el('path',{d:`M${x0},${bottom}V${top+r}Q${x0},${top} ${x0+r},${top}H${x0+bw-r}Q${x0+bw},${top} ${x0+bw},${top+r}V${bottom}Z`, fill: v > bm ? 'var(--crit)' : 'var(--series)'},svg);
+    el('line',{x1:cx-band*0.42,x2:cx+band*0.42,y1:y(bm),y2:y(bm),stroke:'var(--ink)','stroke-width':2,'stroke-dasharray':'5 4'},svg);
+    el('text',{x:cx,y:H-8,'text-anchor':'middle'},svg).textContent = MONTHS[i];
+    const hit = el('rect',{x:L+band*i,y:T,width:band,height:ih,fill:'transparent'},svg);
+    bindTip(hit, () => { const d = v - bm; return `<b>${MONTHS[i]} 2026</b><br>Gasto real: ${fmtK(v)}<br>Budget: ${fmtK(bm)}<br>${d<=0?'Disponible':'Excedido'}: ${fmtK(Math.abs(d))}`; });
+  }
+  const bytd = sum(MONTHS.slice(0,ELAPSED).map((_,m)=>budgetMonth(m)));
+  $('bvr-sub').textContent = `A la fecha: ${fmtK(YTD_SPEND)} gastados de ${fmtK(bytd)} (${pct(YTD_SPEND/bytd)}). Quedan ${fmtK(budgetYear()-YTD_SPEND)} del año.`;
+}
+function drawClientsChart(){
+  const svg = $('chart-clients'); svg.innerHTML = '';
+  const W = 400, H = 260, L = 40, R = 14, T = 16, B = 28;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const min = 400, max = 700, iw = W-L-R, ih = H-T-B, n = ELAPSED;
+  const x = i => L + (iw/(n-1))*i, y = v => T + ih - ((v-min)/(max-min))*ih;
+  [400,500,600,700].forEach(v => { el('line',{x1:L,x2:W-R,y1:y(v),y2:y(v),stroke:'var(--line)','stroke-width':1},svg); el('text',{x:L-8,y:y(v)+4,'text-anchor':'end'},svg).textContent = fmtInt(v); });
+  for (let i = 0; i < n; i++) if (i%3===0 || i===n-1) el('text',{x:x(i),y:H-8,'text-anchor':'middle'},svg).textContent = MONTHS[i];
+  const pts = CLIENTS.map((v,i)=>[x(i),y(v)]);
+  const line = pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join('');
+  el('path',{d:line+`L${x(n-1)},${y(min)}L${x(0)},${y(min)}Z`,fill:'var(--series)','fill-opacity':0.1},svg);
+  const step = iw/(n-1);
+  for (let i = 0; i < n; i++){ const g = goalMonth(i); el('line',{x1:Math.max(L, x(i)-step/2),x2:Math.min(W-R, x(i)+step/2),y1:y(g),y2:y(g),stroke:'var(--ink)','stroke-width':1.5,'stroke-dasharray':'4 4'},svg); }
+  el('path',{d:line,fill:'none',stroke:'var(--series)','stroke-width':2,'stroke-linejoin':'round','stroke-linecap':'round'},svg);
+  el('circle',{cx:pts[n-1][0],cy:pts[n-1][1],r:5,fill:'var(--series)',stroke:'var(--surface)','stroke-width':2},svg);
+  const cross = el('line',{y1:T,y2:T+ih,stroke:'var(--faint)','stroke-width':1,visibility:'hidden'},svg);
+  const dot = el('circle',{r:5,fill:'var(--series)',stroke:'var(--surface)','stroke-width':2,visibility:'hidden'},svg);
+  const hit = el('rect',{x:L,y:T,width:iw,height:ih,fill:'transparent'},svg);
+  hit.addEventListener('pointermove', e => {
+    const r = svg.getBoundingClientRect(), sx = (e.clientX - r.left)*(W/r.width);
+    const i = Math.max(0, Math.min(n-1, Math.round((sx-L)/(iw/(n-1)))));
+    cross.setAttribute('x1',x(i)); cross.setAttribute('x2',x(i)); cross.setAttribute('visibility','visible');
+    dot.setAttribute('cx',x(i)); dot.setAttribute('cy',y(CLIENTS[i])); dot.setAttribute('visibility','visible');
+    const d = CLIENTS[i]-goalMonth(i);
+    showTip(e, `<b>${MONTHS[i]} 2026</b><br>Clientes: ${fmtInt(CLIENTS[i])}<br>Proyectado: ${fmtInt(goalMonth(i))} (${d>=0?'+':''}${fmtInt(d)})<br>CAC: ${fmtUSD(SPEND[i]*1000/CLIENTS[i])}`);
+  });
+  hit.addEventListener('pointerleave', () => { cross.setAttribute('visibility','hidden'); dot.setAttribute('visibility','hidden'); hideTip(); });
+}
+function renderChannels(){
+  const ytd = period === 'ytd';
+  $('ch-sub').textContent = (ytd ? 'Enero a octubre 2026' : 'Octubre 2026') + ' · budget según la proyección cargada en Budget';
+  const body = $('ch-body'); body.innerHTML = '';
+  let group = null, tS = 0, tB = 0;
+  CHANNELS.forEach(c => {
+    if (c.g !== group){ group = c.g; body.insertAdjacentHTML('beforeend', `<tr class="group"><td colspan="6">${group}</td></tr>`); }
+    const s = ytd ? c.ytd : realCh(c.key, LAST);
+    const b = ytd ? budgetRange(c.key, 0, ELAPSED) : PLAN.spend[c.key][LAST];
+    const cl = c.clients == null ? null : (ytd ? c.clients : clientsCh(c.key, LAST));
+    const ex = b ? s/b : 0; tS += s; tB += b;
+    body.insertAdjacentHTML('beforeend', `<tr><th scope="row">${c.name}</th>
+      <td class="num">${fmtK(s)}</td><td class="num muted">${fmtK(b)}</td>
+      <td><div class="bar-cell"><span class="hbar"><i class="${ex>1?'over':''}" style="width:${Math.min(ex,1)*100}%"></i></span><span class="num" style="min-width:42px">${b?pct(ex):'—'}</span></div></td>
+      <td class="num">${cl==null?'<span class="tag">Marca</span>':fmtInt(cl)}</td>
+      <td class="num">${cl==null?'<span class="muted">—</span>':fmtUSD(s*1000/cl)}</td></tr>`);
+  });
+  const un = ytd ? UNATTRIBUTED : UNATTRIBUTED*CLIENTS[LAST]/YTD_CLIENTS;
+  body.insertAdjacentHTML('beforeend', `<tr><th scope="row" class="muted">Sin atribución directa</th><td></td><td></td><td></td><td class="num muted">${fmtInt(un)}</td><td></td></tr>`);
+  const spend = ytd ? YTD_SPEND : SPEND[LAST], clients = ytd ? YTD_CLIENTS : CLIENTS[LAST];
+  $('ch-foot').innerHTML = `<tr><th scope="row" class="left">Total</th><td class="num">${fmtK(tS)}</td><td class="num muted">${fmtK(tB)}</td><td class="num">${pct(tS/tB)}</td><td class="num">${fmtInt(clients)}</td><td class="num">${fmtUSD(spend*1000/clients)}</td></tr>`;
+}
+function setPeriod(next){
+  period = next;
+  $('p-ytd').setAttribute('aria-pressed', String(next==='ytd'));
+  $('p-month').setAttribute('aria-pressed', String(next==='month'));
+  renderKPIs(); renderChannels();
+}
+$('p-ytd').addEventListener('click', () => setPeriod('ytd'));
+$('p-month').addEventListener('click', () => setPeriod('month'));
+function renderDashboard(){ renderKPIs(); renderGoals(); drawBudgetChart(); drawClientsChart(); renderChannels(); }
+
+// =====================================================================
+// BUDGET — projection vs. real, spend and new clients, total or per channel
+// =====================================================================
+let bMode = 'real', bMetric = 'spend', bChannel = 'all';
+// Monthly series for the selected channel (spend in US$ K, clients in units). Real is null for months not closed yet.
+function seriesFor(ch){
+  const spendPlan = MONTHS.map((_,m) => ch === 'all' ? budgetMonth(m) : PLAN.spend[ch][m]);
+  const spendReal = MONTHS.map((_,m) => m >= ELAPSED ? null : (ch === 'all' ? SPEND[m] : realCh(ch, m)));
+  const hasClients = ch === 'all' || CH[ch].clients != null;
+  const clPlan = MONTHS.map((_,m) => !hasClients ? null : ch === 'all' ? goalMonth(m) : PLAN.clients[ch][m]);
+  const clReal = MONTHS.map((_,m) => !hasClients || m >= ELAPSED ? null : (ch === 'all' ? CLIENTS[m] : clientsCh(ch, m)));
+  return {spendPlan, spendReal, clPlan, clReal, hasClients};
+}
+function renderBudgetKPIs(){
+  const s = seriesFor(bChannel);
+  const spY = sum(s.spendPlan), spTD = sum(s.spendPlan.slice(0, ELAPSED)), spR = sum(s.spendReal);
+  $('b-k1').innerHTML = moneyK(spY);
+  $('b-k1-d').innerHTML = 'Quedan ' + fmtK(spY - spR) + ' para nov. y dic.';
+  $('b-k2').innerHTML = moneyK(spR);
+  const ex = spR / spTD;
+  $('b-k2-d').innerHTML = `<span class="delta ${ex > 1 ? 'bad' : ''}">${pct(ex)}</span>de ${fmtK(spTD)} proyectados`;
+  if (s.hasClients){
+    const cY = sum(s.clPlan), cTD = sum(s.clPlan.slice(0, ELAPSED)), cR = sum(s.clReal);
+    $('b-k3').textContent = fmtInt(cY);
+    $('b-k3-d').textContent = fmtInt(cTD) + ' proyectados a octubre';
+    $('b-k4').textContent = fmtInt(cR);
+    const r = cR / cTD;
+    $('b-k4-d').innerHTML = `<span class="delta ${r >= 1 ? 'good' : 'bad'}">${pct(r)}</span>de lo proyectado a octubre`;
+  } else {
+    $('b-k3').textContent = '—'; $('b-k3-d').textContent = 'Medio offline: costo de marca';
+    $('b-k4').textContent = '—'; $('b-k4-d').textContent = 'Sin clientes atribuidos';
+  }
+  const name = bChannel === 'all' ? 'Todos los canales' : CH[bChannel].name;
+  $('b-c1-sub').textContent = name + ' · nov. y dic. solo proyectados';
+  $('b-c2-sub').textContent = name + ' · nov. y dic. solo proyectados';
+}
+// Grouped bars: projected (soft) next to real (solid) for each month.
+function drawPlanVsReal(id, plan, real, isMoney, lowerIsBetter){
+  const svg = $(id); svg.innerHTML = '';
+  const W = 600, H = 250, L = isMoney ? 64 : 44, R = 6, T = 12, B = 26;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const vals = plan.concat(real).filter(v => v != null);
+  const peak = Math.max(...vals, 1);
+  const stepRaw = peak / 4, mag = Math.pow(10, Math.floor(Math.log10(stepRaw))), stepV = Math.ceil(stepRaw / mag) * mag, max = stepV * 4;
+  const iw = W-L-R, ih = H-T-B, y = v => T + ih - (v/max)*ih, band = iw/12, bw = Math.min(14, band*0.3), gap = 2;
+  for (let v = 0; v <= max + 1e-9; v += stepV){
+    el('line',{x1:L,x2:W-R,y1:y(v),y2:y(v),stroke:'var(--grid)','stroke-width':1},svg);
+    el('text',{x:L-8,y:y(v)+4,'text-anchor':'end'},svg).textContent = fmtInt(isMoney ? v*1000 : v);
+  }
+  const bar = (x0, v, fill, op) => { if (v == null) return; const top = y(v), bot = y(0), r = Math.min(3, (bot-top)/2);
+    el('path',{d:`M${x0},${bot}V${top+r}Q${x0},${top} ${x0+r},${top}H${x0+bw-r}Q${x0+bw},${top} ${x0+bw},${top+r}V${bot}Z`, fill, 'fill-opacity':op},svg); };
+  MONTHS.forEach((m,i) => {
+    const cx = L + band*i + band/2;
+    bar(cx - bw - gap/2, plan[i], 'var(--series)', 0.28);
+    const rv = real[i], worse = rv != null && plan[i] != null && (lowerIsBetter ? rv > plan[i] * 1.0001 : rv < plan[i] * 0.9999);
+    bar(cx + gap/2, rv, worse && lowerIsBetter ? 'var(--crit)' : 'var(--series)', 1);
+    el('text',{x:cx,y:H-8,'text-anchor':'middle',...(i === LAST ? {'font-weight':'600'} : {})},svg).textContent = m;
+    const hit = el('rect',{x:L+band*i,y:T,width:band,height:ih,fill:'transparent'},svg);
+    bindTip(hit, () => {
+      const f = v => v == null ? '—' : (isMoney ? fmtK(v) : fmtInt(v));
+      let t = `<b>${m} 2026</b><br>Proyectado: ${f(plan[i])}<br>Real: ${rv == null ? 'mes sin cerrar' : f(rv)}`;
+      if (rv != null && plan[i]){ const d = (rv - plan[i]) / plan[i]; t += `<br>Diferencia: ${d >= 0 ? '+' : '−'}${Math.abs(Math.round(d*100))}%`; }
+      return t;
+    });
+  });
+}
+function drawBudgetCharts(){
+  const s = seriesFor(bChannel);
+  drawPlanVsReal('chart-pspend', s.spendPlan, s.spendReal, true, true);
+  $('chart-pclients').hidden = !s.hasClients; $('b-c2-empty').hidden = s.hasClients;
+  if (s.hasClients) drawPlanVsReal('chart-pclients', s.clPlan, s.clReal, false, false);
+}
+function renderBudgetGrid(){
+  const plan = bMode === 'plan', isSpend = bMetric === 'spend';
+  const rows = isSpend ? CHANNELS : CL_ROWS;
+  const store = isSpend ? PLAN.spend : PLAN.clients;
+  const shown = v => isSpend ? fmtInt(v*1000) : fmtInt(v);
+  const realOf = (k,i) => isSpend ? realCh(k,i) : realClientsRow(k,i);
+  $('b-grid-title').textContent = (isSpend ? 'Gasto' : 'Clientes nuevos') + (plan ? ' proyectado por canal y mes' : ': real vs. proyectado por canal y mes');
+  $('b-grid-sub').textContent = plan
+    ? (isSpend ? 'En dólares (US$). ' : 'En cantidad de clientes. ') + 'Editá cualquier celda: se guarda en este navegador y actualiza los gráficos y el dashboard.'
+    : 'Arriba el real, abajo la diferencia contra lo proyectado. En rojo, ' + (isSpend ? 'los meses que gastaron de más.' : 'los meses con menos clientes de lo proyectado.') + ' Nov. y dic. muestran la proyección.';
+  let h = '<thead><tr><th scope="col" class="left">Canal</th>' + MONTHS.map((m,i)=>`<th scope="col" class="${i===LAST?'cur-m':''}">${m}</th>`).join('') + '<th scope="col">Total</th></tr></thead><tbody>';
+  let group = null;
+  rows.forEach(c => {
+    if (c.g !== group){ group = c.g; h += `<tr class="group"><td colspan="14">${group}</td></tr>`; }
+    h += `<tr><th scope="row">${c.name}</th>`;
+    MONTHS.forEach((m,i) => {
+      const b = store[c.key][i], cur = i===LAST ? ' cur-m' : '';
+      if (plan){
+        h += `<td class="${cur.trim()}"><input class="cell" type="number" min="0" step="${isSpend?100:1}" id="b-${bMetric}-${c.key}-${i}" data-k="${c.key}" data-m="${i}" value="${isSpend ? Math.round(b*1000) : b}" aria-label="${c.name}, ${m}"></td>`;
+      } else if (i < ELAPSED){
+        const r = realOf(c.key, i), d = b ? (r-b)/b : 0, dp = Math.round(d*100);
+        const bad = isSpend ? dp > 0 : dp < 0;
+        h += `<td class="real${bad?' over':''}${cur}">${shown(r)}<small>${dp===0?'0%':(dp>0?'+':'−')+Math.abs(dp)+'%'}</small></td>`;
+      } else {
+        h += `<td class="proj${cur}" title="Proyectado">${shown(b)}</td>`;
+      }
+    });
+    const tot = plan ? sum(store[c.key]) : sum(MONTHS.map((_,i) => i < ELAPSED ? realOf(c.key,i) : store[c.key][i]));
+    h += `<td class="num" style="font-weight:600" id="bt-${c.key}">${shown(tot)}</td></tr>`;
+  });
+  h += '</tbody><tfoot><tr><th scope="row" class="left">Total</th>';
+  const monthTotal = i => isSpend ? (plan || i >= ELAPSED ? budgetMonth(i) : SPEND[i]) : (plan || i >= ELAPSED ? goalMonth(i) : CLIENTS[i]);
+  MONTHS.forEach((_,i) => { h += `<td class="num${i===LAST?' cur-m':''}" id="bm-${i}">${shown(monthTotal(i))}</td>`; });
+  h += `<td class="num" id="b-grand">${shown(sum(MONTHS.map((_,i) => monthTotal(i))))}</td></tr></tfoot>`;
+  $('b-grid').innerHTML = h;
+}
+$('b-grid').addEventListener('input', e => {
+  const t = e.target; if (!t.dataset || !t.dataset.k) return;
+  const v = parseFloat(t.value); if (!isFinite(v) || v < 0) return;
+  const isSpend = bMetric === 'spend', store = isSpend ? PLAN.spend : PLAN.clients, m = +t.dataset.m;
+  store[t.dataset.k][m] = isSpend ? v/1000 : Math.round(v); savePlan();
+  const shown = x => isSpend ? fmtInt(x*1000) : fmtInt(x);
+  $('bt-' + t.dataset.k).textContent = shown(sum(store[t.dataset.k]));
+  $('bm-' + m).textContent = shown(isSpend ? budgetMonth(m) : goalMonth(m));
+  $('b-grand').textContent = shown(isSpend ? budgetYear() : goalYear());
+  renderBudgetKPIs(); drawBudgetCharts(); renderDashboard();
+});
+function setSeg(onId, offId){ $(onId).setAttribute('aria-pressed','true'); $(offId).setAttribute('aria-pressed','false'); }
+$('b-mode-plan').addEventListener('click', () => { bMode = 'plan'; setSeg('b-mode-plan','b-mode-real'); renderBudgetGrid(); });
+$('b-mode-real').addEventListener('click', () => { bMode = 'real'; setSeg('b-mode-real','b-mode-plan'); renderBudgetGrid(); });
+$('b-met-spend').addEventListener('click', () => { bMetric = 'spend'; setSeg('b-met-spend','b-met-clients'); renderBudgetGrid(); });
+$('b-met-clients').addEventListener('click', () => { bMetric = 'clients'; setSeg('b-met-clients','b-met-spend'); renderBudgetGrid(); });
+$('b-ch').innerHTML = '<option value="all">Todos los canales</option>' + CHANNELS.map(c => `<option value="${c.key}">${c.name}</option>`).join('');
+$('b-ch').addEventListener('change', e => { bChannel = e.target.value; renderBudgetKPIs(); drawBudgetCharts(); });
+$('b-reset').addEventListener('click', () => { PLAN = defaultPlan(); savePlan(); renderBudget(); renderDashboard(); });
+function renderBudget(){ renderBudgetKPIs(); drawBudgetCharts(); renderBudgetGrid(); }
+
+// =====================================================================
+// PAID MEDIA
+// =====================================================================
+const PLAT_COLORS = {google:'var(--s1)', meta:'var(--s2)', tiktok:'var(--s3)'};
+const PLATFORMS = [
+  {key:'google', name:'Google Ads', letter:'G', on:true, sub:'3 cuentas · hace 12 min'},
+  {key:'meta', name:'Meta Ads', letter:'M', on:true, sub:'2 cuentas · hace 8 min'},
+  {key:'tiktok', name:'TikTok Ads', letter:'T', on:true, sub:'1 cuenta · hace 1 h'},
+  {key:'linkedin', name:'LinkedIn Ads', letter:'in', on:false},
+  {key:'x', name:'X Ads', letter:'X', on:false},
+  {key:'microsoft', name:'Microsoft Ads', letter:'Ms', on:false},
+  {key:'pinterest', name:'Pinterest Ads', letter:'P', on:false},
+  {key:'snap', name:'Snapchat Ads', letter:'S', on:false},
+  {key:'amazon', name:'Amazon Ads', letter:'A', on:false},
+  {key:'reddit', name:'Reddit Ads', letter:'R', on:false},
+  {key:'spotify', name:'Spotify Ads', letter:'Sp', on:false},
+];
+const CAMPAIGNS = [
+  {id:'g1', p:'google', name:'Search Marca', on:true, daily:200, spend:6.0, conv:95, ctr:9.8},
+  {id:'g2', p:'google', name:'Search Genérica', on:true, daily:410, spend:12.4, conv:88, ctr:4.1},
+  {id:'g3', p:'google', name:'Performance Max', on:true, daily:300, spend:9.0, conv:50, ctr:1.6},
+  {id:'m1', p:'meta', name:'Prospecting Lookalike', on:true, daily:330, spend:9.8, conv:72, ctr:1.2},
+  {id:'m2', p:'meta', name:'Retargeting 30 días', on:true, daily:170, spend:5.1, conv:70, ctr:2.4},
+  {id:'m3', p:'meta', name:'Video Awareness', on:true, daily:240, spend:7.2, conv:41, ctr:0.8},
+  {id:'t1', p:'tiktok', name:'Spark Ads Creadores', on:true, daily:200, spend:6.1, conv:47, ctr:1.9},
+  {id:'t2', p:'tiktok', name:'In-Feed Genérica', on:true, daily:115, spend:3.4, conv:20, ctr:0.9},
+];
+const CAMP = Object.fromEntries(CAMPAIGNS.map(c => [c.id, c]));
+const RECS = [
+  {id:'r1', camp:'g1', title:'Subir el budget diario de Search Marca de US$ 200 a US$ 260', why:'CAC de US$ 63, la mitad del promedio de paid media. Pierde 18% de impresiones por falta de budget.', impact:'+25 clientes por mes · +US$ 1,800 de gasto', apply: c => { c.daily = 260; }},
+  {id:'r2', camp:'g3', title:'Bajar el budget diario de Performance Max de US$ 300 a US$ 220', why:'CAC de US$ 180, 48% arriba del promedio, sin mejora en las últimas 4 semanas.', impact:'Ahorro de US$ 2,400 por mes · −8 clientes', apply: c => { c.daily = 220; }},
+  {id:'r3', camp:'m2', title:'Subir 20% el budget de Retargeting 30 días', why:'CAC de US$ 73 y frecuencia de 2.1: todavía tiene margen antes de saturar.', impact:'+12 clientes por mes · +US$ 1,000 de gasto', apply: c => { c.daily = 204; }},
+  {id:'r4', camp:'t2', title:'Pausar In-Feed Genérica y pasar su budget a Spark Ads Creadores', why:'CAC de US$ 170 contra US$ 130 de Spark Ads, con la mitad de CTR.', impact:'+6 clientes por mes con el mismo gasto', apply: c => { c.on = false; CAMP.t1.daily += c.daily; }},
+];
+const recState = {};           // id -> 'confirm' | 'done'
+let pmFilter = 'all';
+function pmTotals(){
+  const live = CAMPAIGNS; const s = sum(live.map(c=>c.spend)), cv = sum(live.map(c=>c.conv));
+  return {s, cv, cac: s*1000/cv};
+}
+function renderPaid(){
+  const t = pmTotals();
+  const act = CAMPAIGNS.filter(c=>c.on).length;
+  const connected = PLATFORMS.filter(p => p.on && CAMPAIGNS.some(c => c.p === p.key));
+  let cards = `<div class="pcard total"><div class="head"><b>Total paid media<span class="sync" style="color:inherit;opacity:.65">Octubre 2026 · ${connected.length} plataformas</span></b></div>
+    <div><div class="lbl">Gasto</div><div class="big num">${moneyK(t.s)}</div></div>
+    <div class="stats"><div class="stat"><span>Clientes</span><b>${fmtInt(t.cv)}</b></div><div class="stat"><span>CAC</span><b>${money(t.cac)}</b></div></div>
+    <div class="lbl">${act} campañas activas · CAC total de la empresa ${fmtUSD(SPEND[LAST]*1000/CLIENTS[LAST])}</div></div>`;
+  connected.forEach(p => {
+    const cs = CAMPAIGNS.filter(c => c.p === p.key), s = sum(cs.map(c=>c.spend)), cv = sum(cs.map(c=>c.conv)), cac = s*1000/cv;
+    const rel = cac / t.cac - 1;
+    const cmp = Math.abs(rel) < 0.03 ? '<span class="cmp muted">En el promedio</span>'
+      : rel < 0 ? `<span class="cmp" style="color:var(--good-ink)">${Math.round(-rel*100)}% más barato que el promedio</span>`
+      : `<span class="cmp" style="color:var(--crit-ink)">${Math.round(rel*100)}% más caro que el promedio</span>`;
+    cards += `<div class="pcard"><div class="head"><span class="mono" style="background:${PLAT_COLORS[p.key]}">${p.letter}</span><b>${p.name}<span class="sync">${p.sub}</span></b></div>
+      <div><div class="lbl">Gasto</div><div class="big num">${moneyK(s)}</div></div>
+      <div class="stats"><div class="stat"><span>Clientes</span><b>${fmtInt(cv)}</b></div><div class="stat"><span>CAC</span><b>${money(cac)}</b></div></div>
+      <div class="lbl">${cmp}</div></div>`;
+  });
+  $('pm-cards').innerHTML = cards;
+  $('pm-camp-sub').textContent = `Ordenadas por gasto del mes · ${act} activas, ${CAMPAIGNS.length - act} pausadas`;
+  $('pm-recs').innerHTML = RECS.map(r => {
+    const c = CAMP[r.camp], st = recState[r.id];
+    const plat = PLATFORMS.find(p=>p.key===c.p).name;
+    let acts;
+    if (st === 'done') acts = '<span class="pill blue">' + ICON_OK + 'Aplicado</span><span class="note">Simulado en el prototipo</span>';
+    else if (st === 'confirm') acts = `<button type="button" class="btn small" data-rec-ok="${r.id}">Confirmar cambio</button><button type="button" class="btn small ghost" data-rec-cancel="${r.id}">Cancelar</button>`;
+    else acts = `<button type="button" class="btn small dark" data-rec="${r.id}">Aplicar en ${plat}</button><button type="button" class="link" data-rec-skip="${r.id}">Descartar</button>`;
+    if (st === 'skip') return '';
+    return `<div class="rec${st==='done'?' done':''}"><span class="note">${plat} · ${c.name}</span><h3>${r.title}</h3><p class="why">${r.why}</p><div class="impact">${r.impact}</div><div class="acts">${acts}</div></div>`;
+  }).join('') || '<p class="note">No hay recomendaciones pendientes.</p>';
+  const fl = [['all','Todas'],['google','Google'],['meta','Meta'],['tiktok','TikTok']];
+  $('pm-filter').innerHTML = fl.map(([k,l]) => `<button type="button" data-pf="${k}" aria-pressed="${pmFilter===k}">${l}</button>`).join('');
+  const rows = CAMPAIGNS.filter(c => pmFilter==='all' || c.p===pmFilter).sort((a,b)=>b.spend-a.spend);
+  $('pm-body').innerHTML = rows.map(c => {
+    const cac = c.spend*1000/c.conv, rel = cac / t.cac;
+    const st = c.on ? '<span class="pill good">Activa</span>' : '<span class="pill neutral">Pausada</span>';
+    return `<tr><th scope="row"><span style="display:inline-flex;align-items:center;gap:10px"><span class="mono" style="width:26px;height:26px;font-size:12px;border-radius:7px;background:${PLAT_COLORS[c.p]}">${PLATFORMS.find(p=>p.key===c.p).letter}</span>${c.name}</span></th>
+      <td class="left">${st}</td><td class="num">${fmtUSD(c.daily)}</td><td class="num">${fmtK(c.spend)}</td><td class="num">${fmtInt(c.conv)}</td>
+      <td class="num" style="color:${rel>1.3?'var(--crit-ink)':rel<0.75?'var(--good-ink)':'inherit'}">${fmtUSD(cac)}</td><td class="num">${c.ctr.toLocaleString('en-US')}%</td></tr>`;
+  }).join('');
+}
+$('view-paid-media').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.rec){ recState[b.dataset.rec] = 'confirm'; renderPaid(); return; }
+  if (b.dataset.recCancel){ delete recState[b.dataset.recCancel]; renderPaid(); return; }
+  if (b.dataset.recSkip){ recState[b.dataset.recSkip] = 'skip'; renderPaid(); return; }
+  if (b.dataset.recOk){ const r = RECS.find(x=>x.id===b.dataset.recOk); r.apply(CAMP[r.camp]); recState[r.id] = 'done'; renderPaid(); return; }
+  if (b.dataset.pf){ pmFilter = b.dataset.pf; renderPaid(); return; }
+});
+
+// =====================================================================
+// INFLUENCERS & STREAMING
+// =====================================================================
+const PEOPLE = [
+  {id:'sofi', name:'Sofía Viaja', handle:'@sofiviaja', type:'Influencer', nets:'Instagram · TikTok', followers:420000, views:1200000, mentions:6, email:'sofi@ejemplo.com', phone:'+54 11 5555-0101', cost:3000, clients:31, fixed:3000, variable:null, start:'01/07/2026', end:'31/12/2026', deliverables:'3 reels y 6 historias por mes'},
+  {id:'mati', name:'Mati Finanzas', handle:'@matifinanzas', type:'Influencer', nets:'YouTube · Instagram', followers:310000, views:860000, mentions:4, email:'mati@ejemplo.com', phone:'+54 11 5555-0102', cost:2500, clients:22, fixed:2000, variable:'0.001% del volumen operado por usuarios con su código', start:'01/05/2026', end:'31/10/2026', deliverables:'2 videos y 4 historias por mes'},
+  {id:'juli', name:'La Cocina de Juli', handle:'@lacocinadejuli', type:'Influencer', nets:'Instagram · YouTube', followers:520000, views:950000, mentions:5, email:'juli@ejemplo.com', phone:'+54 11 5555-0103', cost:2200, clients:17, fixed:2200, variable:null, start:'01/08/2026', end:'31/01/2027', deliverables:'2 reels y 5 historias por mes'},
+  {id:'tomi', name:'Tomi Tech', handle:'@tomitech', type:'Influencer', nets:'TikTok · YouTube', followers:280000, views:1400000, mentions:8, email:'tomi@ejemplo.com', phone:'+54 11 5555-0104', cost:2000, clients:14, fixed:1500, variable:'US$ 5 por cliente nuevo con su código', start:'01/06/2026', end:'30/11/2026', deliverables:'4 videos por mes'},
+  {id:'caro', name:'Caro Fit', handle:'@carofit', type:'Influencer', nets:'Instagram', followers:190000, views:540000, mentions:4, email:'caro@ejemplo.com', phone:'+54 11 5555-0105', cost:1600, clients:10, fixed:1600, variable:null, start:'01/09/2026', end:'28/02/2027', deliverables:'2 reels y 4 historias por mes'},
+  {id:'nico', name:'Nico en Bici', handle:'@nicoenbici', type:'Influencer', nets:'Instagram · TikTok', followers:95000, views:310000, mentions:3, email:'nico@ejemplo.com', phone:'+54 11 5555-0106', cost:1300, clients:6, fixed:1300, variable:null, start:'01/10/2026', end:'31/03/2027', deliverables:'3 publicaciones por mes'},
+  {id:'charla', name:'Charla Nocturna', handle:'@charlanocturna', type:'Streaming', nets:'Twitch', followers:150000, views:420000, mentions:8, email:'produccion@ejemplo.com', phone:'+54 11 5555-0107', cost:2600, clients:15, fixed:2600, variable:null, start:'01/04/2026', end:'31/12/2026', deliverables:'2 menciones en vivo por semana y banner fijo'},
+  {id:'mesa', name:'Mesa de Mercados', handle:'@mesademercados', type:'Streaming', nets:'YouTube Live', followers:88000, views:260000, mentions:12, email:'comercial@ejemplo.com', phone:'+54 11 5555-0108', cost:1600, clients:8, fixed:1600, variable:null, start:'01/09/2026', end:'28/02/2027', deliverables:'3 menciones en vivo por semana'},
+];
+const PERSON = Object.fromEntries(PEOPLE.map(p => [p.id, p]));
+let selected = 'mati', detailTab = 'contrato';
+const chats = {};    // id -> [{role, content}]
+const savedContracts = {};
+function contractSummary(p){
+  return `${fmtUSD(p.fixed)} fijos por mes` + (p.variable ? ` + ${p.variable}` : '');
+}
+function contractText(p){
+  if (savedContracts[p.id]) return savedContracts[p.id];
+  return `CONTRATO DE COLABORACIÓN PUBLICITARIA
+
+Entre EMPRESA DEMO S.A. ("la Marca") y ${p.name} (${p.handle}) ("el Creador").
+
+1. Objeto. El Creador producirá y publicará contenido sobre los productos de la Marca en ${p.nets}.
+2. Entregables. ${p.deliverables}. Cada pieza incluye el código o link propio del Creador.
+3. Remuneración. ${contractSummary(p)}. Se paga dentro de los 10 días de recibida la factura.
+4. Vigencia. Del ${p.start} al ${p.end}.
+5. Métricas. El Creador comparte alcance, vistas e interacciones de cada pieza dentro de los 7 días.
+6. Derechos de uso. La Marca puede reutilizar las piezas en sus canales durante la vigencia y 3 meses más.
+7. Confidencialidad y rescisión. Cualquiera de las partes puede rescindir con 30 días de preaviso.
+
+[Borrador de ejemplo. Revisalo con un abogado antes de firmar.]`;
+}
+function renderPeople(){
+  const cost = sum(PEOPLE.map(p=>p.cost)), cl = sum(PEOPLE.map(p=>p.clients));
+  $('in-count').textContent = PEOPLE.length;
+  $('in-count-d').textContent = PEOPLE.filter(p=>p.type==='Influencer').length + ' influencers · ' + PEOPLE.filter(p=>p.type==='Streaming').length + ' canales de streaming';
+  $('in-cost').innerHTML = money(cost);
+  $('in-clients').textContent = fmtInt(cl);
+  $('in-cac').innerHTML = money(cost/cl);
+  $('in-cac-d').textContent = 'Paid media: ' + fmtUSD(pmTotals().cac);
+  let group = null, h = '';
+  PEOPLE.forEach(p => {
+    const g = p.type === 'Influencer' ? 'Influencers' : 'Canales de streaming';
+    if (g !== group){ group = g; h += `<tr class="group"><td colspan="10">${g}</td></tr>`; }
+    const ending = p.end === '31/10/2026';
+    h += `<tr${p.id===selected?' style="background:var(--series-soft)"':''}>
+      <th scope="row"><button type="button" class="link" style="text-decoration:none;color:var(--ink);font-weight:600;padding:0" data-pick="${p.id}">${p.name}</button><div class="note">${p.handle}</div>${ending?'<span class="pill warn" style="margin-top:4px">'+ICON_WARN+'Contrato vence mañana</span>':''}</th>
+      <td class="left">${p.nets}</td>
+      <td class="num">${fmtInt(p.followers)}</td><td class="num">${fmtInt(p.views)}</td><td class="num">${p.mentions}</td>
+      <td class="left" style="font-size:13px">${p.email}<div class="note">${p.phone}</div></td>
+      <td class="num">${fmtUSD(p.cost)}</td><td class="num">${p.clients}</td><td class="num">${fmtUSD(p.cost/p.clients)}</td>
+      <td class="left"><span style="display:inline-flex;gap:8px;align-items:center"><button type="button" class="btn small ghost" data-contract="${p.id}">Contrato</button><button type="button" class="btn small ghost" data-ask="${p.id}">Preguntar</button></span></td></tr>`;
+  });
+  $('in-body').innerHTML = h;
+  $('c-who').innerHTML = '<option value="">Nuevo perfil (sin cargar)</option>' + PEOPLE.map(p => `<option value="${p.id}"${p.id==='mati'?' selected':''}>${p.name} · ${p.handle}</option>`).join('');
+  renderDetail();
+}
+function renderDetail(){
+  const p = PERSON[selected];
+  const tabs = `<div class="seg" role="group" aria-label="Detalle"><button type="button" data-tab="contrato" aria-pressed="${detailTab==='contrato'}">Contrato</button><button type="button" data-tab="ask" aria-pressed="${detailTab==='ask'}">Preguntarle a Oto</button></div>`;
+  let body;
+  if (detailTab === 'contrato'){
+    body = `<dl class="kv"><dt>Condiciones</dt><dd>${esc(contractSummary(p))}</dd><dt>Entregables</dt><dd>${esc(p.deliverables)}</dd><dt>Vigencia</dt><dd>${p.start} al ${p.end}</dd></dl>
+      <div class="out">${esc(contractText(p))}</div>`;
+  } else {
+    const turns = chats[p.id] || [];
+    body = `<div class="rows" id="ask-log">${turns.map(t => `<div style="padding:10px 0;border-bottom:1px solid var(--line)"><div class="note">${t.role==='user'?'Vos':'Oto'}</div><div style="white-space:pre-wrap">${esc(t.content)}</div></div>`).join('') || '<p class="note" style="margin:0">Ejemplos: "¿Conviene renovarle el contrato?", "¿Cómo viene su CAC contra el resto?", "Armame un mail para pedirle las métricas de octubre".</p>'}</div>
+      <form id="ask-form" class="ai"><label class="lab" for="ask-q">Tu pregunta sobre ${esc(p.name)}</label><textarea id="ask-q" rows="2" placeholder="Escribí tu pregunta"></textarea>
+      <div class="tools"><button class="btn small" type="submit" id="ask-go">Preguntar</button><span class="note" id="ask-note"></span></div></form>`;
+  }
+  $('in-detail').innerHTML = `<div class="ai"><div class="detail-head"><span class="avatar">${p.name.split(' ').map(w=>w[0]).slice(0,2).join('')}</span><div style="flex:1;min-width:0"><h2>${esc(p.name)}</h2><div class="sub">${p.handle} · ${p.type} · ${fmtInt(p.followers)} seguidores</div></div></div>${tabs}${body}</div>`;
+}
+$('view-influencers').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.pick){ selected = b.dataset.pick; detailTab = 'contrato'; renderPeople(); }
+  else if (b.dataset.contract){ selected = b.dataset.contract; detailTab = 'contrato'; renderPeople(); $('in-detail').scrollIntoView({behavior:'smooth',block:'start'}); }
+  else if (b.dataset.ask){ selected = b.dataset.ask; detailTab = 'ask'; renderPeople(); $('in-detail').scrollIntoView({behavior:'smooth',block:'start'}); setTimeout(()=>$('ask-q') && $('ask-q').focus({preventScroll:true}), 300); }
+  else if (b.dataset.tab){ detailTab = b.dataset.tab; renderDetail(); }
+});
+$('view-influencers').addEventListener('submit', async e => {
+  if (e.target.id !== 'ask-form') return;
+  e.preventDefault();
+  const q = $('ask-q').value.trim(); if (!q) return;
+  const p = PERSON[selected], note = $('ask-note'), go = $('ask-go');
+  const sample = await getSample();
+  if (!sample){ note.textContent = 'La AI no está disponible en esta vista.'; return; }
+  const turns = chats[p.id] = chats[p.id] || [];
+  turns.push({role:'user', content:q});
+  renderDetail();
+  const n2 = $('ask-note'), g2 = $('ask-go'); n2.textContent = 'Pensando…'; g2.disabled = true;
+  const avgCac = sum(PEOPLE.map(x=>x.cost))/sum(PEOPLE.map(x=>x.clients));
+  const ctx = `Sos Oto, el asesor de finanzas de marketing de la plataforma OTOMKT. Respondé en español rioplatense, breve (máximo 120 palabras), concreto y con números cuando sirvan. Si te piden un mail o mensaje, redactalo listo para enviar.
+Datos del perfil (octubre 2026, US$): ${JSON.stringify({nombre:p.name, usuario:p.handle, tipo:p.type, redes:p.nets, seguidores:p.followers, vistas_mes:p.views, menciones_mes:p.mentions, costo_mes:p.cost, clientes_mes:p.clients, cac:Math.round(p.cost/p.clients), contrato:contractSummary(p), entregables:p.deliverables, vigencia:p.start+' al '+p.end})}
+Contexto: CAC promedio de influencers y streaming US$ ${Math.round(avgCac)}; CAC de paid media US$ ${Math.round(pmTotals().cac)}; CAC total de la empresa US$ ${Math.round(SPEND[LAST]*1000/CLIENTS[LAST])}. Hoy es 30/10/2026.`;
+  const msgs = [{role:'user', content: ctx}, ...turns.slice(-8)];
+  const log = $('ask-log'); const bubble = document.createElement('div'); bubble.style.cssText = 'padding:10px 0;border-bottom:1px solid var(--line)';
+  bubble.innerHTML = '<div class="note">Oto</div><div style="white-space:pre-wrap"></div>'; log.appendChild(bubble);
+  try {
+    const {text} = await sample(msgs, {cache:false, onText: ({text}) => { bubble.lastChild.textContent = text; n2.textContent = ''; }});
+    turns.push({role:'assistant', content:text});
+    renderDetail();
+  } catch (err) {
+    turns.pop();
+    renderDetail(); $('ask-q').value = q; $('ask-note').textContent = aiError(err);
+  }
+});
+
+// Contract generator
+let cCtl = null, cText = '';
+$('c-go').addEventListener('click', async () => {
+  const brief = $('c-prompt').value.trim(), note = $('c-note'), out = $('c-out');
+  if (!brief){ note.textContent = 'Escribí las condiciones del contrato.'; return; }
+  const sample = await getSample();
+  if (!sample){ note.textContent = 'La generación con AI no está disponible en esta vista. En el prototipo publicado funciona al abrirlo en Claude.'; return; }
+  const p = PERSON[$('c-who').value];
+  const who = p ? `${p.name} (${p.handle}), creador de contenido en ${p.nets}, mail ${p.email}` : '[NOMBRE DEL CREADOR]';
+  const prompt = `Redactá un contrato de colaboración publicitaria entre EMPRESA DEMO S.A. (la Marca) y ${who} (el Creador), en español rioplatense, claro y profesional.
+Condiciones pedidas por la Marca: """${brief}"""
+Estructura: título; partes; 1. Objeto; 2. Entregables y calendario; 3. Remuneración (detallá fijo y variable con un ejemplo numérico del variable); 4. Forma y plazo de pago; 5. Vigencia y renovación; 6. Exclusividad; 7. Métricas y reportes; 8. Propiedad intelectual y derechos de uso; 9. Identificación publicitaria del contenido; 10. Confidencialidad; 11. Rescisión; 12. Ley aplicable y jurisdicción; firmas.
+Usá [CORCHETES] para cualquier dato que falte. Texto plano, sin markdown. Terminá con una línea que diga que es un borrador para revisar con un abogado.`;
+  cCtl = new AbortController(); cText = '';
+  $('c-go').disabled = true; $('c-stop').hidden = false; $('c-save').hidden = true;
+  out.hidden = false; out.textContent = ''; note.textContent = 'Pensando… puede tardar hasta un minuto.';
+  try {
+    const {text, truncated} = await sample(prompt, {signal: cCtl.signal, cache:false, onText: ({text}) => { out.textContent = text; note.textContent = 'Escribiendo…'; }});
+    cText = text; note.textContent = truncated ? 'El borrador quedó cortado. Pedí menos cláusulas o generalo de nuevo.' : 'Borrador listo. Revisalo antes de enviarlo.';
+    $('c-save').hidden = !p;
+  } catch (err) {
+    out.textContent = err.text || ''; out.hidden = !err.text;
+    note.textContent = aiError(err);
+  } finally { $('c-go').disabled = false; $('c-stop').hidden = true; }
+});
+$('c-stop').addEventListener('click', () => cCtl && cCtl.abort());
+$('c-save').addEventListener('click', () => {
+  const id = $('c-who').value; if (!id || !cText) return;
+  savedContracts[id] = cText; selected = id; detailTab = 'contrato'; renderPeople();
+  $('c-note').textContent = 'Guardado en la ficha de ' + PERSON[id].name + ' (solo en esta sesión).'; $('c-save').hidden = true;
+});
+$('go-contract').addEventListener('click', e => { e.preventDefault(); $('contrato').scrollIntoView({behavior:'smooth',block:'start'}); $('c-prompt').focus({preventScroll:true}); });
+
+// =====================================================================
+// OFFLINE
+// =====================================================================
+const MEDIA_COL = {'TV':'var(--s1)','Radio':'var(--s2)','Vía Pública':'var(--s3)'};
+const OFFLINE = [
+  {medio:'TV', camp:'Lanzamiento Q4', who:'Canal Uno Contenidos S.A.', what:'40 spots de 20" en prime time', when:'6 al 26 de oct.', cost:9500, imp:3800000},
+  {medio:'Radio', camp:'Lanzamiento Q4', who:'Radio Ciudad FM', what:'120 menciones en el programa de la mañana', when:'Octubre', cost:3200, imp:1100000},
+  {medio:'Vía Pública', camp:'Marca en la ciudad', who:'Pantallas Urbanas S.R.L.', what:'12 pantallas LED en avenidas', when:'4 semanas desde el 1 de oct.', cost:4800, imp:2400000},
+  {medio:'Vía Pública', camp:'Marca en la ciudad', who:'Carteles del Sur', what:'30 refugios de colectivo', when:'2 semanas desde el 13 de oct.', cost:2700, imp:1500000},
+];
+let offFilter = 'all';
+function renderOffline(){
+  const media = ['TV','Radio','Vía Pública'];
+  const cost = sum(OFFLINE.map(o=>o.cost)), imp = sum(OFFLINE.map(o=>o.imp||0));
+  const byMedio = m => { const r = OFFLINE.filter(o=>o.medio===m); return {c:sum(r.map(o=>o.cost)), i:sum(r.map(o=>o.imp||0))}; };
+  $('off-kpis').innerHTML = `<div class="kpi"><div class="k">Inversión offline del mes</div><div class="v num">${money(cost)}</div><div class="d">${new Set(OFFLINE.map(o=>o.camp)).size} campañas · ${fmtInt(imp)} impactos</div></div>` +
+    media.map(m => { const b = byMedio(m); return `<div class="kpi"><div class="k">${m}</div><div class="v num">${money(b.c)}</div><div class="d">${fmtInt(b.i)} impactos · CPM ${b.i?fmtCPM(b.c/b.i*1000):'—'}</div></div>`; }).join('');
+  $('off-filter').innerHTML = [['all','Todos'],...media.map(m=>[m,m])].map(([k,l]) => `<button type="button" data-of="${k}" aria-pressed="${offFilter===k}">${l}</button>`).join('');
+  const rows = OFFLINE.filter(o => offFilter==='all' || o.medio===offFilter);
+  $('off-body').innerHTML = rows.map(o => `<tr>
+    <td class="left"><span class="pill neutral"><i class="dot" style="background:${MEDIA_COL[o.medio]||'var(--faint)'}"></i>${esc(o.medio)}</span></td>
+    <td class="left" style="white-space:normal;min-width:200px"><b style="font-weight:600">${esc(o.camp)}</b><div class="note">${esc(o.who)}</div></td>
+    <td class="left" style="white-space:normal;min-width:200px">${esc(o.what)}</td><td class="left muted" style="white-space:normal">${esc(o.when)}</td>
+    <td class="num">${fmtUSD(o.cost)}</td><td class="num">${fmtInt(o.imp)}</td>
+    <td class="num">${fmtCPM(o.cost/o.imp*1000)}</td></tr>`).join('') || '<tr><td colspan="7" class="left muted">No hay campañas en este medio.</td></tr>';
+}
+$('off-filter').addEventListener('click', e => { const b = e.target.closest('button'); if (b && b.dataset.of){ offFilter = b.dataset.of; renderOffline(); } });
+
+
+// =====================================================================
+// FACTURAS — status, due dates and overdue follow-up with finance
+// =====================================================================
+const TODAY = '2026-10-30';
+const DAY = 864e5;
+const daysBetween = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / DAY);
+const fmtDate = iso => iso.slice(8,10) + '/' + iso.slice(5,7) + '/' + iso.slice(0,4);
+let FINANCE_EMAIL = 'finanzas@test.com';
+try { const f = localStorage.getItem('otomkt-finance'); if (f) FINANCE_EMAIL = f; } catch (e) {}
+const FACTURAS = [
+  {id:'FAC-2026-1043', who:'Google Ireland Ltd.', what:'Consumo de septiembre', ch:'google', issued:'2026-10-01', due:'2026-10-15', amt:28300, paid:'2026-10-14'},
+  {id:'FAC-2026-1044', who:'Meta Platforms Ireland', what:'Consumo de septiembre', ch:'meta', issued:'2026-10-01', due:'2026-10-15', amt:22800, paid:'2026-10-14'},
+  {id:'FAC-2026-1047', who:'TikTok Pte. Ltd.', what:'Consumo de septiembre', ch:'tiktok', issued:'2026-10-03', due:'2026-10-17', amt:9780, paid:'2026-10-16'},
+  {id:'FAC-2026-1031', who:'Mati Finanzas', what:'Fee de septiembre + variable', ch:'influencers', issued:'2026-09-25', due:'2026-10-10', amt:2500, paid:null},
+  {id:'FAC-2026-1049', who:'Radio Ciudad FM', what:'120 menciones · octubre', ch:'radio', issued:'2026-10-05', due:'2026-10-20', amt:3200, paid:null},
+  {id:'FAC-2026-1046', who:'Carteles del Sur', what:'30 refugios de colectivo · 2 semanas', ch:'vp', issued:'2026-10-02', due:'2026-10-17', amt:2700, paid:null},
+  {id:'FAC-2026-1058', who:'Sofía Viaja', what:'Fee de octubre', ch:'influencers', issued:'2026-10-23', due:'2026-11-02', amt:3000, paid:null},
+  {id:'FAC-2026-1060', who:'Charla Nocturna', what:'Menciones en vivo · octubre', ch:'streaming', issued:'2026-10-20', due:'2026-11-04', amt:2600, paid:null},
+  {id:'FAC-2026-1061', who:'Estudio Norte', what:'Piezas de la campaña Q4', ch:null, issued:'2026-10-22', due:'2026-11-06', amt:2400, paid:null},
+  {id:'FAC-2026-1059', who:'Pantallas Urbanas S.R.L.', what:'12 pantallas LED · 4 semanas', ch:'vp', issued:'2026-10-24', due:'2026-11-08', amt:4800, paid:null},
+  {id:'FAC-2026-1062', who:'Canal Uno Contenidos S.A.', what:'40 spots de 20" en prime time', ch:'tv', issued:'2026-10-26', due:'2026-11-25', amt:9500, paid:null},
+];
+const FX = Object.fromEntries(FACTURAS.map(f => [f.id, f]));
+let fxFilter = 'all', fxDraft = null;
+function fxStatus(f){
+  if (f.paid) return {key:'paid', html:`<span class="pill good">${ICON_OK}Pagada el ${fmtDate(f.paid).slice(0,5)}</span>`};
+  const d = daysBetween(TODAY, f.due);
+  if (d < 0) return {key:'overdue', days:-d, html:`<span class="pill crit">${ICON_WARN}Vencida hace ${-d} día${d === -1 ? '' : 's'}</span>`};
+  if (d <= 7) return {key:'soon', days:d, html:`<span class="pill warn">${ICON_WARN}${d === 0 ? 'Vence hoy' : 'Vence en ' + d + ' día' + (d === 1 ? '' : 's')}</span>`};
+  return {key:'pending', days:d, html:`<span class="pill neutral">Pendiente</span>`};
+}
+function renderFacturas(){
+  const st = FACTURAS.map(f => [f, fxStatus(f)]);
+  const tot = k => st.filter(([,s]) => k.includes(s.key));
+  const amt = arr => sum(arr.map(([f]) => f.amt));
+  const pend = tot(['pending','soon','overdue']), over = tot(['overdue']), soon = tot(['soon']), paid = tot(['paid']);
+  $('fx-kpis').innerHTML =
+    `<div class="kpi"><div class="k">Pendientes de pago</div><div class="v num">${money(amt(pend))}</div><div class="d">${pend.length} facturas</div></div>` +
+    `<div class="kpi"><div class="k">Vencidas</div><div class="v num" style="color:${over.length ? 'var(--crit-ink)' : 'inherit'}">${money(amt(over))}</div><div class="d">${over.length ? '<span class="delta bad">' + over.length + '</span>facturas para reclamar' : 'Ninguna vencida'}</div></div>` +
+    `<div class="kpi"><div class="k">Vencen en 7 días</div><div class="v num">${money(amt(soon))}</div><div class="d">${soon.length} facturas</div></div>` +
+    `<div class="kpi"><div class="k">Pagadas en octubre</div><div class="v num">${money(amt(paid))}</div><div class="d">${paid.length} facturas</div></div>`;
+  const fl = [['all','Todas'],['open','Pendientes'],['overdue','Vencidas'],['paid','Pagadas']];
+  $('fx-filter').innerHTML = fl.map(([k,l]) => `<button type="button" data-ff="${k}" aria-pressed="${fxFilter===k}">${l}</button>`).join('');
+  $('fx-sub').innerHTML = `Ordenadas por vencimiento · los reclamos de vencidas se mandan a <b class="cx-mail">${esc(FINANCE_EMAIL)}</b> (<a href="#conexiones" style="color:var(--link)">cambiar</a>)`;
+  const order = {overdue:0, soon:1, pending:2, paid:3};
+  const rows = st.filter(([,s]) => fxFilter === 'all' || (fxFilter === 'open' ? s.key !== 'paid' : fxFilter === 'overdue' ? s.key === 'overdue' : s.key === 'paid'))
+    .sort((a,b) => order[a[1].key] - order[b[1].key] || a[0].due.localeCompare(b[0].due));
+  $('fx-body').innerHTML = rows.map(([f, s]) => {
+    const chCell = f.ch ? esc(CH[f.ch].name)
+      : `<label class="sr" for="fx-ch-${f.id}">Canal de ${esc(f.who)}</label><select class="field sel-sm" id="fx-ch-${f.id}" data-chfor="${f.id}"><option value="">Elegir canal</option>${CHANNELS.map(c => `<option value="${c.key}">${c.name}</option>`).join('')}</select>`;
+    let act = '';
+    if (s.key === 'overdue') act = f.asked ? `<span class="note">Consultado el ${f.asked}</span> <button type="button" class="link" data-ask-fin="${f.id}">Volver a preguntar</button>` : `<button type="button" class="btn small" data-ask-fin="${f.id}">Preguntar a finanzas</button>`;
+    else if (s.key !== 'paid') act = `<button type="button" class="btn small ghost" data-pay="${f.id}">Marcar pagada</button>`;
+    return `<tr${s.key === 'overdue' ? ' class="row-alert"' : ''}>
+      <th scope="row" style="white-space:normal;min-width:220px"><b style="font-weight:600">${esc(f.who)}</b><div class="note">${esc(f.what)}</div><div class="note cx-mail" style="font-size:12px">${f.id}</div></th>
+      <td class="left">${chCell}</td>
+      <td class="num">${fmtDate(f.due)}<div class="note">Emitida ${fmtDate(f.issued)}</div></td>
+      <td class="num" style="font-weight:600">${fmtUSD(f.amt)}</td>
+      <td class="left">${s.html}</td><td class="left">${act}</td></tr>`;
+  }).join('') || '<tr><td colspan="6" class="left muted">No hay facturas en este filtro.</td></tr>';
+  renderMailDraft();
+  const n = over.length; const badge = $('nav-fx-badge'); badge.textContent = n; badge.hidden = !n;
+}
+function mailFor(f){
+  const s = fxStatus(f);
+  return {
+    to: FINANCE_EMAIL,
+    subject: `Estado de pago: ${f.who} · ${f.id} (vencida hace ${s.days} días)`,
+    body: `Hola,\n\nLes escribo por la factura ${f.id} de ${f.who} por ${fmtUSD(f.amt)} (${f.what}), que venció el ${fmtDate(f.due)} y figura como impaga.\n\n¿Me confirman si ya está programada para pago y en qué fecha? Si falta algún dato o aprobación, avísenme y lo resolvemos.\n\nGracias,\nEquipo de Marketing`,
+  };
+}
+function renderMailDraft(){
+  const box = $('fx-mail');
+  if (!fxDraft){ box.hidden = true; box.innerHTML = ''; return; }
+  const f = FX[fxDraft.id];
+  box.hidden = false;
+  box.innerHTML = `<div class="ph" style="margin:0"><div><h2>Consulta a finanzas</h2><div class="sub">${esc(f.who)} · ${f.id} · ${fmtUSD(f.amt)}</div></div></div>
+    <dl class="kv"><dt>Para</dt><dd class="cx-mail">${esc(fxDraft.to)}</dd><dt>Asunto</dt><dd>${esc(fxDraft.subject)}</dd></dl>
+    <div><label class="lab" for="fx-body-txt">Mensaje</label><textarea id="fx-body-txt" rows="9">${esc(fxDraft.body)}</textarea></div>
+    <div class="tools"><button type="button" class="btn" id="fx-send">Enviar mail</button><button type="button" class="btn ghost small" id="fx-cancel">Cancelar</button>
+    <span class="note">En el prototipo el envío se simula: no sale ningún mail.</span></div>`;
+}
+$('view-facturas').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.ff){ fxFilter = b.dataset.ff; renderFacturas(); return; }
+  if (b.dataset.pay){ FX[b.dataset.pay].paid = TODAY; if (fxDraft && fxDraft.id === b.dataset.pay) fxDraft = null; renderFacturas(); return; }
+  if (b.dataset.askFin){ fxDraft = {id: b.dataset.askFin, ...mailFor(FX[b.dataset.askFin])}; renderFacturas(); $('fx-mail').scrollIntoView({behavior:'smooth', block:'start'}); setTimeout(() => $('fx-body-txt') && $('fx-body-txt').focus({preventScroll:true}), 300); return; }
+  if (b.id === 'fx-cancel'){ fxDraft = null; renderFacturas(); return; }
+  if (b.id === 'fx-send'){
+    const f = FX[fxDraft.id]; f.asked = fmtDate(TODAY).slice(0,5); const to = fxDraft.to; fxDraft = null; renderFacturas();
+    const box = $('fx-mail'); box.hidden = false;
+    box.innerHTML = `<div class="tools"><span class="pill blue">${ICON_OK}Consulta lista para ${esc(to)}</span><span class="note">Factura ${f.id} de ${esc(f.who)}. En la versión real el mail se envía solo y la respuesta queda en la factura.</span></div>`;
+  }
+});
+$('view-facturas').addEventListener('change', e => {
+  const t = e.target; if (!t.dataset || !t.dataset.chfor || !t.value) return;
+  FX[t.dataset.chfor].ch = t.value; renderFacturas();
+});
+
+// =====================================================================
+// CONEXIONES
+// =====================================================================
+const DEFAULT_EMAILS = [{addr:'marketing@test.com', week:6}];
+let EMAILS = DEFAULT_EMAILS.slice();
+try { const e = JSON.parse(localStorage.getItem('otomkt-emails') || 'null'); if (Array.isArray(e) && e.length && e.every(x => x && typeof x.addr === 'string')) EMAILS = e; } catch (err) {}
+function saveEmails(){ try { localStorage.setItem('otomkt-emails', JSON.stringify(EMAILS)); } catch (err) {} }
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+function renderConnections(){
+  $('cx-emails').innerHTML = EMAILS.map((e, i) => `<div class="row">
+    <span class="who"><b class="cx-mail">${esc(e.addr)}</b><span>${e.week ? e.week + ' facturas leídas esta semana' : 'Todavía no llegaron facturas'}</span></span>
+    <span class="amt" style="flex-direction:row;align-items:center;gap:10px"><span class="pill good">${ICON_OK}Activo</span>
+    <button type="button" class="btn small ghost" data-rm="${i}" ${EMAILS.length === 1 ? 'disabled title="Tiene que quedar al menos un correo"' : ''}>Quitar</button></span></div>`).join('');
+  const on = PLATFORMS.filter(p => p.on).length;
+  $('cx-plat-sub').textContent = `${on} de ${PLATFORMS.length} conectadas · sincronizan gasto, campañas y conversiones cada hora`;
+  const sorted = [...PLATFORMS].sort((a,b) => (b.on?1:0) - (a.on?1:0));
+  $('cx-plats').innerHTML = sorted.map(p => `<div class="plat${p.on?'':' off'}">
+    <span class="mono" style="background:${p.on ? (PLAT_COLORS[p.key] || 'var(--s1)') : 'var(--sunken)'};${p.on?'':'color:var(--muted)'}" aria-hidden="true">${p.letter}</span>
+    <span class="meta"><b>${p.name}</b><span>${p.on ? '<span style="color:var(--good-ink);font-weight:600">Conectada</span> · ' + (p.sub || 'sin campañas todavía') : (p.busy ? 'Conectando…' : 'Sin conectar')}</span></span>
+    ${p.on ? '' : `<button type="button" class="btn small ghost" data-connect="${p.key}" ${p.busy?'disabled':''}>Conectar</button>`}
+  </div>`).join('');
+  $('side-addr').textContent = EMAILS[0].addr + (EMAILS.length > 1 ? ' +' + (EMAILS.length - 1) : '');
+  $('side-count').textContent = sum(EMAILS.map(e => e.week || 0)) + ' facturas esta semana';
+}
+$('view-conexiones').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.rm != null && EMAILS.length > 1){ const gone = EMAILS.splice(+b.dataset.rm, 1)[0]; saveEmails(); renderConnections(); $('cx-note').textContent = 'Quitaste ' + gone.addr + '.'; }
+  if (b.dataset.connect){
+    const p = PLATFORMS.find(x => x.key === b.dataset.connect); p.busy = true; renderConnections();
+    setTimeout(() => { p.busy = false; p.on = true; renderConnections(); renderPaid(); }, 1200);
+  }
+});
+$('fin-email').value = FINANCE_EMAIL;
+$('fin-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = $('fin-email').value.trim().toLowerCase();
+  if (!EMAIL_RE.test(v)){ $('fin-note').textContent = 'Escribí un correo válido, por ejemplo finanzas@tuempresa.com.'; return; }
+  FINANCE_EMAIL = v; try { localStorage.setItem('otomkt-finance', v); } catch (err) {}
+  $('fin-note').textContent = 'Guardado: las consultas por facturas vencidas van a ' + v + '.'; renderFacturas();
+});
+$('cx-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = $('cx-email').value.trim().toLowerCase(), note = $('cx-note');
+  if (!EMAIL_RE.test(v)){ note.textContent = 'Escribí un correo válido, por ejemplo facturas@tuempresa.com.'; return; }
+  if (EMAILS.some(x => x.addr === v)){ note.textContent = 'Ese correo ya está en la lista.'; return; }
+  EMAILS.push({addr: v, week: 0}); saveEmails(); renderConnections();
+  $('cx-email').value = ''; note.textContent = 'Listo: Oto va a leer las facturas que lleguen a ' + v + '.';
+});
+
+// =====================================================================
+// ROUTING
+// =====================================================================
+const VIEWS = ['dashboard','paid-media','influencers','offline','budget','facturas','conexiones'];
+function route(){
+  const h = location.hash.slice(1);
+  const v = VIEWS.includes(h) ? h : (h === 'contrato' ? 'influencers' : 'dashboard');
+  VIEWS.forEach(k => { $('view-' + k).hidden = k !== v; });
+  document.querySelectorAll('.nav a').forEach(a => { if (a.dataset.view === v) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
+  hideTip();
+}
+window.addEventListener('hashchange', () => { route(); window.scrollTo(0,0); });
+
+// ---------- Theme toggle (light / dark), remembered per browser ----------
+function isDark(){ const t = document.documentElement.getAttribute('data-theme'); return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; }
+function syncThemeLabel(){ $('theme-lbl').textContent = isDark() ? 'Modo claro' : 'Modo oscuro'; }
+try { const t = localStorage.getItem('otomkt-theme'); if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+$('theme-btn').addEventListener('click', () => {
+  const next = isDark() ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('otomkt-theme', next); } catch (e) {}
+  syncThemeLabel();
+});
+syncThemeLabel();
+
+renderDashboard(); renderBudget(); renderPaid(); renderPeople(); renderOffline(); renderConnections(); renderFacturas(); route();
+</script>
+
+</body>
+</html>

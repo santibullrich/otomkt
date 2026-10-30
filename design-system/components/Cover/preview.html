@@ -1,0 +1,37 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html><head><meta charset="utf-8"><title>OTOMKT cover</title>
+<style>
+html,body{margin:0;background:var(--canvas)}
+.cover{position:relative;width:960px;height:288px;overflow:hidden}
+.cover svg{position:absolute;inset:0}
+.b-brand{fill:var(--brand)}.b-ink{fill:var(--text-primary)}.b-s1{fill:var(--series-1)}.b-s2{fill:var(--series-2)}
+.bar{fill:var(--on-brand)}.target{stroke:var(--on-brand);stroke-width:2;stroke-dasharray:6 5;fill:none}
+.tile{rx:var(--radius-lg)}.barr{rx:4px}
+.text{position:absolute;left:40px;bottom:40px;width:420px}
+.name{font:700 112px/0.92 var(--font-sans);letter-spacing:-0.035em;color:var(--text-primary);margin:0}
+.tag{font:400 14px/20px var(--font-sans);color:var(--text-secondary);margin:12px 0 0}
+</style></head>
+<body>
+<div class="cover">
+<svg viewBox="0 0 960 288" width="960" height="288" aria-hidden="true">
+  <!-- blocks: brand 208x240 slab, text-primary 216x112, series-1 104x112, series-2 96x112; radius-lg corners
+       arrangement: one tall lime slab with satellites to its right, all at x >= 496
+       pattern: a bar chart with a dashed target cut from on-brand inside the slab; the product is a dashboard, so its shape is the bar against the budget line
+       steps: space-6 (24) margins and gaps, space-4 (16) bar gaps rounded to 26 pitch, radius-lg tiles, 4px bar tops -->
+  <rect class="b-brand tile" x="496" y="24" width="208" height="240"/>
+  <rect class="b-ink tile" x="720" y="24" width="216" height="112"/>
+  <rect class="b-s1 tile" x="720" y="152" width="104" height="112"/>
+  <rect class="b-s2 tile" x="840" y="152" width="96" height="112"/>
+  <rect class="bar barr" x="520" y="192" width="16" height="52"/>
+  <rect class="bar barr" x="546" y="172" width="16" height="72"/>
+  <rect class="bar barr" x="572" y="180" width="16" height="64"/>
+  <rect class="bar barr" x="598" y="148" width="16" height="96"/>
+  <rect class="bar barr" x="624" y="156" width="16" height="88"/>
+  <rect class="bar barr" x="650" y="124" width="16" height="120"/>
+  <rect class="bar barr" x="676" y="104" width="16" height="140"/>
+  <path class="target" d="M512 132 H692"/>
+</svg>
+<div class="text"><h1 class="name">OTOMKT</h1><p class="tag">Control de gestión para equipos de marketing.</p></div>
+</div>
+</body></html>

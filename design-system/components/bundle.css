@@ -1,0 +1,112 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap");
+
+/* OTOMKT components. Every color, radius and space comes from tokens.css. */
+:root{font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--canvas);color:var(--text-primary);font-family:var(--font-sans);font-size:14px;line-height:20px}
+.oto-num{font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum" 1,"lnum" 1}
+.oto-muted{color:var(--text-secondary)}
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* Card */
+.oto-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:var(--space-5);min-width:0}
+.oto-card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-3);margin-bottom:var(--space-4)}
+.oto-card__title{font-size:15px;line-height:20px;font-weight:600;margin:0}
+.oto-card__sub{font-size:13px;line-height:18px;color:var(--text-secondary);margin:2px 0 0}
+
+/* Button */
+.oto-btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);height:40px;padding:0 16px;border-radius:var(--radius-md);border:1px solid transparent;font:600 14px/1 var(--font-sans);cursor:pointer;text-decoration:none;white-space:nowrap;transition:background .15s,border-color .15s}
+.oto-btn--primary{background:var(--brand);color:var(--on-brand)}
+.oto-btn--primary:hover{filter:brightness(.95)}
+.oto-btn--secondary{background:var(--surface);color:var(--text-primary);border-color:var(--border-strong)}
+.oto-btn--secondary:hover{background:var(--surface-sunken)}
+.oto-btn--ghost{background:transparent;color:var(--text-primary)}
+.oto-btn--ghost:hover{background:var(--surface-sunken)}
+.oto-btn--sm{height:32px;padding:0 12px;font-size:13px}
+.oto-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* Badge */
+.oto-badge{display:inline-flex;align-items:center;gap:var(--space-1);height:22px;padding:0 8px;border-radius:var(--radius-full);font:500 12px/1 var(--font-sans);white-space:nowrap;background:var(--surface-sunken);color:var(--text-secondary)}
+.oto-badge svg{flex:none}
+.oto-badge--positive{background:var(--positive-soft);color:var(--positive-text)}
+.oto-badge--negative{background:var(--negative-soft);color:var(--negative-text)}
+.oto-badge--warning{background:var(--warning-soft);color:var(--warning-text)}
+.oto-badge--info{background:var(--info-soft);color:var(--link)}
+.oto-badge--brand{background:var(--brand);color:var(--on-brand)}
+.oto-dot{width:6px;height:6px;border-radius:99px;background:currentColor;flex:none}
+
+/* Delta: direction (up/down) and meaning (good/bad) are independent */
+.oto-delta{display:inline-flex;align-items:center;gap:2px;height:20px;padding:0 6px;border-radius:var(--radius-full);font:600 12px/1 var(--font-sans);font-variant-numeric:tabular-nums;white-space:nowrap;background:var(--surface-sunken);color:var(--text-secondary)}
+.oto-delta.is-good{background:var(--positive-soft);color:var(--positive-text)}
+.oto-delta.is-bad{background:var(--negative-soft);color:var(--negative-text)}
+
+/* KPI */
+.oto-kpi{display:flex;flex-direction:column;gap:var(--space-2);min-width:0}
+.oto-kpi__label{font:500 12px/16px var(--font-sans);color:var(--text-secondary);display:flex;align-items:center;gap:var(--space-2)}
+.oto-kpi__value{font:600 30px/36px var(--font-sans);letter-spacing:-0.02em;font-variant-numeric:tabular-nums;color:var(--text-primary)}
+.oto-kpi__value small{font-size:.55em;font-weight:500;color:var(--text-secondary);letter-spacing:0;margin-left:2px}
+.oto-kpi__foot{display:flex;align-items:center;gap:var(--space-2);font:400 12px/16px var(--font-sans);color:var(--text-tertiary);flex-wrap:wrap}
+.oto-kpi__spark{width:100%;height:36px;display:block}
+.oto-kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-card)}
+.oto-kpi-strip>.oto-kpi{padding:var(--space-5);border-left:1px solid var(--border)}
+.oto-kpi-strip>.oto-kpi:first-child{border-left:0}
+
+/* Segmented control */
+.oto-seg{display:inline-flex;padding:3px;gap:2px;background:var(--surface-sunken);border-radius:var(--radius-full)}
+.oto-seg button{height:30px;padding:0 12px;border:0;border-radius:var(--radius-full);background:transparent;color:var(--text-secondary);font:500 13px/1 var(--font-sans);cursor:pointer}
+.oto-seg button[aria-pressed="true"]{background:var(--surface);color:var(--text-primary);box-shadow:var(--shadow-card)}
+
+/* Table */
+.oto-table-wrap{overflow-x:auto}
+.oto-table{width:100%;border-collapse:collapse;font-size:14px;line-height:20px}
+.oto-table th{font:500 12px/16px var(--font-sans);color:var(--text-secondary);text-align:right;padding:0 12px 10px;border-bottom:1px solid var(--border);white-space:nowrap}
+.oto-table td{padding:12px;text-align:right;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums;white-space:nowrap}
+.oto-table th:first-child,.oto-table td:first-child{text-align:left;padding-left:0}
+.oto-table th:last-child,.oto-table td:last-child{padding-right:0}
+.oto-table tbody tr:hover td{background:var(--surface-sunken)}
+.oto-table .oto-group td{font:600 11px/16px var(--font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--text-tertiary);padding-top:16px;border-bottom:0;background:none}
+.oto-table tfoot td{font-weight:600;border-top:1px solid var(--border-strong);border-bottom:0}
+.oto-bar{display:inline-block;width:80px;height:6px;border-radius:var(--radius-full);background:var(--chart-track);position:relative;vertical-align:middle}
+.oto-bar>i{position:absolute;inset:0 auto 0 0;border-radius:var(--radius-full);background:var(--series-1)}
+.oto-bar>i.is-over{background:var(--negative)}
+
+/* Meter (goal with pace marker) */
+.oto-meter{position:relative;height:10px;border-radius:var(--radius-full);background:var(--chart-track)}
+.oto-meter__fill{position:absolute;inset:0 auto 0 0;border-radius:var(--radius-full);background:var(--series-1)}
+.oto-meter__pace{position:absolute;top:-4px;bottom:-4px;width:2px;border-radius:2px;background:var(--chart-target)}
+
+/* Navigation */
+.oto-nav{display:flex;flex-direction:column;gap:2px;background:var(--nav);padding:12px;border-radius:var(--radius-lg)}
+.oto-nav a{display:flex;align-items:center;gap:10px;height:40px;padding:0 12px;border-radius:var(--radius-md);color:var(--nav-text);font:500 14px/1 var(--font-sans);text-decoration:none}
+.oto-nav a:hover{background:var(--nav-hover);color:#fff}
+.oto-nav a[aria-current="page"]{background:var(--nav-hover);color:#fff}
+.oto-nav a[aria-current="page"]::after{content:"";margin-left:auto;width:6px;height:6px;border-radius:99px;background:var(--brand)}
+
+/* Fields */
+.oto-field{display:flex;flex-direction:column;gap:6px}
+.oto-field label{font:500 13px/18px var(--font-sans)}
+.oto-input{height:40px;padding:0 12px;border:1px solid var(--border-strong);border-radius:var(--radius-md);background:var(--surface);color:var(--text-primary);font:400 14px/20px var(--font-sans)}
+textarea.oto-input{height:auto;padding:10px 12px;resize:vertical}
+.oto-input::placeholder{color:var(--text-tertiary)}
+.oto-input--num{text-align:right;font-variant-numeric:tabular-nums;width:88px}
+.oto-hint{font:400 12px/16px var(--font-sans);color:var(--text-tertiary)}
+
+/* Monogram (platform / person) */
+.oto-mono{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:var(--radius-md);font:700 13px/1 var(--font-sans);color:#fff;flex:none}
+.oto-mono--1{background:var(--series-1)}.oto-mono--2{background:var(--series-2)}.oto-mono--3{background:var(--series-3)}
+.oto-mono--neutral{background:var(--surface-sunken);color:var(--text-secondary)}
+
+/* Insight (Oto recommendation) */
+.oto-insight{display:flex;flex-direction:column;gap:var(--space-2);padding:var(--space-4);border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface)}
+.oto-insight__meta{font:500 12px/16px var(--font-sans);color:var(--text-tertiary)}
+.oto-insight__title{font:600 14px/20px var(--font-sans);margin:0}
+.oto-insight__why{font:400 13px/18px var(--font-sans);color:var(--text-secondary);margin:0}
+.oto-insight__impact{display:flex;gap:var(--space-2);flex-wrap:wrap}
+.oto-insight__actions{display:flex;gap:var(--space-2);margin-top:var(--space-2)}
+
+/* Chart text */
+.oto-chart{width:100%;height:auto;display:block}
+.oto-chart text{font:400 11px var(--font-sans);fill:var(--text-tertiary);font-variant-numeric:tabular-nums}
+.oto-legend{display:flex;gap:var(--space-4);flex-wrap:wrap;font:400 12px/16px var(--font-sans);color:var(--text-secondary)}
+.oto-legend span{display:inline-flex;align-items:center;gap:6px}
+.oto-swatch{width:10px;height:10px;border-radius:3px;background:var(--series-1)}
+.oto-swatch--target{width:14px;height:0;border-top:2px dashed var(--chart-target);border-radius:0;background:none}

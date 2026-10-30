@@ -1,0 +1,22 @@
+<!-- @dsCard group="Gráficos" height=320 subtitle="Gasto real por mes contra budget" -->
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Bar chart</title>
+<style>body{padding:20px}</style></head>
+<body>
+<div class="oto-card">
+  <div class="oto-card__head"><div><h3 class="oto-card__title">Budget vs. gasto real</h3><p class="oto-card__sub">US$ 911,000 de US$ 1,000,000 a la fecha (91%)</p></div>
+    <div class="oto-legend"><span><i class="oto-swatch"></i>Gasto real</span><span><i class="oto-swatch oto-swatch--target"></i>Budget del mes</span></div></div>
+  <svg class="oto-chart" id="c" viewBox="0 0 600 220" role="img" aria-label="Gasto real mensual contra budget, enero a octubre"></svg>
+</div>
+<script>
+const spend=[72,78,95,92,98,90,94,97,99,96], m=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct'], budget=100;
+const svg=document.getElementById('c'), NS='http://www.w3.org/2000/svg', W=600,H=220,L=56,R=4,T=8,B=24, iw=W-L-R, ih=H-T-B, max=120;
+const y=v=>T+ih-v/max*ih, band=iw/10, bw=band*0.5;
+const mk=(t,a,s)=>{const n=document.createElementNS(NS,t);for(const k in a)n.setAttribute(k,a[k]);if(s)n.setAttribute('style',s);svg.appendChild(n);return n;};
+[0,40,80,120].forEach(v=>{mk('line',{x1:L,x2:W-R,y1:y(v),y2:y(v)},'stroke:var(--chart-grid)');mk('text',{x:L-8,y:y(v)+4,'text-anchor':'end'}).textContent=(v*1000).toLocaleString('en-US');});
+spend.forEach((v,i)=>{const cx=L+band*i+band/2,x0=cx-bw/2,t=y(v),b=y(0),r=4;
+  mk('path',{d:`M${x0},${b}V${t+r}Q${x0},${t} ${x0+r},${t}H${x0+bw-r}Q${x0+bw},${t} ${x0+bw},${t+r}V${b}Z`},'fill:var(--series-1)');
+  mk('text',{x:cx,y:H-6,'text-anchor':'middle'}).textContent=m[i];});
+mk('line',{x1:L,x2:W-R,y1:y(budget),y2:y(budget),'stroke-dasharray':'5 4'},'stroke:var(--chart-target);stroke-width:1.5');
+</script>
+</body></html>
