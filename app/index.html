@@ -236,6 +236,10 @@ label.lab{font-size:13px;font-weight:600;display:block;margin-bottom:6px}
 .deck-note svg{color:var(--good-ink)}
 @media (max-width: 860px){.deck-pop{right:auto;left:0}}
 
+/* Connection groups */
+.cx-group{font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin:6px 0 10px}
+.plats+.cx-group{margin-top:20px}
+
 /* Invoices */
 .sel-sm{width:auto;min-height:32px;padding:4px 8px;font-size:13px}
 tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 55%, transparent)}
@@ -593,6 +597,14 @@ tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 5
     <div class="panel">
       <div class="ph"><div><h2>Plataformas de paid media</h2><div class="sub" id="cx-plat-sub"></div></div></div>
       <div class="plats" id="cx-plats"></div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><div><h2>Analytics y atribución</h2><div class="sub" id="cx-an-sub"></div></div></div>
+      <div class="cx-group">Atribución mobile (MMP)</div>
+      <div class="plats" id="cx-mmp"></div>
+      <div class="cx-group">Analítica web y de producto</div>
+      <div class="plats" id="cx-web"></div>
     </div>
   </div>
 </section>
@@ -1644,7 +1656,38 @@ let EMAILS = DEFAULT_EMAILS.slice();
 try { const e = JSON.parse(localStorage.getItem('otomkt-emails') || 'null'); if (Array.isArray(e) && e.length && e.every(x => x && typeof x.addr === 'string')) EMAILS = e; } catch (err) {}
 function saveEmails(){ try { localStorage.setItem('otomkt-emails', JSON.stringify(EMAILS)); } catch (err) {} }
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const ANALYTICS = [
+  {key:'appsflyer', g:'mmp', name:'AppsFlyer', letter:'Af', on:true, sub:'2 apps · hace 25 min'},
+  {key:'adjust', g:'mmp', name:'Adjust', letter:'Aj', on:false},
+  {key:'singular', g:'mmp', name:'Singular', letter:'Si', on:false},
+  {key:'branch', g:'mmp', name:'Branch', letter:'Br', on:false},
+  {key:'kochava', g:'mmp', name:'Kochava', letter:'Ko', on:false},
+  {key:'airbridge', g:'mmp', name:'Airbridge', letter:'Ai', on:false},
+  {key:'tenjin', g:'mmp', name:'Tenjin', letter:'Tj', on:false},
+  {key:'ga4', g:'web', name:'Google Analytics 4', letter:'GA', on:true, sub:'1 propiedad · hace 20 min'},
+  {key:'mixpanel', g:'web', name:'Mixpanel', letter:'Mx', on:false},
+  {key:'amplitude', g:'web', name:'Amplitude', letter:'Am', on:false},
+  {key:'firebase', g:'web', name:'Firebase Analytics', letter:'Fb', on:false},
+  {key:'adobe', g:'web', name:'Adobe Analytics', letter:'Ad', on:false},
+  {key:'heap', g:'web', name:'Heap', letter:'He', on:false},
+  {key:'posthog', g:'web', name:'PostHog', letter:'Ph', on:false},
+  {key:'segment', g:'web', name:'Segment', letter:'Sg', on:false},
+];
+const AN_COLORS = {appsflyer:'var(--s1)', ga4:'var(--s3)'};
+const tile = (p, attr, color) => `<div class="plat${p.on?'':' off'}">
+    <span class="mono" style="background:${p.on ? (color || 'var(--s1)') : 'var(--sunken)'};${p.on?'':'color:var(--muted)'};font-size:13px" aria-hidden="true">${p.letter}</span>
+    <span class="meta"><b>${p.name}</b><span>${p.on ? '<span style="color:var(--good-ink);font-weight:600">Conectada</span> · ' + (p.sub || 'sincronizando datos') : (p.busy ? 'Conectando…' : 'Sin conectar')}</span></span>
+    ${p.on ? '' : `<button type="button" class="btn small ghost" ${attr}="${p.key}" ${p.busy?'disabled':''}>Conectar</button>`}
+  </div>`;
+function renderAnalytics(){
+  const on = ANALYTICS.filter(a => a.on).length;
+  $('cx-an-sub').textContent = `${on} de ${ANALYTICS.length} conectadas · traen conversiones y nuevos clientes por canal para calcular el CAC`;
+  const order = arr => [...arr].sort((a,b) => (b.on?1:0) - (a.on?1:0));
+  $('cx-mmp').innerHTML = order(ANALYTICS.filter(a => a.g === 'mmp')).map(a => tile(a, 'data-connect-an', AN_COLORS[a.key])).join('');
+  $('cx-web').innerHTML = order(ANALYTICS.filter(a => a.g === 'web')).map(a => tile(a, 'data-connect-an', AN_COLORS[a.key])).join('');
+}
 function renderConnections(){
+  renderAnalytics();
   $('cx-emails').innerHTML = EMAILS.map((e, i) => `<div class="row">
     <span class="who"><b class="cx-mail">${esc(e.addr)}</b><span>${e.week ? e.week + ' facturas leídas esta semana' : 'Todavía no llegaron facturas'}</span></span>
     <span class="amt" style="flex-direction:row;align-items:center;gap:10px"><span class="pill good">${ICON_OK}Activo</span>
@@ -1663,6 +1706,11 @@ function renderConnections(){
 $('view-conexiones').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.rm != null && EMAILS.length > 1){ const gone = EMAILS.splice(+b.dataset.rm, 1)[0]; saveEmails(); renderConnections(); $('cx-note').textContent = 'Quitaste ' + gone.addr + '.'; }
+  if (b.dataset.connectAn){
+    const a = ANALYTICS.find(x => x.key === b.dataset.connectAn); a.busy = true; renderAnalytics();
+    setTimeout(() => { a.busy = false; a.on = true; renderAnalytics(); }, 1200);
+    return;
+  }
   if (b.dataset.connect){
     const p = PLATFORMS.find(x => x.key === b.dataset.connect); p.busy = true; renderConnections();
     setTimeout(() => { p.busy = false; p.on = true; renderConnections(); renderPaid(); }, 1200);
