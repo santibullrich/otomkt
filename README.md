@@ -11,6 +11,7 @@ Prototipo navegable con datos de ejemplo. Todavía no lee facturas reales ni se 
 | Carpeta | Qué hay |
 | --- | --- |
 | `app/index.html` | El prototipo completo en un solo archivo HTML. Abrilo en el navegador. |
+| `landing/index.html` | Landing comercial con propuesta de valor, precios y registro. Se publica en `/landing`. |
 | `design-system/` | Sistema de diseño: `tokens.json` (colores claro y oscuro, tipografía, espaciado, radios), `components/bundle.css` (clases `oto-*`) y una carpeta por componente con su guía y vista previa. Empezá por `design-system/README.md`. |
 
 ## Secciones de la app

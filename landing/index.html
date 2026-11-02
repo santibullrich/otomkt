@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>OTOMKT · Control de gestión para marketing</title>
+<meta name="description" content="OTOMKT junta budget, gasto real, facturas, nuevos clientes y CAC por canal en un solo lugar. Oto, tu asesor con AI, te dice dónde mover la plata.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23c8f04a'/%3E%3Cpath d='M6 21l7-7 5 5 8-10M20 9h6v6' fill='none' stroke='%230f1419' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f5f6f8; --surface:#fff; --ink:#0f1419; --muted:#5b6472; --faint:#67717f; --line:#e4e7ec;
+  --dark:#0f1419; --dark-2:#161c24; --dark-line:#242b35; --dark-fg:#a3acb9;
+  --brand:#c8f04a; --brand-ink:#0f1419; --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --good:#08783a; --good-soft:#e3f6ea; --crit:#b42318; --crit-soft:#fdecea;
+  --font:'Geist','Segoe UI',system-ui,-apple-system,sans-serif; --mono:'Geist Mono',ui-monospace,Menlo,monospace;
+  --r:16px; --wrap:1160px;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0b0e12; --surface:#12171e; --ink:#e8ecf1; --muted:#a3acb9; --faint:#8b95a3; --line:#232a33;
+  --good:#4cd384; --good-soft:#123222; --crit:#ff7a6e; --crit-soft:#3a1714;
+}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--font);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.num{font-variant-numeric:tabular-nums lining-nums}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:12px;font:600 15px/1 var(--font);text-decoration:none;cursor:pointer;border:1px solid transparent;white-space:nowrap;transition:transform .15s,background .15s}
+.btn:active{transform:translateY(1px)}
+.btn-brand{background:var(--brand);color:var(--brand-ink)}
+.btn-brand:hover{background:#d6f76b}
+.btn-ghost-d{border-color:#2f3844;color:#fff;background:transparent}
+.btn-ghost-d:hover{background:#1a2029}
+.btn-ink{background:var(--ink);color:var(--bg)}
+.btn-line{border-color:var(--line);background:var(--surface);color:var(--ink)}
+.btn-line:hover{border-color:var(--faint)}
+.btn-lg{height:52px;padding:0 26px;font-size:16px;border-radius:14px}
+:focus-visible{outline:2px solid #2a78d6;outline-offset:2px}
+
+/* Header */
+.top{position:sticky;top:0;z-index:20;background:rgba(15,20,25,.86);backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--dark-line)}
+.top .wrap{display:flex;align-items:center;gap:28px;height:68px}
+.logo{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
+.logo-mark{width:32px;height:32px;border-radius:9px;background:var(--brand);display:grid;place-items:center}
+.logo b{font-weight:700;font-size:19px;letter-spacing:-.01em}
+.menu{display:flex;gap:24px;margin-right:auto}
+.menu a{color:var(--dark-fg);text-decoration:none;font-size:14.5px;font-weight:500}
+.menu a:hover{color:#fff}
+.top .actions{display:flex;gap:10px;align-items:center}
+.top .btn{height:40px;padding:0 16px;font-size:14px;border-radius:10px}
+.login{color:#fff;text-decoration:none;font-weight:500;font-size:14.5px;padding:0 10px}
+.login:hover{color:var(--brand)}
+
+/* Hero */
+.hero{background:var(--dark);color:#fff;position:relative;overflow:hidden;padding:72px 0 80px}
+.hero::before{content:"";position:absolute;inset:-30% -10% auto auto;width:720px;height:720px;background:radial-gradient(closest-side,rgba(200,240,74,.16),transparent);pointer-events:none}
+.pill{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px 0 6px;border:1px solid #2f3844;border-radius:99px;font-size:13px;color:#c9d1db}
+.pill b{background:var(--brand);color:var(--brand-ink);border-radius:99px;padding:2px 8px;font-size:11.5px;letter-spacing:.04em}
+.hero h1{font-size:clamp(38px,5.6vw,66px);line-height:1.04;letter-spacing:-.035em;font-weight:600;margin:22px 0 0;max-width:15ch;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--brand)}
+.hero .lead{font-size:clamp(17px,1.7vw,20px);color:#c2cad4;max-width:58ch;margin:22px 0 0}
+.hero .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.hero .fine{margin-top:14px;font-size:13.5px;color:#8b95a3;display:flex;gap:18px;flex-wrap:wrap}
+.hero .fine span::before{content:"✓";color:var(--brand);margin-right:6px}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center;position:relative}
+
+/* Product mock */
+.mock{background:var(--bg);color:var(--ink);border-radius:18px;border:1px solid #2a323d;box-shadow:0 30px 80px -20px rgba(0,0,0,.6);overflow:hidden;font-size:13px}
+.mock-bar{display:flex;gap:6px;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--line)}
+.mock-bar i{width:10px;height:10px;border-radius:99px;background:var(--line)}
+.mock-bar span{margin-left:10px;font:12px var(--mono);color:var(--faint)}
+.mock-body{padding:16px;display:grid;gap:12px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.kpis>div{padding:12px 14px}
+.kpis>div+div{border-left:1px solid var(--line)}
+.kpis small{display:block;color:var(--muted);font-size:11.5px}
+.kpis b{display:block;font-size:19px;font-weight:600;letter-spacing:-.01em;margin:3px 0 4px;white-space:nowrap}
+.kpis b .cur{font-size:11px;color:var(--faint);font-weight:500;margin-right:2px}
+.chip{display:inline-block;white-space:nowrap;font-size:11px;font-weight:600;padding:1px 7px;border-radius:99px}
+.chip.g{background:var(--good-soft);color:var(--good)}
+.chip.b{background:var(--crit-soft);color:var(--crit)}
+.mcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.mcard h4{margin:0;font-size:12.5px;font-weight:600;display:flex;justify-content:space-between}
+.mcard h4 span{font-weight:400;color:var(--faint)}
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.oto{background:var(--dark);color:#e8ecf1;border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+.oto .av{width:26px;height:26px;border-radius:8px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:700;font-size:12px;flex:none}
+.oto p{margin:0;font-size:12.5px;line-height:1.45}
+.oto p b{color:var(--brand);font-weight:600}
+.chan{display:grid;gap:7px;margin-top:10px}
+.chan div{display:grid;grid-template-columns:72px 1fr 54px;align-items:center;gap:8px;font-size:11.5px}
+.chan .bar{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.chan .bar i{display:block;height:100%;border-radius:99px}
+.chan em{font-style:normal;text-align:right;color:var(--muted)}
+.hero-shot{position:relative}
+
+/* Logos strip */
+.strip{padding:64px 0 24px;text-align:center}
+.strip p{color:var(--muted);font-size:14px;margin:0 0 20px}
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.chips span{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px 0 6px;background:var(--surface);border:1px solid var(--line);border-radius:99px;font-size:14px;font-weight:500}
+.chips i{width:26px;height:26px;border-radius:99px;display:grid;place-items:center;font:600 10.5px var(--font);font-style:normal;color:#fff}
+
+/* Sections */
+section.block{padding:88px 0}
+.eyebrow{font:500 12.5px var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+h2{font-size:clamp(30px,3.6vw,44px);line-height:1.1;letter-spacing:-.03em;font-weight:600;margin:12px 0 0;max-width:22ch;text-wrap:balance}
+.sec-lead{color:var(--muted);font-size:18px;max-width:60ch;margin:16px 0 0}
+
+/* Pain vs value */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:44px}
+.compare .col{border-radius:var(--r);padding:28px;border:1px solid var(--line);background:var(--surface)}
+.compare .col.after{background:var(--dark);color:#e8ecf1;border-color:var(--dark)}
+.compare h3{margin:0 0 16px;font-size:17px;font-weight:600}
+.compare ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.compare li{display:flex;gap:12px;font-size:15.5px}
+.compare li::before{content:"✕";flex:none;width:22px;height:22px;border-radius:99px;display:grid;place-items:center;font-size:11px;background:var(--crit-soft);color:var(--crit);margin-top:1px}
+.compare .after li::before{content:"✓";background:var(--brand);color:var(--brand-ink)}
+.compare .after h3{color:var(--brand)}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:44px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.stats>div{padding:28px}
+.stats>div+div{border-left:1px solid var(--line)}
+.stats b{display:block;font-size:44px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.stats span{display:block;color:var(--muted);margin-top:10px;font-size:15px}
+
+/* Features */
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:44px}
+.feat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:26px;display:flex;flex-direction:column;gap:10px}
+.feat .ic{width:40px;height:40px;border-radius:11px;background:var(--dark);display:grid;place-items:center;margin-bottom:6px}
+.feat .ic svg{stroke:var(--brand)}
+.feat h3{margin:0;font-size:17px;font-weight:600}
+.feat p{margin:0;color:var(--muted);font-size:15px}
+.feat.wide{grid-column:span 2;grid-row:span 2;background:var(--dark);color:#e8ecf1;border-color:var(--dark)}
+.feat.wide p{color:#b5bec9}
+.feat.wide .ic{background:var(--brand)}
+.feat.wide .ic svg{stroke:var(--brand-ink)}
+.recs{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
+.recs li{display:flex;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--dark-line);border-radius:12px;font-size:14.5px;background:var(--dark-2)}
+.recs em{font-style:normal;color:#b5bec9;white-space:nowrap;font-variant-numeric:tabular-nums}
+.recs em.up{color:var(--brand)}
+.quote{margin-top:auto;padding-top:14px;border-top:1px solid var(--dark-line);font-size:14.5px;color:#e8ecf1}
+.quote b{color:var(--brand)}
+
+/* Steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:44px;counter-reset:s}
+.step{padding:26px;border-radius:var(--r);border:1px dashed var(--line)}
+.step::before{counter-increment:s;content:"0" counter(s);font:500 13px var(--mono);color:var(--muted)}
+.step h3{margin:12px 0 8px;font-size:18px;font-weight:600}
+.step p{margin:0;color:var(--muted);font-size:15px}
+.step code{font:13px var(--mono);background:var(--surface);border:1px solid var(--line);padding:1px 6px;border-radius:6px}
+
+/* Pricing */
+.pricing{background:var(--dark);color:#e8ecf1}
+.pricing .eyebrow{color:#8b95a3}
+.pricing .sec-lead{color:#b5bec9}
+.billing{display:inline-flex;margin-top:28px;padding:4px;border:1px solid var(--dark-line);border-radius:12px;gap:4px}
+.billing button{height:36px;padding:0 16px;border-radius:9px;border:0;background:transparent;color:#b5bec9;font:500 14px var(--font);cursor:pointer}
+.billing button[aria-pressed="true"]{background:#232a33;color:#fff}
+.billing small{color:var(--brand);font-weight:600;margin-left:4px}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
+.plan{border:1px solid var(--dark-line);border-radius:var(--r);padding:28px;display:flex;flex-direction:column;gap:16px;background:var(--dark-2)}
+.plan.hl{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand) inset;position:relative}
+.plan.hl .tag{position:absolute;top:-12px;left:24px;background:var(--brand);color:var(--brand-ink);font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px}
+.plan h3{margin:0;font-size:18px;font-weight:600}
+.plan .for{color:#8b95a3;font-size:14.5px;margin:4px 0 0}
+.price{display:flex;align-items:baseline;gap:6px}
+.price .cur{font-size:15px;color:#8b95a3;font-weight:500}
+.price b{font-size:44px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.price span{color:#8b95a3;font-size:14.5px}
+.save{font-size:13px;color:var(--brand);min-height:18px;margin-top:-8px}
+.plan ul{list-style:none;padding:0;margin:0;display:grid;gap:10px;font-size:14.5px}
+.plan li{display:flex;gap:10px}
+.plan li::before{content:"✓";color:var(--brand);flex:none}
+.plan .btn{margin-top:auto}
+.plan .btn-ghost-d{width:100%}
+.plan .btn-brand{width:100%}
+.pnote{color:#8b95a3;font-size:14px;margin-top:20px}
+
+/* FAQ */
+.faq{max-width:780px;margin-top:36px;border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:20px 0;font-size:17px;font-weight:500;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:22px;line-height:1;color:var(--muted);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq p{margin:0 0 20px;color:var(--muted);max-width:66ch}
+
+/* Final CTA */
+.final{padding:0 0 88px}
+.final .box{background:var(--brand);color:var(--brand-ink);border-radius:24px;padding:56px;display:grid;grid-template-columns:1.4fr 1fr;gap:32px;align-items:center}
+.final h2{margin:0;max-width:18ch}
+.final p{margin:12px 0 0;font-size:17px;max-width:48ch}
+.final .ctas{display:flex;flex-direction:column;gap:10px;align-items:stretch}
+.final .btn-dark{background:var(--brand-ink);color:#fff}
+.final .btn-dark:hover{background:#232a33}
+.final .btn-out{border-color:rgba(15,20,25,.3);color:var(--brand-ink);background:transparent}
+.final small{text-align:center;font-size:13px}
+
+footer{border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+footer .logo{color:var(--ink)}
+footer nav{display:flex;gap:20px;flex-wrap:wrap}
+footer nav a{text-decoration:none}
+footer nav a:hover{color:var(--ink)}
+
+/* Modal */
+dialog{border:0;padding:0;border-radius:20px;width:min(440px,calc(100vw - 32px));background:var(--surface);color:var(--ink);box-shadow:0 30px 80px -10px rgba(0,0,0,.45)}
+dialog::backdrop{background:rgba(8,10,13,.6);backdrop-filter:blur(4px)}
+.modal{padding:28px}
+.modal .x{float:right;width:36px;height:36px;border-radius:10px;border:0;background:transparent;color:var(--muted);font-size:22px;cursor:pointer;margin:-8px -8px 0 0}
+.modal .x:hover{background:var(--bg)}
+.modal h3{margin:6px 0 4px;font-size:22px;font-weight:600;letter-spacing:-.02em}
+.modal .msub{color:var(--muted);font-size:14.5px;margin:0 0 20px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;padding:4px;background:var(--bg);border-radius:12px;margin-bottom:20px}
+.tabs button{height:38px;border:0;border-radius:9px;background:transparent;font:500 14px var(--font);color:var(--muted);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.field{display:grid;gap:6px;margin-bottom:14px}
+.field label{font-size:13.5px;font-weight:500}
+.field input{height:44px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font:15px var(--font);background:var(--surface);color:var(--ink)}
+.field input:focus{outline:2px solid #2a78d6;outline-offset:-1px;border-color:transparent}
+.g-btn{width:100%;margin-bottom:14px}
+.or{display:flex;align-items:center;gap:12px;color:var(--faint);font-size:13px;margin:4px 0 14px}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.modal .btn-ink{width:100%}
+.legal{font-size:12.5px;color:var(--faint);margin:12px 0 0;text-align:center}
+.err{color:var(--crit);font-size:13px;min-height:18px;margin:-6px 0 8px}
+[hidden]{display:none!important}
+
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr;gap:40px}
+  .features,.plans,.steps{grid-template-columns:1fr}
+  .feat.wide{grid-column:auto;grid-row:auto}
+  .final .box{grid-template-columns:1fr;padding:36px}
+  .menu{display:none}
+}
+@media (max-width:640px){
+  .wrap{padding:0 16px}
+  .top .btn{height:36px;padding:0 12px;font-size:13.5px}
+  .login{padding:0 4px;font-size:14px}
+  .logo b{font-size:17px}
+  .hero{padding-bottom:56px}
+  .top .wrap{gap:12px}
+  .top .actions{margin-left:auto}
+  .compare,.stats{grid-template-columns:1fr}
+  .stats>div+div{border-left:0;border-top:1px solid var(--line)}
+  .mrow{grid-template-columns:1fr}
+  .kpis b{font-size:16px}
+  .kpis>div{padding:10px}
+  section.block{padding:64px 0}
+  .hero{padding-top:48px}
+  .final .box{padding:28px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="/landing" aria-label="OTOMKT, inicio">
+      <span class="logo-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E1319" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16l5-5 4 4 7-8"/><path d="M15 7h5v5"/></svg></span>
+      <b>OTOMKT</b>
+    </a>
+    <nav class="menu" aria-label="Secciones">
+      <a href="#producto">Producto</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#precios">Precios</a>
+      <a href="#preguntas">Preguntas</a>
+    </nav>
+    <div class="actions">
+      <a class="login" href="#ingresar" data-auth="login">Ingresar</a>
+      <a class="btn btn-brand" href="#registro" data-auth="signup">Probar gratis</a>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="pill"><b>NUEVO</b>Oto, tu asesor de marketing con AI</span>
+      <h1>Sabé cuánto te cuesta <em>cada cliente</em>, canal por canal.</h1>
+      <p class="lead">OTOMKT junta tu budget, el gasto real, las facturas y los nuevos clientes en un solo tablero. Ves el CAC de cada canal en tiempo real y Oto te dice dónde mover la plata.</p>
+      <div class="ctas">
+        <a class="btn btn-brand btn-lg" href="#registro" data-auth="signup">Probar 14 días gratis
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn-ghost-d btn-lg" href="/">Ver la demo</a>
+      </div>
+      <div class="fine"><span>Sin tarjeta de crédito</span><span>Listo en 15 minutos</span><span>Cancelás cuando quieras</span></div>
+    </div>
+
+    <div class="hero-shot" aria-hidden="true">
+      <div class="mock">
+        <div class="mock-bar"><i></i><i></i><i></i><span>otomkt.app/dashboard</span></div>
+        <div class="mock-body">
+          <div class="kpis num">
+            <div><small>Nuevos clientes</small><b>5,860</b><span class="chip g">▲ 1.6%</span></div>
+            <div><small>Gasto total</small><b><span class="cur">US$</span>911,000</b><span class="chip">76% del budget</span></div>
+            <div><small>CAC total</small><b><span class="cur">US$</span>155</b><span class="chip b">▲ 3.1%</span></div>
+          </div>
+          <div class="mrow">
+            <div class="mcard">
+              <h4>Budget vs. gasto real <span>2026</span></h4>
+              <svg viewBox="0 0 220 86" width="100%" style="margin-top:8px;display:block">
+                <g fill="#2a78d6">
+                  <rect x="6" y="34" width="9" height="46" rx="2"/><rect x="28" y="30" width="9" height="50" rx="2"/><rect x="50" y="20" width="9" height="60" rx="2"/><rect x="72" y="22" width="9" height="58" rx="2"/><rect x="94" y="18" width="9" height="62" rx="2"/><rect x="116" y="23" width="9" height="57" rx="2"/><rect x="138" y="20" width="9" height="60" rx="2"/><rect x="160" y="18" width="9" height="62" rx="2"/><rect x="182" y="17" width="9" height="63" rx="2"/>
+                  <rect x="204" y="12" width="9" height="68" rx="2" fill="#d92d20"/>
+                </g>
+                <line x1="0" x2="220" y1="16" y2="16" stroke="#8b95a3" stroke-dasharray="4 3" stroke-width="1.2"/>
+                <line x1="0" x2="220" y1="80.5" y2="80.5" stroke="#e4e7ec"/>
+              </svg>
+            </div>
+            <div class="mcard">
+              <h4>CAC por canal <span>octubre</span></h4>
+              <div class="chan num">
+                <div>Google Ads<span class="bar"><i style="width:48%;background:#2a78d6"></i></span><em>US$ 124</em></div>
+                <div>Meta Ads<span class="bar"><i style="width:50%;background:#2a78d6"></i></span><em>US$ 127</em></div>
+                <div>Influencers<span class="bar"><i style="width:72%;background:#eb6834"></i></span><em>US$ 182</em></div>
+                <div>TikTok Ads<span class="bar"><i style="width:66%;background:#2a78d6"></i></span><em>US$ 168</em></div>
+              </div>
+            </div>
+          </div>
+          <div class="oto">
+            <span class="av">O</span>
+            <p><b>Oto:</b> Search Marca en Google Ads consigue clientes a US$ 63 y se queda sin budget a las 4 PM. Subilo a US$ 260 por día: son <b>+25 clientes por mes</b>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="strip">
+  <div class="wrap">
+    <p>Se conecta con las herramientas que tu equipo ya usa</p>
+    <div class="chips">
+      <span><i style="background:#2a78d6">G</i>Google Ads</span>
+      <span><i style="background:#1d63c2">M</i>Meta Ads</span>
+      <span><i style="background:#0f1419">Tk</i>TikTok Ads</span>
+      <span><i style="background:#0a66c2">in</i>LinkedIn Ads</span>
+      <span><i style="background:#eb6834">GA</i>Google Analytics 4</span>
+      <span><i style="background:#1baf7a">Af</i>AppsFlyer</span>
+      <span><i style="background:#7c3aed">Mx</i>Mixpanel</span>
+      <span><i style="background:#5b6472">@</i>Tu casilla de facturas</span>
+    </div>
+  </div>
+</div>
+
+<section class="block" id="producto">
+  <div class="wrap">
+    <div class="eyebrow">El problema</div>
+    <h2>El cierre de mes no debería llevarte una semana de planillas.</h2>
+    <p class="sec-lead">Hoy el gasto vive en diez plataformas, las facturas en el mail y los clientes en otra herramienta. Cuando el directorio pregunta por el CAC, la respuesta llega tarde y aproximada.</p>
+    <div class="compare">
+      <div class="col">
+        <h3>Sin OTOMKT</h3>
+        <ul>
+          <li>Planillas que se arman a mano todos los meses</li>
+          <li>Facturas perdidas entre mails y WhatsApp</li>
+          <li>El CAC por canal se calcula una vez por trimestre</li>
+          <li>Te enterás de que te pasaste del budget cuando ya pasó</li>
+        </ul>
+      </div>
+      <div class="col after">
+        <h3>Con OTOMKT</h3>
+        <ul>
+          <li>Budget y gasto real actualizados todos los días</li>
+          <li>Las facturas llegan a una casilla y se cargan solas</li>
+          <li>CAC por canal, campaña e influencer al instante</li>
+          <li>Oto te avisa antes de que el desvío se convierta en problema</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stats num">
+      <div><b>6 hs</b><span>menos por semana armando reportes</span></div>
+      <div><b>100%</b><span>del gasto de marketing en un solo lugar, online y offline</span></div>
+      <div><b>15 min</b><span>para conectar tus cuentas y ver tu primer CAC</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" style="padding-top:0">
+  <div class="wrap">
+    <div class="eyebrow">Qué incluye</div>
+    <h2>Todo el control de gestión de marketing, en una plataforma.</h2>
+    <div class="features">
+      <article class="feat wide">
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9l-4.6 1.9L12 15.5l-1.9-4.6L5.5 9l4.6-1.4z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></span>
+        <h3>Oto, tu asesor con AI</h3>
+        <p>Lee tus datos todos los días y te propone acciones concretas: qué campaña escalar, cuál pausar, qué influencer renovar. Las aplicás con un clic en la plataforma de anuncios.</p>
+        <ul class="recs">
+          <li><span>Subir budget de Search Marca</span><em class="up">+25 clientes/mes</em></li>
+          <li><span>Pausar In-Feed Genérica en TikTok</span><em class="up">−US$ 6,200 gasto</em></li>
+          <li><span>Renovar a la creadora de fitness con variable</span><em>CAC US$ 98</em></li>
+        </ul>
+        <div class="quote">“Pausá In-Feed Genérica en TikTok: <b>CAC de US$ 170</b> contra US$ 130 de Spark Ads.”</div>
+      </article>
+      <article class="feat">
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-6"/></svg></span>
+        <h3>Budget vs. real</h3>
+        <p>Proyectá gasto y nuevos clientes por canal y por mes. Mirá el desvío al día, no al cierre.</p>
+      </article>
+      <article class="feat">
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg></span>
+        <h3>Paid media</h3>
+        <p>Google, Meta, TikTok, LinkedIn y más: gasto, clientes y CAC por plataforma y campaña.</p>
+      </article>
+      <article class="feat">
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M17 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></svg></span>
+        <h3>Influencers y streaming</h3>
+        <p>Perfiles, contactos y resultados de cada creador. Contratos con fijo y variable generados con AI.</p>
+      </article>
+      <article class="feat">
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+        <h3>Medios offline</h3>
+        <p>TV, radio y vía pública con inversión, impactos y CPM, prorrateados por fecha de pauta.</p>
+      </article>
+      <article class="feat">
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span>
+        <h3>Facturas y pagos</h3>
+        <p>Leemos las facturas que llegan al mail, las asignamos a su canal y avisamos a finanzas cuando vencen.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="como-funciona" style="padding-top:0">
+  <div class="wrap">
+    <div class="eyebrow">Cómo funciona</div>
+    <h2>Tu primer CAC por canal, hoy mismo.</h2>
+    <div class="steps">
+      <div class="step"><h3>Conectá tus cuentas</h3><p>Vinculá tus plataformas de anuncios y tu herramienta de analytics o MMP en un par de clics.</p></div>
+      <div class="step"><h3>Reenviá tus facturas</h3><p>Usá una casilla como <code>facturas@tuempresa.com</code>. Oto las lee y las suma al gasto real del canal.</p></div>
+      <div class="step"><h3>Decidí con datos</h3><p>Cargá el budget del año y seguí el CAC, el desvío y las recomendaciones de Oto todos los días.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block pricing" id="precios">
+  <div class="wrap">
+    <div class="eyebrow">Precios</div>
+    <h2>Un precio fijo, sin porcentaje sobre tu inversión.</h2>
+    <p class="sec-lead">Probá cualquier plan gratis durante 14 días. Si al final no te sirve, no pagás nada.</p>
+    <div class="billing" role="group" aria-label="Frecuencia de pago">
+      <button type="button" data-bill="m" aria-pressed="true">Mensual</button>
+      <button type="button" data-bill="y" aria-pressed="false">Anual <small>−20%</small></button>
+    </div>
+    <div class="plans">
+      <article class="plan">
+        <div><h3>Growth</h3><p class="for">Para equipos que empiezan a medir en serio.</p></div>
+        <div class="price num"><span class="cur">US$</span><b data-m="500" data-y="400">500</b><span>/ mes</span></div>
+        <div class="save" data-save="Facturado anual: US$ 4,800"></div>
+        <ul>
+          <li>Hasta 5 canales conectados</li>
+          <li>Budget vs. real y CAC por canal</li>
+          <li>Lectura de facturas por mail</li>
+          <li>3 usuarios</li>
+        </ul>
+        <a class="btn btn-ghost-d" href="#registro" data-auth="signup" data-plan="Growth">Empezar prueba gratis</a>
+      </article>
+      <article class="plan hl">
+        <span class="tag">El más elegido</span>
+        <div><h3>Scale</h3><p class="for">Para equipos con varios canales y agencias.</p></div>
+        <div class="price num"><span class="cur">US$</span><b data-m="1,000" data-y="800">1,000</b><span>/ mes</span></div>
+        <div class="save" data-save="Facturado anual: US$ 9,600"></div>
+        <ul>
+          <li>Canales ilimitados, online y offline</li>
+          <li>Oto con recomendaciones aplicables</li>
+          <li>Influencers y contratos con AI</li>
+          <li>Presentaciones para el directorio</li>
+          <li>Usuarios ilimitados</li>
+        </ul>
+        <a class="btn btn-brand" href="#registro" data-auth="signup" data-plan="Scale">Empezar prueba gratis</a>
+      </article>
+      <article class="plan">
+        <div><h3>Enterprise</h3><p class="for">Para grupos con varias marcas o países.</p></div>
+        <div class="price"><b style="font-size:34px">A medida</b></div>
+        <div class="save"></div>
+        <ul>
+          <li>Todo lo de Scale</li>
+          <li>Varias marcas y monedas</li>
+          <li>SSO y permisos por equipo</li>
+          <li>Onboarding y soporte dedicado</li>
+        </ul>
+        <a class="btn btn-ghost-d" href="mailto:hola@otomkt.com?subject=OTOMKT%20Enterprise">Hablar con ventas</a>
+      </article>
+    </div>
+    <p class="pnote">Precios en dólares, sin impuestos. Podés cambiar de plan en cualquier momento.</p>
+  </div>
+</section>
+
+<section class="block" id="preguntas">
+  <div class="wrap">
+    <div class="eyebrow">Preguntas frecuentes</div>
+    <h2>Lo que nos preguntan antes de empezar.</h2>
+    <div class="faq">
+      <details><summary>¿Necesito tarjeta de crédito para la prueba?</summary><p>No. Te registrás con tu mail de trabajo y tenés 14 días con todo el plan Scale. Al final elegís un plan o la cuenta se pausa.</p></details>
+      <details><summary>¿Cómo calcula OTOMKT los nuevos clientes por canal?</summary><p>Los toma de tus plataformas de anuncios y de tu herramienta de analytics o MMP (Google Analytics 4, AppsFlyer, Adjust, Mixpanel y otras). Para influencers y offline usa cupones, links y los objetivos que cargues.</p></details>
+      <details><summary>¿Cómo llegan las facturas?</summary><p>Configurás una casilla de mail. Todo lo que llega ahí, Oto lo lee, detecta el proveedor, el monto y el vencimiento, y lo asigna al canal que corresponde. Si duda, te pregunta.</p></details>
+      <details><summary>¿Reemplaza a mi agencia o a mi herramienta de analytics?</summary><p>No. OTOMKT se ubica por encima: junta lo que ya tenés y lo cruza con el budget y las facturas para mostrarte el costo real de cada cliente.</p></details>
+      <details><summary>¿Mis datos están seguros?</summary><p>Las conexiones son de solo lectura, salvo las acciones que vos aprobás. Los datos viajan cifrados y nunca se usan para entrenar modelos.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <div class="box">
+      <div>
+        <h2>Dejá de adivinar cuánto te cuesta crecer.</h2>
+        <p>Conectá tus cuentas hoy y mañana llegás a la reunión de directorio con el CAC de cada canal.</p>
+      </div>
+      <div class="ctas">
+        <a class="btn btn-dark btn-lg" href="#registro" data-auth="signup">Probar 14 días gratis</a>
+        <a class="btn btn-out btn-lg" href="/">Explorar la demo</a>
+        <small>Sin tarjeta de crédito</small>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="logo" href="/landing"><span class="logo-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E1319" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16l5-5 4 4 7-8"/><path d="M15 7h5v5"/></svg></span><b>OTOMKT</b></a>
+    <nav aria-label="Pie"><a href="#producto">Producto</a><a href="#precios">Precios</a><a href="#ingresar" data-auth="login">Ingresar</a><a href="mailto:hola@otomkt.com">Contacto</a></nav>
+    <span>© 2026 OTOMKT · On Top Of Marketing</span>
+  </div>
+</footer>
+
+<dialog id="auth" aria-labelledby="auth-title">
+  <form class="modal" id="auth-form" novalidate>
+    <button type="button" class="x" aria-label="Cerrar" id="auth-close">×</button>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" data-tab="signup" aria-selected="true">Crear cuenta</button>
+      <button type="button" role="tab" data-tab="login" aria-selected="false">Ingresar</button>
+    </div>
+    <h3 id="auth-title">Empezá tu prueba gratis</h3>
+    <p class="msub" id="auth-sub">14 días con todo el plan Scale. Sin tarjeta.</p>
+    <button type="button" class="btn btn-line g-btn" id="g-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 12h6" stroke="currentColor" stroke-width="2"/></svg>
+      Continuar con Google</button>
+    <div class="or">o con tu mail</div>
+    <div class="field" data-only="signup"><label for="f-name">Nombre y empresa</label><input id="f-name" autocomplete="organization" placeholder="Santi, Acme"></div>
+    <div class="field"><label for="f-mail">Mail de trabajo</label><input id="f-mail" type="email" autocomplete="email" placeholder="vos@empresa.com" required></div>
+    <div class="field"><label for="f-pass">Contraseña</label><input id="f-pass" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres" required minlength="8"></div>
+    <p class="err" id="auth-err" role="alert"></p>
+    <button type="submit" class="btn btn-ink btn-lg" id="auth-submit">Crear cuenta y entrar</button>
+    <p class="legal" id="auth-legal">Al crear tu cuenta aceptás los términos y la política de privacidad.</p>
+  </form>
+</dialog>
+
+<script>
+(() => {
+  const APP_URL = '/';
+  const dlg = document.getElementById('auth');
+  const form = document.getElementById('auth-form');
+  const err = document.getElementById('auth-err');
+  let mode = 'signup', plan = 'Scale';
+
+  function setMode(m){
+    mode = m;
+    form.querySelectorAll('[data-tab]').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === m));
+    form.querySelectorAll('[data-only="signup"]').forEach(el => el.hidden = m !== 'signup');
+    document.getElementById('auth-title').textContent = m === 'signup' ? 'Empezá tu prueba gratis' : 'Ingresá a OTOMKT';
+    document.getElementById('auth-sub').textContent = m === 'signup' ? `14 días con el plan ${plan}. Sin tarjeta.` : 'Usá el mail con el que te registraste.';
+    document.getElementById('auth-submit').textContent = m === 'signup' ? 'Crear cuenta y entrar' : 'Ingresar';
+    document.getElementById('auth-legal').hidden = m !== 'signup';
+    document.getElementById('f-pass').autocomplete = m === 'signup' ? 'new-password' : 'current-password';
+    err.textContent = '';
+  }
+  function open(m){
+    setMode(m);
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else location.href = APP_URL;
+    setTimeout(() => document.getElementById(m === 'signup' ? 'f-name' : 'f-mail').focus(), 30);
+  }
+  document.querySelectorAll('[data-auth]').forEach(a => a.addEventListener('click', e => {
+    e.preventDefault();
+    if (a.dataset.plan) plan = a.dataset.plan;
+    open(a.dataset.auth);
+  }));
+  form.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => setMode(b.dataset.tab)));
+  document.getElementById('auth-close').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+  document.getElementById('g-btn').addEventListener('click', () => { location.href = APP_URL; });
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const mail = document.getElementById('f-mail').value.trim();
+    const pass = document.getElementById('f-pass').value;
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) { err.textContent = 'Revisá el mail.'; return; }
+    if (pass.length < 8) { err.textContent = 'La contraseña necesita al menos 8 caracteres.'; return; }
+    try { localStorage.setItem('otomkt-user', JSON.stringify({ mail, plan, at: Date.now() })); } catch (_) {}
+    const btn = document.getElementById('auth-submit');
+    btn.disabled = true; btn.textContent = mode === 'signup' ? 'Creando tu cuenta…' : 'Ingresando…';
+    setTimeout(() => { location.href = APP_URL; }, 700);
+  });
+
+  if (location.hash === '#registro') open('signup');
+  if (location.hash === '#ingresar') open('login');
+
+  // Mensual / anual
+  document.querySelectorAll('[data-bill]').forEach(b => b.addEventListener('click', () => {
+    const y = b.dataset.bill === 'y';
+    document.querySelectorAll('[data-bill]').forEach(x => x.setAttribute('aria-pressed', x === b));
+    document.querySelectorAll('.price b[data-m]').forEach(p => p.textContent = y ? p.dataset.y : p.dataset.m);
+    document.querySelectorAll('.save[data-save]').forEach(s => s.textContent = y ? s.dataset.save : '');
+  }));
+})();
+</script>
+</body>
+</html>
