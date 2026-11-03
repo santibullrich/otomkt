@@ -157,34 +157,114 @@ h2{font-size:clamp(30px,3.6vw,44px);line-height:1.1;letter-spacing:-.03em;font-w
 
 
 /* Influencers */
-.infl-sec{background:var(--surface);border-block:1px solid var(--line)}
-.infl{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
-.ilist{list-style:none;padding:0;margin:28px 0 0;display:grid;gap:14px}
-.ilist li{padding-left:30px;position:relative;color:var(--muted);font-size:15.5px}
-.ilist li::before{content:"✓";position:absolute;left:0;top:1px;width:20px;height:20px;border-radius:99px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-size:11px;font-weight:700}
-.ilist b{color:var(--ink);font-weight:600}
-.inote{font-size:13px;color:var(--faint);margin:12px 0 0}
-.imock{display:grid;gap:12px;font-size:14px}
-.prompt{background:var(--dark);color:#e8ecf1;border-radius:16px;padding:18px 20px}
-.plabel{font:500 11.5px var(--mono);text-transform:uppercase;letter-spacing:.1em;color:#8b95a3}
-.prompt p{margin:8px 0 14px;font-size:15px;line-height:1.5}
-.pbtn{display:inline-flex;height:34px;align-items:center;padding:0 14px;border-radius:9px;background:var(--brand);color:var(--brand-ink);font-weight:600;font-size:13.5px}
-.contract,.itable{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
-.chead{display:flex;gap:12px;align-items:center;margin-bottom:12px}
-.chead .av{width:30px;height:30px;border-radius:9px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:700;flex:none}
-.chead b{display:block;font-size:15px}
-.chead small{color:var(--faint);font-size:12.5px}
-.contract dl{margin:0;display:grid}
-.contract dl div{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line)}
-.contract dt{color:var(--muted)}
-.contract dd{margin:0;font-weight:500;text-align:right}
-.cfoot{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
-.clink{color:var(--s1);font-weight:500;font-size:13.5px}
-.itable{display:grid;padding:8px 20px}
-.itable div{display:grid;grid-template-columns:1fr 80px 80px;padding:8px 0;font-size:13.5px}
-.itable div+div{border-top:1px solid var(--line)}
-.itable span+span{text-align:right}
-.itable .ih{color:var(--faint);font-size:12px}
+.infl-sec{background:var(--surface);border-block:1px solid var(--line);overflow:hidden}
+.infl-head{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:end}
+.infl-cta{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:28px}
+.inote{font-size:13px;color:var(--faint);margin:0;max-width:28ch}
+.ilist{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:24px 28px}
+.ilist li{color:var(--muted);font-size:14.5px;padding-top:16px;border-top:2px solid var(--ink)}
+.ilist li:first-child{border-color:var(--brand)}
+.ilist b{display:block;color:var(--ink);font-weight:600;font-size:15.5px;margin-bottom:6px}
+
+.stage{position:relative;margin:56px 0 70px;border-radius:28px;padding:150px 120px 64px 260px;background:
+  radial-gradient(600px 300px at 85% 0%,rgba(200,240,74,.22),transparent 70%),
+  radial-gradient(500px 300px at 0% 100%,rgba(42,120,214,.25),transparent 70%),
+  linear-gradient(#0f1419,#0b0f14);isolation:isolate}
+.stage::before{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:32px 32px;
+  -webkit-mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%)}
+.win{background:var(--bg);border-radius:16px;overflow:hidden;box-shadow:0 40px 90px -30px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.08);font-size:13px;color:var(--ink)}
+.win-bar{display:flex;gap:6px;align-items:center;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--line)}
+.win-bar i{width:10px;height:10px;border-radius:99px;background:var(--line)}
+.win-bar span{margin-left:10px;font:12px var(--mono);color:var(--faint)}
+.win-body{display:flex;min-height:380px}
+.rail{width:52px;flex:none;background:#0f1419;display:flex;flex-direction:column;align-items:center;gap:14px;padding:14px 0}
+.rail span{width:18px;height:18px;border-radius:5px;background:#2f3844}
+.rail .rl{width:26px;height:26px;border-radius:8px;background:var(--brand);display:grid;place-items:center;margin-bottom:6px}
+.rail .on{background:var(--brand);box-shadow:0 0 0 5px #1a2029}
+.pane{flex:1;padding:18px 20px;display:grid;gap:14px;min-width:0}
+.pane-top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.pane-top small{display:block;color:var(--faint);font-size:11.5px}
+.pane-top b{font-size:18px;font-weight:600;letter-spacing:-.01em}
+.pane-act{display:flex;gap:8px}
+.seg{height:30px;display:inline-flex;align-items:center;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:12px;color:var(--muted)}
+.add{height:30px;display:inline-flex;align-items:center;padding:0 12px;border-radius:8px;background:var(--ink);color:var(--bg);font-size:12px;font-weight:600}
+.ikpis{display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.ikpis>div{padding:12px 14px}
+.ikpis>div+div{border-left:1px solid var(--line)}
+.ikpis small{display:block;color:var(--muted);font-size:11.5px}
+.ikpis b{display:block;font-size:20px;font-weight:600;margin:2px 0 4px;letter-spacing:-.01em;white-space:nowrap}
+.ikpis b em{font-style:normal;font-size:11px;color:var(--faint);font-weight:500;margin-right:3px}
+.itab{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.tr{display:grid;grid-template-columns:1.5fr .9fr .6fr 1fr .8fr;align-items:center;gap:10px;padding:9px 14px;font-size:12.5px}
+.tr+.tr{border-top:1px solid var(--line)}
+.tr.th{color:var(--faint);font-size:11px;text-transform:uppercase;letter-spacing:.06em;background:var(--bg)}
+.tr.hl{background:color-mix(in srgb,var(--brand) 14%,var(--surface))}
+.tr>span:not(.who){text-align:right}
+.tr>span:last-child{text-align:right}
+.tr>span:first-child{text-align:left}
+.who{display:flex;align-items:center;gap:10px;font-weight:600}
+.who>i{width:30px;height:30px;border-radius:99px;flex:none;background:linear-gradient(135deg,var(--a),var(--b));color:#0f1419;font:700 11px var(--font);font-style:normal;display:grid;place-items:center}
+.who small{display:flex;gap:4px;margin-top:2px}
+.who u{text-decoration:none;font-size:10px;font-weight:500;color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:0 4px}
+.cac{display:flex;align-items:center;justify-content:flex-end;gap:8px;white-space:nowrap}
+.cac em{display:block;height:5px;border-radius:99px;background:var(--s1);max-width:44px;flex:none}
+.cac.muted{color:var(--faint)}
+.st{text-decoration:none;display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.st.ok{background:var(--good-soft);color:var(--good);border-color:transparent}
+.st.warn{background:#fef0c7;color:#b54708;border-color:transparent}
+
+.float{position:absolute;border-radius:16px;box-shadow:0 30px 60px -20px rgba(0,0,0,.55);font-size:13px}
+.av{width:26px;height:26px;border-radius:8px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:700;font-size:12px;flex:none}
+.f-prompt{left:28px;top:120px;width:300px;background:#161c24;color:#e8ecf1;padding:16px;border:1px solid #2a323d;box-shadow:0 30px 60px -20px rgba(0,0,0,.6),0 0 0 4px rgba(200,240,74,.12);animation:bob 7s ease-in-out infinite}
+.fp-h{display:flex;align-items:center;gap:8px}
+.fp-h b{font-size:13.5px}
+.fp-h small{color:#8b95a3;margin-left:auto;font-size:11.5px}
+.f-prompt p{margin:12px 0;font-size:13.5px;line-height:1.5;color:#dfe5ec}
+.caret{display:inline-block;width:2px;height:15px;background:var(--brand);margin-left:2px;vertical-align:-2px;animation:blink 1s steps(1) infinite}
+.fp-f{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tagc{font-size:11px;padding:3px 8px;border-radius:99px;background:#232a33;color:#c9d1db}
+.go{margin-left:auto;font-size:12px;font-weight:600;color:var(--brand-ink);background:var(--brand);border-radius:8px;padding:6px 10px}
+.f-doc{right:28px;top:26px;width:270px;background:var(--surface);color:var(--ink);padding:16px;border:1px solid var(--line);animation:bob 8s ease-in-out -2s infinite}
+.doc-h{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.doc-h b{font-size:13.5px;line-height:1.3}
+.doc-lines{display:grid;gap:6px;margin:12px 0}
+.doc-lines i{height:6px;border-radius:99px;background:var(--line)}
+.f-doc dl{margin:0}
+.f-doc dl div{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid var(--line);font-size:12px}
+.f-doc dt{color:var(--muted)}
+.f-doc dd{margin:0;font-weight:600}
+.doc-f{display:flex;gap:8px;margin-top:10px}
+.doc-f span{flex:1;text-align:center;padding:7px;border-radius:8px;background:var(--ink);color:var(--bg);font-weight:600;font-size:12px}
+.doc-f .pdf{flex:none;background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.f-oto{right:56px;bottom:-60px;width:330px;background:#161c24;color:#e8ecf1;padding:14px 16px;display:flex;gap:12px;border:1px solid #2a323d;animation:bob 9s ease-in-out -4s infinite}
+.f-oto b{font-size:13.5px}
+.f-oto p{margin:4px 0 10px;color:#b5bec9;font-size:12.5px;line-height:1.45}
+.f-oto .go{margin:0;display:inline-block}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes blink{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.float,.caret{animation:none}}
+@media (max-width:1100px){
+  .stage{padding:56px 28px 28px;margin-bottom:0}
+  .f-prompt{position:relative;left:auto;top:auto;width:auto;max-width:440px;margin:16px 0 0}
+  .f-doc{display:none}
+  .f-oto{position:relative;right:auto;bottom:auto;width:auto;max-width:440px;margin:16px 0 0 auto}
+}
+@media (max-width:980px){.infl-head{grid-template-columns:1fr;gap:36px;align-items:start}}
+@media (max-width:640px){
+  .ilist{grid-template-columns:1fr}
+  .stage{padding:20px 12px 12px;border-radius:20px;margin-top:40px}
+  .rail{display:none}
+  .pane{padding:12px}
+  .pane-act .seg{display:none}
+  .ikpis{grid-template-columns:1fr 1fr}
+  .ikpis>div:nth-child(3){border-left:0}
+  .ikpis>div:nth-child(n+3){border-top:1px solid var(--line)}
+  .tr{grid-template-columns:1.4fr .6fr .9fr}
+  .tr>span:nth-child(2),.tr>span:nth-child(5){display:none}
+  .f-oto{margin-left:0}
+  .cac em{display:none}
+}
 
 /* Pricing */
 .pricing{background:var(--dark);color:#e8ecf1}
@@ -267,7 +347,6 @@ dialog::backdrop{background:rgba(8,10,13,.6);backdrop-filter:blur(4px)}
   .hero-grid{grid-template-columns:1fr;gap:40px}
   .features,.plans{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr 1fr}
-  .infl{grid-template-columns:1fr}
   .feat.wide{grid-column:auto;grid-row:auto}
   .final .box{grid-template-columns:1fr;padding:36px}
   .menu{display:none}
@@ -465,42 +544,76 @@ dialog::backdrop{background:rgba(8,10,13,.6);backdrop-filter:blur(4px)}
 </section>
 
 <section class="block infl-sec" id="influencers">
-  <div class="wrap infl">
-    <div>
-      <div class="eyebrow">Influencers y streaming</div>
-      <h2>Escribí lo que acordaste. Oto arma el contrato.</h2>
-      <p class="sec-lead">Contale a Oto el acuerdo con tus palabras y en segundos tenés un contrato completo, con fijo, variable, entregables y plazos. Después gestionás a cada creador desde el mismo lugar.</p>
-      <ul class="ilist">
-        <li><b>Contratos con un prompt.</b> Fijo, variable por cliente o por venta, exclusividad, entregables y forma de pago, redactados en un documento listo para firmar.</li>
-        <li><b>Todos tus creadores en una tabla.</b> Mail, teléfono, redes, seguidores, views, menciones y el link a cada contrato.</li>
-        <li><b>Resultados reales.</b> Clientes conseguidos con su cupón o link, costo total y CAC de cada influencer.</li>
-        <li><b>Pagos al día.</b> Sus facturas llegan al mail, se asignan solas y ves qué está pago y qué vence.</li>
-      </ul>
-      <a class="btn btn-ink btn-lg" href="#registro" data-auth="signup" style="margin-top:28px">Generar mi primer contrato</a>
-      <p class="inote">Te recomendamos que tu equipo legal revise cada contrato antes de firmarlo.</p>
-    </div>
-    <div class="imock" aria-hidden="true">
-      <div class="prompt">
-        <span class="plabel">Tu prompt</span>
-        <p>Contrato con Martina R. por 3 meses. US$ 1,000 fijos por mes más US$ 5 por cada cliente nuevo con su cupón. 2 reels y 4 historias por mes, exclusividad en la categoría.</p>
-        <span class="pbtn">Generar contrato</span>
+  <div class="wrap">
+    <div class="infl-head">
+      <div>
+        <div class="eyebrow">Influencers y streaming</div>
+        <h2>Escribí lo que acordaste. Oto arma el contrato.</h2>
+        <p class="sec-lead">Contale a Oto el acuerdo con tus palabras y en segundos tenés un contrato completo, con fijo, variable, entregables y plazos. Después gestionás a cada creador desde el mismo lugar.</p>
+        <div class="infl-cta">
+          <a class="btn btn-ink btn-lg" href="#registro" data-auth="signup">Generar mi primer contrato</a>
+          <p class="inote">Te recomendamos que tu equipo legal revise cada contrato antes de firmarlo.</p>
+        </div>
       </div>
-      <div class="contract">
-        <div class="chead"><span class="av">O</span><div><b>Contrato de servicios de publicidad</b><small>Generado por Oto · borrador listo para revisar</small></div></div>
+      <ul class="ilist">
+        <li><b>Contratos con un prompt</b>Fijo, variable por cliente o por venta, exclusividad, entregables y forma de pago, en un documento listo para firmar.</li>
+        <li><b>Todos tus creadores en una tabla</b>Mail, teléfono, redes, seguidores, views, menciones y el link a cada contrato.</li>
+        <li><b>Resultados reales</b>Clientes conseguidos con su cupón o link, costo total y CAC de cada creador.</li>
+        <li><b>Pagos al día</b>Sus facturas llegan al mail, se asignan solas y ves qué está pago y qué vence.</li>
+      </ul>
+    </div>
+
+    <div class="stage" aria-hidden="true">
+      <div class="win">
+        <div class="win-bar"><i></i><i></i><i></i><span>otomkt.app/influencers</span></div>
+        <div class="win-body">
+          <aside class="rail">
+            <span class="rl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0E1319" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16l5-5 4 4 7-8"/><path d="M15 7h5v5"/></svg></span>
+            <span></span><span></span><span class="on"></span><span></span><span></span><span></span>
+          </aside>
+          <div class="pane">
+            <div class="pane-top">
+              <div><small>Influencers y streaming</small><b>Creadores</b></div>
+              <div class="pane-act"><span class="seg">Últimos 30 días</span><span class="add">+ Agregar perfil</span></div>
+            </div>
+            <div class="ikpis num">
+              <div><small>Inversión</small><b><em>US$</em>48,500</b><span class="chip">8 creadores</span></div>
+              <div><small>Nuevos clientes</small><b>1,184</b><span class="chip g">▲ 12%</span></div>
+              <div><small>CAC</small><b><em>US$</em>41</b><span class="chip g">▼ 6%</span></div>
+              <div><small>Contratos activos</small><b>6</b><span class="chip">2 por firmar</span></div>
+            </div>
+            <div class="itab num">
+              <div class="tr th"><span>Creador</span><span>Seguidores</span><span>Clientes</span><span>CAC</span><span>Contrato</span></div>
+              <div class="tr hl"><span class="who"><i style="--a:#c8f04a;--b:#1baf7a">MR</i><span>Martina R.<small><u>IG</u><u>TT</u></small></span></span><span>1,240,000</span><span>412</span><span class="cac"><em style="width:38%"></em>US$ 24</span><span><s class="st ok">Firmado</s></span></div>
+              <div class="tr"><span class="who"><i style="--a:#2a78d6;--b:#7c3aed">TG</i><span>Tomás G.<small><u>Twitch</u><u>YT</u></small></span></span><span>860,000</span><span>286</span><span class="cac"><em style="width:56%"></em>US$ 35</span><span><s class="st ok">Firmado</s></span></div>
+              <div class="tr"><span class="who"><i style="--a:#eb6834;--b:#d92d20">SL</i><span>Sofía L.<small><u>IG</u></small></span></span><span>530,000</span><span>198</span><span class="cac"><em style="width:72%"></em>US$ 45</span><span><s class="st ok">Firmado</s></span></div>
+              <div class="tr"><span class="who"><i style="--a:#1baf7a;--b:#2a78d6">JP</i><span>Juan P.<small><u>TT</u><u>YT</u></small></span></span><span>2,100,000</span><span>164</span><span class="cac"><em style="width:92%"></em>US$ 61</span><span><s class="st warn">Por firmar</s></span></div>
+              <div class="tr"><span class="who"><i style="--a:#7c3aed;--b:#eb6834">CF</i><span>Caro F.<small><u>Kick</u></small></span></span><span>310,000</span><span>—</span><span class="cac muted">Nuevo</span><span><s class="st">Borrador</s></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="float f-prompt">
+        <div class="fp-h"><span class="av">O</span><b>Nuevo contrato</b><small>con Oto</small></div>
+        <p>Contrato con Caro F. por 3 meses. US$ 1,000 fijos por mes más US$ 5 por cliente nuevo con su cupón. 2 streams y 4 historias por mes, exclusividad en la categoría.<span class="caret"></span></p>
+        <div class="fp-f"><span class="tagc">US$ 1,000 fijo</span><span class="tagc">US$ 5 variable</span><span class="tagc">3 meses</span><span class="go">Generar →</span></div>
+      </div>
+
+      <div class="float f-doc">
+        <div class="doc-h"><b>Contrato de servicios de publicidad</b><s class="st ok">Listo</s></div>
+        <div class="doc-lines"><i style="width:92%"></i><i style="width:78%"></i><i style="width:86%"></i></div>
         <dl class="num">
           <div><dt>Vigencia</dt><dd>1/11/2026 al 31/1/2027</dd></div>
           <div><dt>Pago fijo</dt><dd>US$ 1,000 por mes</dd></div>
-          <div><dt>Variable</dt><dd>US$ 5 por cliente nuevo</dd></div>
-          <div><dt>Entregables</dt><dd>2 reels y 4 historias por mes</dd></div>
-          <div><dt>Exclusividad</dt><dd>Categoría, durante la vigencia</dd></div>
+          <div><dt>Variable</dt><dd>US$ 5 por cliente</dd></div>
         </dl>
-        <div class="cfoot"><span class="chip g">Listo para firmar</span><span class="clink">Ver documento →</span></div>
+        <div class="doc-f"><span>Enviar para firmar</span><span class="pdf">PDF</span></div>
       </div>
-      <div class="itable num">
-        <div class="ih"><span>Creador</span><span>Clientes</span><span>CAC</span></div>
-        <div><span>Martina R.</span><span>412</span><span>US$ 98</span></div>
-        <div><span>Tomás G. · streaming</span><span>286</span><span>US$ 141</span></div>
-        <div><span>Sofi L.</span><span>198</span><span>US$ 182</span></div>
+
+      <div class="float f-oto">
+        <span class="av">O</span>
+        <div><b>Renová a Martina R.</b><p>Su CAC es US$ 24, 41% debajo del promedio de creadores. Su contrato vence en 12 días.</p><span class="go">Renovar con un prompt</span></div>
       </div>
     </div>
   </div>
