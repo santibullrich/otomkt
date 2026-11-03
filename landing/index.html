@@ -58,7 +58,7 @@ a{color:inherit}
 .hero::before{content:"";position:absolute;inset:-30% -10% auto auto;width:720px;height:720px;background:radial-gradient(closest-side,rgba(200,240,74,.16),transparent);pointer-events:none}
 .pill{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px 0 6px;border:1px solid #2f3844;border-radius:99px;font-size:13px;color:#c9d1db}
 .pill b{background:var(--brand);color:var(--brand-ink);border-radius:99px;padding:2px 8px;font-size:11.5px;letter-spacing:.04em}
-.hero h1{font-size:clamp(38px,5.6vw,66px);line-height:1.04;letter-spacing:-.035em;font-weight:600;margin:22px 0 0;max-width:15ch;text-wrap:balance}
+.hero h1{font-size:clamp(36px,4.6vw,58px);line-height:1.04;letter-spacing:-.035em;font-weight:600;margin:22px 0 0;max-width:13em;text-wrap:balance}
 .hero h1 em{font-style:normal;color:var(--brand)}
 .hero .lead{font-size:clamp(17px,1.7vw,20px);color:#c2cad4;max-width:58ch;margin:22px 0 0}
 .hero .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
@@ -146,12 +146,45 @@ h2{font-size:clamp(30px,3.6vw,44px);line-height:1.1;letter-spacing:-.03em;font-w
 .quote b{color:var(--brand)}
 
 /* Steps */
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:44px;counter-reset:s}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px;counter-reset:s}
 .step{padding:26px;border-radius:var(--r);border:1px dashed var(--line)}
 .step::before{counter-increment:s;content:"0" counter(s);font:500 13px var(--mono);color:var(--muted)}
 .step h3{margin:12px 0 8px;font-size:18px;font-weight:600}
 .step p{margin:0;color:var(--muted);font-size:15px}
-.step code{font:13px var(--mono);background:var(--surface);border:1px solid var(--line);padding:1px 6px;border-radius:6px}
+.step.brand{background:var(--brand);border:1px solid var(--brand);color:var(--brand-ink)}
+.step.brand::before,.step.brand p{color:var(--brand-ink)}
+.step code{font:12.5px var(--mono);word-break:break-all;background:var(--surface);border:1px solid var(--line);padding:1px 6px;border-radius:6px}
+
+
+/* Influencers */
+.infl-sec{background:var(--surface);border-block:1px solid var(--line)}
+.infl{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.ilist{list-style:none;padding:0;margin:28px 0 0;display:grid;gap:14px}
+.ilist li{padding-left:30px;position:relative;color:var(--muted);font-size:15.5px}
+.ilist li::before{content:"✓";position:absolute;left:0;top:1px;width:20px;height:20px;border-radius:99px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-size:11px;font-weight:700}
+.ilist b{color:var(--ink);font-weight:600}
+.inote{font-size:13px;color:var(--faint);margin:12px 0 0}
+.imock{display:grid;gap:12px;font-size:14px}
+.prompt{background:var(--dark);color:#e8ecf1;border-radius:16px;padding:18px 20px}
+.plabel{font:500 11.5px var(--mono);text-transform:uppercase;letter-spacing:.1em;color:#8b95a3}
+.prompt p{margin:8px 0 14px;font-size:15px;line-height:1.5}
+.pbtn{display:inline-flex;height:34px;align-items:center;padding:0 14px;border-radius:9px;background:var(--brand);color:var(--brand-ink);font-weight:600;font-size:13.5px}
+.contract,.itable{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+.chead{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.chead .av{width:30px;height:30px;border-radius:9px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:700;flex:none}
+.chead b{display:block;font-size:15px}
+.chead small{color:var(--faint);font-size:12.5px}
+.contract dl{margin:0;display:grid}
+.contract dl div{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line)}
+.contract dt{color:var(--muted)}
+.contract dd{margin:0;font-weight:500;text-align:right}
+.cfoot{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.clink{color:var(--s1);font-weight:500;font-size:13.5px}
+.itable{display:grid;padding:8px 20px}
+.itable div{display:grid;grid-template-columns:1fr 80px 80px;padding:8px 0;font-size:13.5px}
+.itable div+div{border-top:1px solid var(--line)}
+.itable span+span{text-align:right}
+.itable .ih{color:var(--faint);font-size:12px}
 
 /* Pricing */
 .pricing{background:var(--dark);color:#e8ecf1}
@@ -232,7 +265,9 @@ dialog::backdrop{background:rgba(8,10,13,.6);backdrop-filter:blur(4px)}
 
 @media (max-width:980px){
   .hero-grid{grid-template-columns:1fr;gap:40px}
-  .features,.plans,.steps{grid-template-columns:1fr}
+  .features,.plans{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .infl{grid-template-columns:1fr}
   .feat.wide{grid-column:auto;grid-row:auto}
   .final .box{grid-template-columns:1fr;padding:36px}
   .menu{display:none}
@@ -245,7 +280,7 @@ dialog::backdrop{background:rgba(8,10,13,.6);backdrop-filter:blur(4px)}
   .hero{padding-bottom:56px}
   .top .wrap{gap:12px}
   .top .actions{margin-left:auto}
-  .compare,.stats{grid-template-columns:1fr}
+  .compare,.stats,.steps{grid-template-columns:1fr}
   .stats>div+div{border-left:0;border-top:1px solid var(--line)}
   .mrow{grid-template-columns:1fr}
   .kpis b{font-size:16px}
@@ -267,6 +302,7 @@ dialog::backdrop{background:rgba(8,10,13,.6);backdrop-filter:blur(4px)}
     </a>
     <nav class="menu" aria-label="Secciones">
       <a href="#producto">Producto</a>
+      <a href="#influencers">Influencers</a>
       <a href="#como-funciona">Cómo funciona</a>
       <a href="#precios">Precios</a>
       <a href="#preguntas">Preguntas</a>
@@ -283,14 +319,14 @@ dialog::backdrop{background:rgba(8,10,13,.6);backdrop-filter:blur(4px)}
   <div class="wrap hero-grid">
     <div>
       <span class="pill"><b>NUEVO</b>Oto, tu asesor de marketing con AI</span>
-      <h1>Sabé cuánto te cuesta <em>cada cliente</em>, canal por canal.</h1>
-      <p class="lead">OTOMKT junta tu budget, el gasto real, las facturas y los nuevos clientes en un solo tablero. Ves el CAC de cada canal en tiempo real y Oto te dice dónde mover la plata.</p>
+      <h1>La plataforma de gestión para equipos de <em>Marketing</em>.</h1>
+      <p class="lead">Conectá todas tus fuentes de datos en un solo dashboard y seguí lo que importa: budget contra gasto real, CAC por canal, facturas de proveedores, influencers y mucho más. Oto, tu asesor con AI, te avisa dónde conviene mover la plata.</p>
       <div class="ctas">
         <a class="btn btn-brand btn-lg" href="#registro" data-auth="signup">Probar 14 días gratis
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         <a class="btn btn-ghost-d btn-lg" href="/">Ver la demo</a>
       </div>
-      <div class="fine"><span>Sin tarjeta de crédito</span><span>Listo en 15 minutos</span><span>Cancelás cuando quieras</span></div>
+      <div class="fine"><span>Sin tarjeta de crédito</span><span>Configuración guiada</span><span>Cancelás cuando quieras</span></div>
     </div>
 
     <div class="hero-shot" aria-hidden="true">
@@ -353,7 +389,7 @@ dialog::backdrop{background:rgba(8,10,13,.6);backdrop-filter:blur(4px)}
 <section class="block" id="producto">
   <div class="wrap">
     <div class="eyebrow">El problema</div>
-    <h2>El cierre de mes no debería llevarte una semana de planillas.</h2>
+    <h2>Los scorecards de marketing deberían llevarte minutos, no horas.</h2>
     <p class="sec-lead">Hoy el gasto vive en diez plataformas, las facturas en el mail y los clientes en otra herramienta. Cuando el directorio pregunta por el CAC, la respuesta llega tarde y aproximada.</p>
     <div class="compare">
       <div class="col">
@@ -361,8 +397,8 @@ dialog::backdrop{background:rgba(8,10,13,.6);backdrop-filter:blur(4px)}
         <ul>
           <li>Planillas que se arman a mano todos los meses</li>
           <li>Facturas perdidas entre mails y WhatsApp</li>
-          <li>El CAC por canal se calcula una vez por trimestre</li>
-          <li>Te enterás de que te pasaste del budget cuando ya pasó</li>
+          <li>Cálculo de CAC manual</li>
+          <li>Sin seguimiento riguroso del budget</li>
         </ul>
       </div>
       <div class="col after">
@@ -370,15 +406,15 @@ dialog::backdrop{background:rgba(8,10,13,.6);backdrop-filter:blur(4px)}
         <ul>
           <li>Budget y gasto real actualizados todos los días</li>
           <li>Las facturas llegan a una casilla y se cargan solas</li>
-          <li>CAC por canal, campaña e influencer al instante</li>
-          <li>Oto te avisa antes de que el desvío se convierta en problema</li>
+          <li>CAC calculado solo, por canal, campaña e influencer</li>
+          <li>Budget contra real controlado todos los días, con alertas de Oto</li>
         </ul>
       </div>
     </div>
     <div class="stats num">
       <div><b>6 hs</b><span>menos por semana armando reportes</span></div>
       <div><b>100%</b><span>del gasto de marketing en un solo lugar, online y offline</span></div>
-      <div><b>15 min</b><span>para conectar tus cuentas y ver tu primer CAC</span></div>
+      <div><b>30%</b><span>de ahorro gracias al seguimiento cercano del budget</span></div>
     </div>
   </div>
 </section>
@@ -410,9 +446,9 @@ dialog::backdrop{background:rgba(8,10,13,.6);backdrop-filter:blur(4px)}
         <p>Google, Meta, TikTok, LinkedIn y más: gasto, clientes y CAC por plataforma y campaña.</p>
       </article>
       <article class="feat">
-        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M17 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></svg></span>
-        <h3>Influencers y streaming</h3>
-        <p>Perfiles, contactos y resultados de cada creador. Contratos con fijo y variable generados con AI.</p>
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8M7 12l3-3 2 2 4-4"/></svg></span>
+        <h3>Presentaciones para el directorio</h3>
+        <p>Un clic y tenés el deck del mes con resultados, budget y CAC, listo para el CEO.</p>
       </article>
       <article class="feat">
         <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
@@ -428,14 +464,57 @@ dialog::backdrop{background:rgba(8,10,13,.6);backdrop-filter:blur(4px)}
   </div>
 </section>
 
-<section class="block" id="como-funciona" style="padding-top:0">
+<section class="block infl-sec" id="influencers">
+  <div class="wrap infl">
+    <div>
+      <div class="eyebrow">Influencers y streaming</div>
+      <h2>Escribí lo que acordaste. Oto arma el contrato.</h2>
+      <p class="sec-lead">Contale a Oto el acuerdo con tus palabras y en segundos tenés un contrato completo, con fijo, variable, entregables y plazos. Después gestionás a cada creador desde el mismo lugar.</p>
+      <ul class="ilist">
+        <li><b>Contratos con un prompt.</b> Fijo, variable por cliente o por venta, exclusividad, entregables y forma de pago, redactados en un documento listo para firmar.</li>
+        <li><b>Todos tus creadores en una tabla.</b> Mail, teléfono, redes, seguidores, views, menciones y el link a cada contrato.</li>
+        <li><b>Resultados reales.</b> Clientes conseguidos con su cupón o link, costo total y CAC de cada influencer.</li>
+        <li><b>Pagos al día.</b> Sus facturas llegan al mail, se asignan solas y ves qué está pago y qué vence.</li>
+      </ul>
+      <a class="btn btn-ink btn-lg" href="#registro" data-auth="signup" style="margin-top:28px">Generar mi primer contrato</a>
+      <p class="inote">Te recomendamos que tu equipo legal revise cada contrato antes de firmarlo.</p>
+    </div>
+    <div class="imock" aria-hidden="true">
+      <div class="prompt">
+        <span class="plabel">Tu prompt</span>
+        <p>Contrato con Martina R. por 3 meses. US$ 1,000 fijos por mes más US$ 5 por cada cliente nuevo con su cupón. 2 reels y 4 historias por mes, exclusividad en la categoría.</p>
+        <span class="pbtn">Generar contrato</span>
+      </div>
+      <div class="contract">
+        <div class="chead"><span class="av">O</span><div><b>Contrato de servicios de publicidad</b><small>Generado por Oto · borrador listo para revisar</small></div></div>
+        <dl class="num">
+          <div><dt>Vigencia</dt><dd>1/11/2026 al 31/1/2027</dd></div>
+          <div><dt>Pago fijo</dt><dd>US$ 1,000 por mes</dd></div>
+          <div><dt>Variable</dt><dd>US$ 5 por cliente nuevo</dd></div>
+          <div><dt>Entregables</dt><dd>2 reels y 4 historias por mes</dd></div>
+          <div><dt>Exclusividad</dt><dd>Categoría, durante la vigencia</dd></div>
+        </dl>
+        <div class="cfoot"><span class="chip g">Listo para firmar</span><span class="clink">Ver documento →</span></div>
+      </div>
+      <div class="itable num">
+        <div class="ih"><span>Creador</span><span>Clientes</span><span>CAC</span></div>
+        <div><span>Martina R.</span><span>412</span><span>US$ 98</span></div>
+        <div><span>Tomás G. · streaming</span><span>286</span><span>US$ 141</span></div>
+        <div><span>Sofi L.</span><span>198</span><span>US$ 182</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="como-funciona">
   <div class="wrap">
     <div class="eyebrow">Cómo funciona</div>
-    <h2>Tu primer CAC por canal, hoy mismo.</h2>
+    <h2>Empezás hoy. Oto hace el resto.</h2>
     <div class="steps">
-      <div class="step"><h3>Conectá tus cuentas</h3><p>Vinculá tus plataformas de anuncios y tu herramienta de analytics o MMP en un par de clics.</p></div>
-      <div class="step"><h3>Reenviá tus facturas</h3><p>Usá una casilla como <code>facturas@tuempresa.com</code>. Oto las lee y las suma al gasto real del canal.</p></div>
-      <div class="step"><h3>Decidí con datos</h3><p>Cargá el budget del año y seguí el CAC, el desvío y las recomendaciones de Oto todos los días.</p></div>
+      <div class="step"><h3>Te registrás</h3><p>Creás tu cuenta con el mail de trabajo. La prueba es gratis por 14 días y no pide tarjeta.</p></div>
+      <div class="step"><h3>Cargás budget y proyecciones</h3><p>Subís el budget del año y los números proyectados: gasto y nuevos clientes por canal y por mes.</p></div>
+      <div class="step"><h3>Conectás tus fuentes</h3><p>Vinculás tus plataformas de anuncios y de analytics, y elegís a qué mail llegan las facturas, por ejemplo <code>facturas@tuempresa.com</code>.</p></div>
+      <div class="step brand"><h3>Oto hace el resto</h3><p>Lee las facturas, calcula el CAC, controla el budget todos los días y te avisa qué hacer.</p></div>
     </div>
   </div>
 </section>
