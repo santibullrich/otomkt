@@ -45,6 +45,11 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-siz
 .num{font-family:var(--font-body);font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum" 1}
 .theme-btn{display:flex;align-items:center;gap:8px;width:100%;margin-top:-14px;height:36px;padding:0 10px;border-radius:10px;border:1px solid #242b35;background:transparent;color:#c9d1db;font:500 13px/1 var(--font-body);cursor:pointer}
 .theme-btn:hover{background:var(--nav-hover);color:#fff}
+.theme-sw{margin-left:auto;width:34px;height:20px;border-radius:99px;background:#2f3844;position:relative;flex:none;transition:background .2s}
+.theme-sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:99px;background:#c9d1db;transition:transform .2s,background .2s}
+.theme-btn[aria-checked="true"] .theme-sw{background:var(--brand)}
+.theme-btn[aria-checked="true"] .theme-sw::after{transform:translateX(14px);background:#0f1419}
+@media (prefers-reduced-motion:reduce){.theme-sw,.theme-sw::after{transition:none}}
 
 /* Sidebar */
 .side{width:236px;flex:none;background:var(--nav-bg);color:var(--nav-fg);display:flex;flex-direction:column;gap:24px;padding-block:24px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:16px;position:sticky;top:0;height:100vh}
@@ -342,7 +347,7 @@ tr.row-alert th,tr.row-alert td{background:color-mix(in srgb, var(--crit-soft) 5
       <div class="addr" id="side-addr">marketing@test.com</div>
       <div class="new"><span class="dot"></span><span id="side-count">6 facturas esta semana</span></div>
     </a>
-    <button type="button" class="theme-btn" id="theme-btn" aria-label="Cambiar entre modo claro y oscuro"><span id="theme-ico" style="display:inline-flex"></span><span id="theme-lbl">Modo claro</span></button>
+    <button type="button" class="theme-btn" id="theme-btn" role="switch" aria-checked="false"><span id="theme-ico" style="display:inline-flex"></span><span id="theme-lbl">Modo oscuro</span><span class="theme-sw" aria-hidden="true"></span></button>
   </aside>
 
   <main class="main">
@@ -1932,7 +1937,7 @@ function isDark(){ const t = document.documentElement.getAttribute('data-theme')
 const ICON_SUN = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
 const ICON_MOON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
 // The button shows the current mode: sun in light mode, moon in dark mode. Clicking switches.
-function syncThemeLabel(){ const d = isDark(); $('theme-ico').innerHTML = d ? ICON_MOON : ICON_SUN; $('theme-lbl').textContent = d ? 'Modo oscuro' : 'Modo claro'; $('theme-btn').setAttribute('aria-label', d ? 'Modo oscuro activado. Cambiar a modo claro' : 'Modo claro activado. Cambiar a modo oscuro'); }
+function syncThemeLabel(){ const d = isDark(); $('theme-ico').innerHTML = ICON_MOON; $('theme-lbl').textContent = 'Modo oscuro'; $('theme-btn').setAttribute('aria-checked', d ? 'true' : 'false'); $('theme-btn').title = d ? 'Pasar a modo claro' : 'Pasar a modo oscuro'; }
 try { const t = localStorage.getItem('otomkt-theme'); if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
 $('theme-btn').addEventListener('click', () => {
   const next = isDark() ? 'light' : 'dark';
